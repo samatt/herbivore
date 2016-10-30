@@ -7988,6 +7988,11 @@
 	  props: ['packets'],
 	  components: {
 	    PacketList: _PacketList2.default
+	  },
+	  methods: {
+	    onEnter: function onEnter() {
+	      console.log('ENTER');
+	    }
 	  }
 	}; //
 	//
@@ -8024,6 +8029,7 @@
 	__vue_options__.__file = "/Users/surya/Documents/Projects/invisible-transmissions/ajooba/app/components/PacketList.vue"
 	__vue_options__.render = __vue_template__.render
 	__vue_options__.staticRenderFns = __vue_template__.staticRenderFns
+	__vue_options__._scopeId = "data-v-261ae2a9"
 
 	/* hot reload */
 	if (false) {(function () {
@@ -8058,8 +8064,8 @@
 	if(false) {
 		// When the styles change, update the <style> tags
 		if(!content.locals) {
-			module.hot.accept("!!./../../node_modules/css-loader/index.js!./../../node_modules/vue-loader/lib/style-rewriter.js?id=data-v-261ae2a9!./../../node_modules/vue-loader/lib/selector.js?type=styles&index=0!./PacketList.vue", function() {
-				var newContent = require("!!./../../node_modules/css-loader/index.js!./../../node_modules/vue-loader/lib/style-rewriter.js?id=data-v-261ae2a9!./../../node_modules/vue-loader/lib/selector.js?type=styles&index=0!./PacketList.vue");
+			module.hot.accept("!!./../../node_modules/css-loader/index.js!./../../node_modules/vue-loader/lib/style-rewriter.js?id=data-v-261ae2a9&scoped=true!./../../node_modules/vue-loader/lib/selector.js?type=styles&index=0!./PacketList.vue", function() {
+				var newContent = require("!!./../../node_modules/css-loader/index.js!./../../node_modules/vue-loader/lib/style-rewriter.js?id=data-v-261ae2a9&scoped=true!./../../node_modules/vue-loader/lib/selector.js?type=styles&index=0!./PacketList.vue");
 				if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
 				update(newContent);
 			});
@@ -8077,7 +8083,7 @@
 
 
 	// module
-	exports.push([module.id, "\n#packet-list {\n  font-family: 'Avenir', Helvetica, Arial, sans-serif;\n  -webkit-font-smoothing: antialiased;\n  -moz-osx-font-smoothing: grayscale;\n  text-align: center;\n  color: #2c3e50;\n  margin-top: 60px;\n  max-height: 150px;\n  border-color: #2c3e50;\n  border-style: solid;\n  border-width: thin;\n  overflow: scroll;\n}\n.active{\n  color:red;\n}\n.hovered{\n  background-color: #2c3e50;\n  color: white;\n}\n", ""]);
+	exports.push([module.id, "\n#packet-list[data-v-261ae2a9] {\n  font-family: 'Avenir', Helvetica, Arial, sans-serif;\n  -webkit-font-smoothing: antialiased;\n  -moz-osx-font-smoothing: grayscale;\n  text-align: center;\n  color: #2c3e50;\n  margin-top: 60px;\n  max-height: 150px;\n  border-color: #2c3e50;\n  border-style: solid;\n  border-width: thin;\n  overflow: scroll;\n}\n.active[data-v-261ae2a9]{\n\n  /*background-color: #2c3e50;*/\n}\n.hovered[data-v-261ae2a9]{\n  background-color: #2c3e50;\n  color:red;\n}\n", ""]);
 
 	// exports
 
@@ -8122,6 +8128,10 @@
 	exports.default = {
 	  name: 'packetList',
 	  props: ['packets'],
+	  created: function created() {
+	    window.addEventListener('keyup', this.keyup);
+	    // window.addEventListener('keydown', this.down)
+	  },
 	  data: function data() {
 	    return {
 	      selectedPacket: {},
@@ -8145,8 +8155,46 @@
 	      this.selectedIndex = index;
 	      this.hoverIndex = index;
 	    },
-	    updateHover: function updateHover(index) {
-	      this.hoverIndex = index;
+	    keyup: function keyup(e) {
+	      //DOWN
+	      if ((e.keyCode || e.which) === 40) {
+	        if (this.hoverIndex < this.packets.length) {
+	          this.hoverIndex += 1;
+	        }
+	        if (document.getElementsByClassName('hovered')) {
+	          var cur = document.getElementsByClassName('hovered')[0];
+	          if (cur) {
+	            var id = cur.id.split('-');
+	            var index = id.pop();
+	            this.selectedPacket = this.packets[index];
+	            cur.scrollIntoViewIfNeeded({ block: "end", behavior: "smooth" });
+	          }
+	        }
+	      }
+	      //UP
+	      else if ((e.keyCode || e.which) === 38) {
+	          if (this.hoverIndex > 0) {
+	            this.hoverIndex -= 1;
+	          }
+	          if (document.getElementsByClassName('hovered')) {
+	            var _cur = document.getElementsByClassName('hovered')[0];
+	            if (_cur) {
+	              var _id = _cur.id.split('-');
+	              var _index = _id.pop();
+	              this.selectedPacket = this.packets[_index];
+	              _cur.scrollIntoViewIfNeeded({ block: "end", behavior: "smooth" });
+	            }
+	          }
+	        } else if ((e.keyCode || e.which) === 13) {
+	          if (document.getElementsByClassName('hovered')) {
+	            var _cur2 = document.getElementsByClassName('hovered')[0];
+	            if (_cur2) {
+	              var _id2 = _cur2.id.split('-');
+	              var _index2 = _id2.pop();
+	              this.selectedPacket = this.packets[_index2];
+	            }
+	          }
+	        }
 	    }
 	  }
 	};
@@ -22866,13 +22914,12 @@
 	      class: [index == selectedIndex ? activeClass : '',
 	        index == hoverIndex ? hoverClass : ''
 	      ],
+	      attrs: {
+	        "id": 'p-idx-' + index
+	      },
 	      on: {
 	        "click": function($event) {
 	          updateCurrent(packet, index)
-	        },
-	        "keyup": function($event) {
-	          if ($event.keyCode !== 38) return;
-	          updateHover(index)
 	        }
 	      }
 	    }, ["\n      " + _s(_f("prettifyTs")(packet.ts)) + " " + _s(_f("stringifyMac")(packet.eth.shost.addr)) + " -> " + _s(_f("stringifyMac")(packet.eth.dhost.addr)) + "\n    "])

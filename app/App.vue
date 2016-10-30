@@ -12,6 +12,11 @@ export default {
   props: ['packets'],
   components: {
     PacketList,
+  },
+  methods:{
+    onEnter () {
+      console.log('ENTER')
+    }
   }
 }
 </script>

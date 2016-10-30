@@ -3,32 +3,32 @@
     <h1>{{ msg }}</h1>
     <div style="padding-left: 20%; padding-right: 20%;">
 
-      <div class="stack-container">
+      <div class="stack-container" style="float:left;">
         <div class="stack-element" @mouseout="currentHover=''" @mouseover="onMouseOver('eth',$event)"> Ethernet </div>
         <div class="stack-element" @mouseout="currentHover=''" @mouseover="onMouseOver('ip',$event)"> IP </div>
         <div class="stack-element" @mouseout="currentHover=''" @mouseover="onMouseOver('tcp',$event)"> TCP </div>
         <div class="stack-element" @mouseout="currentHover=''" @mouseover="onMouseOver('http',$event)"> HTTP </div>
       </div>
 
-      <div style="details-container">
+      <div class="details-container" style="float:right;">
         <ul>
-          <li  v-bind:class="currentHover === 'eth' ? activeClass : ''"> Source MAC: {{packet.eth.shost.addr | stringifyMac}}</li>
+          <li  v-bind:class="currentHover === 'eth' ? activeClass : ''"> Source: {{packet.eth.shost.addr | stringifyMac}}</li>
           <br/>
-          <li  v-bind:class="currentHover === 'eth' ? activeClass : ''"> Destination MAC: {{packet.eth.dhost.addr | stringifyMac}}</li>
+          <li  v-bind:class="currentHover === 'eth' ? activeClass : ''"> Destination: {{packet.eth.dhost.addr | stringifyMac}}</li>
           <br/>
-          <li v-bind:class="currentHover === 'ip' ? activeClass : ''"> Source IP: {{packet.ip.saddr.addr.join(".")}}</li>
+          <li v-bind:class="currentHover === 'ip' ? activeClass : ''"> Source: {{packet.ip.saddr.addr.join(".")}}</li>
           <br/>
-          <li v-bind:class="currentHover === 'ip' ? activeClass : ''"> Dest IP: {{packet.ip.daddr.addr.join(".")}}</li>
+          <li v-bind:class="currentHover === 'ip' ? activeClass : ''"> Dest: {{packet.ip.daddr.addr.join(".")}}</li>
           <br/>
-          <li v-bind:class="currentHover === 'tcp' ? activeClass : ''"> Source Port: {{packet.tcp.sport}}</li>
+          <li v-bind:class="currentHover === 'tcp' ? activeClass : ''"> Source: {{packet.tcp.sport}}</li>
           <br/>
-          <li v-bind:class="currentHover === 'tcp' ? activeClass : ''"> Dest Port: {{packet.tcp.dport}}</li>
+          <li v-bind:class="currentHover === 'tcp' ? activeClass : ''"> Dest: {{packet.tcp.dport}}</li>
           <br/>
         </ul>
       </div>
       <!-- {{packet}} -->
-      <pre v-bind:class="currentHover === 'http' ? activeClass : ''" style=" text-align:left;">{{packet.http}}</pre>
   </div>
+  <pre v-bind:class="[currentHover === 'http' ? activeClass : '','http']">{{packet.http}}</pre>
   </div>
 </template>
 
@@ -94,7 +94,10 @@ import {stringifyMac} from '../filters'
   .stack-element:hover {
     background-color: #e8e53d;
   }
-
+  .http{
+    text-align:left;
+    padding-top: 222px;
+  }
   .highlighted{
     background-color: yellow;
   }

@@ -6,12 +6,12 @@ const app = electron.app;
 // TODO: CLEAN THIS UP
 
 const fs =require('fs')
-const debugData = JSON.parse(fs.readFileSync(`${__dirname}/test-packet.json`))
-let str = ""
-for (i in debugData.tcp.data.data){
-    str+=String.fromCharCode(debugData.tcp.data.data[i]);
-}
-debugData.tcp.data.data = str
+// const debugData = JSON.parse(fs.readFileSync(`${__dirname}/test-packet.json`))
+// let str = ""
+// for (i in debugData.tcp.data.data){
+//     str+=String.fromCharCode(debugData.tcp.data.data[i]);
+// }
+// debugData.tcp.data.data = str
 let parser = new PacketParser()
 parser.init()
 //
@@ -52,15 +52,7 @@ app.on('activate', function () {
     }
 });
 
+// TODO: removeSocket functionality
 io.on('connection', function (socket) {
-  // allSockets.push(socket)
-
-  if(debugData){
-    socket.emit('data', debugData);
-    parser.addSocket(socket)
-  }
-  else{
-   socket.emit('data', {'no' :'data'});
-  }
-
+  parser.addSocket(socket);
 });

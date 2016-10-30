@@ -8077,7 +8077,7 @@
 
 
 	// module
-	exports.push([module.id, "\n#packet-list {\n  font-family: 'Avenir', Helvetica, Arial, sans-serif;\n  -webkit-font-smoothing: antialiased;\n  -moz-osx-font-smoothing: grayscale;\n  text-align: center;\n  color: #2c3e50;\n  margin-top: 60px;\n  max-height: 300px;\n  overflow: scroll;\n}\n", ""]);
+	exports.push([module.id, "\n#packet-list {\n  font-family: 'Avenir', Helvetica, Arial, sans-serif;\n  -webkit-font-smoothing: antialiased;\n  -moz-osx-font-smoothing: grayscale;\n  text-align: center;\n  color: #2c3e50;\n  margin-top: 60px;\n  max-height: 150px;\n  border-color: #2c3e50;\n  border-style: solid;\n  border-width: thin;\n  overflow: scroll;\n}\n.active{\n  color:red;\n}\n.hovered{\n  background-color: #2c3e50;\n  color: white;\n}\n", ""]);
 
 	// exports
 
@@ -8113,13 +8113,22 @@
 	//
 	//
 	//
+	//
+	//
+	//
+	//
+	//
 
 	exports.default = {
 	  name: 'packetList',
 	  props: ['packets'],
 	  data: function data() {
 	    return {
-	      currentPacket: {}
+	      selectedPacket: {},
+	      selectedIndex: -1,
+	      hoverIndex: -1,
+	      activeClass: 'active',
+	      hoverClass: 'hovered'
 	    };
 	  },
 
@@ -8131,10 +8140,13 @@
 	    prettifyTs: _filters.prettifyTs
 	  },
 	  methods: {
-	    updateCurrent: function updateCurrent(packet) {
-
-	      this.currentPacket = packet;
-	      console.log(this.currentPacket);
+	    updateCurrent: function updateCurrent(packet, index) {
+	      this.selectedPacket = packet;
+	      this.selectedIndex = index;
+	      this.hoverIndex = index;
+	    },
+	    updateHover: function updateHover(index) {
+	      this.hoverIndex = index;
 	    }
 	  }
 	};
@@ -22664,7 +22676,7 @@
 
 
 	// module
-	exports.push([module.id, "\nh1[data-v-3751e875], h2[data-v-3751e875] {\n  font-weight: normal;\n}\nul[data-v-3751e875] {\n  list-style-type: none;\n  padding: 0;\n  text-align: left;\n}\nli[data-v-3751e875] {\n  display: inline-block;\n  margin: 0 0px;\n}\na[data-v-3751e875] {\n  color: #42b983;\n}\n.stack-container[data-v-3751e875]{\n}\n.stack-element[data-v-3751e875]{\n  background-color: #42b8b9;\n  margin-bottom: 5px;\n  border-style: solid;\n  border-width: thin;\n  font-size: 2em;\n}\n.stack-element[data-v-3751e875]:hover {\n  background-color: #e8e53d;\n}\n.highlighted[data-v-3751e875]{\n  background-color: yellow;\n}\n", ""]);
+	exports.push([module.id, "\nh1[data-v-3751e875], h2[data-v-3751e875] {\n  font-weight: normal;\n}\nul[data-v-3751e875] {\n  list-style-type: none;\n  padding: 0;\n  text-align: left;\n}\nli[data-v-3751e875] {\n  display: inline-block;\n  margin: 0 0px;\n}\na[data-v-3751e875] {\n  color: #42b983;\n}\n.stack-container[data-v-3751e875]{\n}\n.stack-element[data-v-3751e875]{\n  background-color: #42b8b9;\n  margin-bottom: 5px;\n  border-style: solid;\n  border-width: thin;\n  font-size: 2em;\n}\n.stack-element[data-v-3751e875]:hover {\n  background-color: #e8e53d;\n}\n.http[data-v-3751e875]{\n  text-align:left;\n  padding-top: 222px;\n}\n.highlighted[data-v-3751e875]{\n  background-color: yellow;\n}\n", ""]);
 
 	// exports
 
@@ -22752,7 +22764,10 @@
 	      "style": "padding-left: 20%; padding-right: 20%;"
 	    }
 	  }, [_h('div', {
-	    staticClass: "stack-container"
+	    staticClass: "stack-container",
+	    attrs: {
+	      "style": "float:left;"
+	    }
 	  }, [_h('div', {
 	    staticClass: "stack-element",
 	    on: {
@@ -22794,27 +22809,25 @@
 	      }
 	    }
 	  }, [" HTTP "])]), " ", _h('div', {
+	    staticClass: "details-container",
 	    attrs: {
-	      "style": "details-container"
+	      "style": "float:right;"
 	    }
 	  }, [_h('ul', [_h('li', {
 	    class: currentHover === 'eth' ? activeClass : ''
-	  }, [" Source MAC: " + _s(_f("stringifyMac")(packet.eth.shost.addr))]), " ", _m(0), " ", _h('li', {
+	  }, [" Source: " + _s(_f("stringifyMac")(packet.eth.shost.addr))]), " ", _m(0), " ", _h('li', {
 	    class: currentHover === 'eth' ? activeClass : ''
-	  }, [" Destination MAC: " + _s(_f("stringifyMac")(packet.eth.dhost.addr))]), " ", _m(1), " ", _h('li', {
+	  }, [" Destination: " + _s(_f("stringifyMac")(packet.eth.dhost.addr))]), " ", _m(1), " ", _h('li', {
 	    class: currentHover === 'ip' ? activeClass : ''
-	  }, [" Source IP: " + _s(packet.ip.saddr.addr.join("."))]), " ", _m(2), " ", _h('li', {
+	  }, [" Source: " + _s(packet.ip.saddr.addr.join("."))]), " ", _m(2), " ", _h('li', {
 	    class: currentHover === 'ip' ? activeClass : ''
-	  }, [" Dest IP: " + _s(packet.ip.daddr.addr.join("."))]), " ", _m(3), " ", _h('li', {
+	  }, [" Dest: " + _s(packet.ip.daddr.addr.join("."))]), " ", _m(3), " ", _h('li', {
 	    class: currentHover === 'tcp' ? activeClass : ''
-	  }, [" Source Port: " + _s(packet.tcp.sport)]), " ", _m(4), " ", _h('li', {
+	  }, [" Source: " + _s(packet.tcp.sport)]), " ", _m(4), " ", _h('li', {
 	    class: currentHover === 'tcp' ? activeClass : ''
-	  }, [" Dest Port: " + _s(packet.tcp.dport)]), " ", _m(5)])]), " ", " ", _h('pre', {
-	    class: currentHover === 'http' ? activeClass : '',
-	    attrs: {
-	      "style": " text-align:left;"
-	    }
-	  }, [_s(packet.http)])])])
+	  }, [" Dest: " + _s(packet.tcp.dport)]), " ", _m(5)])]), " "]), " ", _h('pre', {
+	    class: [currentHover === 'http' ? activeClass : '', 'http']
+	  }, [_s(packet.http)])])
 	}},staticRenderFns: [function (){with(this) {
 	  return _h('br')
 	}},function (){with(this) {
@@ -22848,19 +22861,26 @@
 	    attrs: {
 	      "id": "packet-list"
 	    }
-	  }, [_l((packets), function(packet) {
+	  }, [_l((packets), function(packet, index) {
 	    return _h('li', {
+	      class: [index == selectedIndex ? activeClass : '',
+	        index == hoverIndex ? hoverClass : ''
+	      ],
 	      on: {
 	        "click": function($event) {
-	          updateCurrent(packet)
+	          updateCurrent(packet, index)
+	        },
+	        "keyup": function($event) {
+	          if ($event.keyCode !== 38) return;
+	          updateHover(index)
 	        }
 	      }
 	    }, ["\n      " + _s(_f("prettifyTs")(packet.ts)) + " " + _s(_f("stringifyMac")(packet.eth.shost.addr)) + " -> " + _s(_f("stringifyMac")(packet.eth.dhost.addr)) + "\n    "])
 	  })]), " ", (packets.length > 1) ? _h('stack', {
 	    attrs: {
-	      "packet": currentPacket
+	      "packet": selectedPacket
 	    }
-	  }) : _e()])
+	  }) : _h('div', [" Go to some http sites in your browser! eg: nytimes.com"]), " "])
 	}},staticRenderFns: []}
 	if (false) {
 	  module.hot.accept()

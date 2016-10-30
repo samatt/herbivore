@@ -5,6 +5,7 @@ const pcapFilters = require('./pcap-filters')
 
 
 class PacketParser{
+
   constructor () {
     this._if = 'en0'
     this.tcp_tracker = new pcap.TCPTracker()
@@ -48,7 +49,7 @@ class PacketParser{
                                       }
                                     })
     // console.log(httpHeaders)
-    return  { ts: ts, eth: eth, ip: ip, tcp: tcp, http: httpHeaders}
+    return  { ts: ts, eth: eth, ip: ip, tcp: tcp, http: httpRaw}
   }
 
   savePacket (filename, packet) {

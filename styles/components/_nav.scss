@@ -1,8 +1,52 @@
 .nav-container {
   position: fixed;
   z-index: 1000;
+  padding:0px;
+  width: 8%;
   top: 0;
   bottom: 0;
   width: $base-font-size;
-  background-color: blue;
+  background-color: rgba(33,34,38,1.0);
+}
+
+.nav-tools{
+  padding: 0px;
+  height: 60%;
+}
+
+.nav-tool{
+  color: rgb(203,201,203);
+}
+
+.nav-views{
+  padding: 0px;
+  height: 40%;
+}
+
+.nav-views{
+  // padding: 0px;
+  height: 100%;
+  color: $nav-view-text;
+  font-size: #{$nav-view-font-size}px;
+}
+
+.nav-active-tool {
+  background-color: $nav-selected-bg;
+  border-left-color: $nav-selected;
+  border-left-width: 2px;
+  border-left-style: solid;
+}
+
+.nav-active-view {
+  color: $nav-selected-highlight;
+  border-color: $nav-selected-highlight;
+  border-width: 1px;
+  border-style: solid;
+}
+
+.nav-item:hover{
+  background-color: $nav-selected-bg;
+  border-left-color: $nav-selected-highlight;
+  border-left-width: 2px;
+  border-left-style: solid;
 }

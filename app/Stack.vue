@@ -70,9 +70,9 @@
     margin: 0 0px;
   }
 
-  a {
+  /*a {
     color: #42b983;
-  }
+  }*/
   .stack-container{
 
   }

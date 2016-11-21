@@ -28,6 +28,10 @@ module.exports = {
             test: /\.js$/,
             loader: 'babel',
             exclude: /node_modules/
+        },
+        {
+            test: /\.s?css$/,
+            loaders: ["style", "css", "sass"]
         }
     ]
   },
@@ -41,8 +45,6 @@ module.exports = {
     ])
   ]
 }
-
-// ,
 //     new ElectronPackager({
 //           dir: ".",
 //           arch: "x64",

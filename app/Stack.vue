@@ -94,3 +94,5 @@
     background-color: yellow;
   }
 </style>
+
+<style src="./styles/main.scss"></style>

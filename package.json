@@ -4,8 +4,8 @@
   "description": "",
   "main": "main.js",
   "scripts": {
-    "dev" : "webpack && electron main.js",
-    "build" : "webpack",
+    "dev": "webpack && electron main.js",
+    "build": "webpack",
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "electron main.js"
   },
@@ -34,6 +34,7 @@
     "vue-loader": "^9.7.0",
     "vue-style-loader": "^1.0.0",
     "webpack": "^1.13.3",
-    "webpack-dev-server": "^1.16.2"
+    "webpack-dev-server": "^1.16.2",
+    "webpack-electron-packager": "^1.0.0"
   }
 }

@@ -3,7 +3,6 @@ const fs = require('fs')
 const pcapFilters = require('./pcap-filters')
 
 
-
 class PacketParser{
 
   constructor () {
@@ -16,18 +15,27 @@ class PacketParser{
 
   init () {
     this.pcap.on('packet', this.packetCb.bind(this))
+    this.tcp_tracker.on('session', function (session) {
+      console.log("Start of session between " + session.src_name + " and " + session.dst_name);
+      console.log(session.recv_bytes_payload);
+      session.on('end', function (session) {
+            console.log("End of TCP session between " + session.src_name + " and " + session.dst_name);
+      });
+    });
   }
 
   packetCb (raw) {
     // console.log(raw)
+
     const packet = pcap.decode.packet(raw)
+    // this.tcp_tracker.track_packet(packet);
     const parsed = this.parse(packet)
     // console.log(parsed.http)
-
-    if (!this.wroteOne) {
-      this.savePacket('test.json', parsed)
-      this.wroteOne = true
-    }
+    // console.log(packet)
+    // if (!this.wroteOne) {
+    //   this.savePacket('test.json', parsed)
+    //   this.wroteOne = true
+    // }
 
     for (var i = 0; i < this.socketConnections.length; i++) {
       this.socketConnections[i].emit('data', parsed);
@@ -39,7 +47,7 @@ class PacketParser{
     const eth = packet.payload
     const ip = eth.payload
     const tcp = ip.payload
-    const httpRaw = tcp.data.toString('utf8').split('\r\n')
+    let httpRaw = tcp.data.toString('utf8').split('\r\n')
     const httpHeaders = httpRaw.filter(function (o) {
                                       if(o.indexOf(':') > -1 && o.length < 200){
                                         return true;
@@ -49,7 +57,10 @@ class PacketParser{
                                       }
                                     })
     // console.log(httpHeaders)
-    return  { ts: ts, eth: eth, ip: ip, tcp: tcp, http: httpRaw}
+    if(httpRaw.length > 20){
+      httpRaw = httpRaw.slice(0,20)
+    }
+    return  { ts: ts, eth: eth, ip: ip, tcp: tcp, http: httpRaw }
   }
 
   savePacket (filename, packet) {

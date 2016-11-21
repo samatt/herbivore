@@ -1,5 +1,6 @@
-var path = require('path')
-var webpack = require('webpack')
+const path = require('path')
+const webpack = require('webpack')
+const ElectronPackager = require("webpack-electron-packager");
 
 module.exports = {
   entry: './app/main.js',
@@ -40,3 +41,10 @@ module.exports = {
     ])
   ]
 }
+
+// ,
+//     new ElectronPackager({
+//           dir: ".",
+//           arch: "x64",
+//           platform: "darwin",
+//         })

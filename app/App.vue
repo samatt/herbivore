@@ -32,4 +32,4 @@ export default {
 }
 </style>
 
-<style src="../styles/main.scss"></style>
+<style lang="sass" src="../styles/main.scss"></style>

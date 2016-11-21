@@ -2,20 +2,20 @@
   <div class="nav-container">
 
     <ul class="nav-tools">
-      <li :class="['nav-tool', selectedIdx ? 'nav-active-tool' : '']"
+      <li :class="['nav-tool', index == selectedIdx ? 'nav-tool-active' : '']"
           v-for="(tool, index) in tools"
-          @click="updateTools(tools)">
+          @click="updateTools(tools, index)">
           {{tool}}
       </li>
     </ul>
-
-    <ul class="nav-views">
-      <li :class="['nav-view', (selectedView == view) ? 'nav-active-view' : '']"
-          v-for="view in views"
+    <div class="nav-views" >
+    <template v-for="view in views">
+      <div :class="['nav-view', (selectedView == view) ? 'nav-view-active' : '']"
           @click="updateView(view)">
           {{view}}
-      </li>
-    </ul>
+      </div>
+    </template>
+    </div>
   </div>
 </template>
 <script>
@@ -38,6 +38,7 @@ export default {
       this.selectedIdx = index;
     },
     updateView (name) {
+      console.log(name)
       this.selectedView = name;
     },
     keyup (e) {

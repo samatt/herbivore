@@ -19,7 +19,7 @@ export default {
   },
   data () {
     return {
-     tools: ['get_info','sniffer'],
+     tools: ['Info','Sniffer', 'MITM', 'ARP'],
      views:['Console','Information']
     }
 

@@ -18,6 +18,7 @@ new Vue({
       console.log('socket connected!')
     },
     data: function (packet) {
+      console.log(packet)
       this.packets.push(packet)
 
     }

@@ -4,7 +4,7 @@
     <ul class="nav-tools">
       <li :class="['nav-tool', index == selectedIdx ? 'nav-tool-active' : '']"
           v-for="(tool, index) in tools"
-          @click="updateTools(tools, index)">
+          @click="updateTools(tool, index)">
           {{tool}}
       </li>
     </ul>
@@ -34,11 +34,11 @@ export default {
   filters:{
   },
   methods: {
-    updateTools (packet, index) {
+    updateTools (tool, index) {
       this.selectedIdx = index;
+      this.$emit('select', tool)
     },
     updateView (name) {
-      console.log(name)
       this.selectedView = name;
     },
     keyup (e) {

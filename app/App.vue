@@ -1,32 +1,41 @@
 <template>
   <div id="app">
-    <ToolBar v-bind:tools="tools"
+    <ToolBar v-on:select="selectView"
+             v-bind:tools="tools"
              v-bind:views="views"> </ToolBar>
-    <packet-list v-bind:packets="packets"></packet-list>
+    <Console v-bind:current="currentTool" ></Console>
+    <!-- <sniffer v-bind:packets="packets"></sniffer> -->
   </div>
 </template>
 
 <script>
-import PacketList from './components/PacketList'
+// import PacketList from './components/PacketList'
+import Console from './components/Console'
 import ToolBar from './components/ToolBar'
 
 export default {
   name: 'app',
   props: ['packets'],
   components: {
-    PacketList,
+    Console,
     ToolBar
   },
   data () {
     return {
-     tools: ['Info','Sniffer', 'MITM', 'ARP'],
-     views:['Console','Information']
+     tools: ['Stats','Sniffer', 'MITM', 'ARP'],
+     views: ['Console','Info'],
+     currentTool:''
     }
 
   },
   methods:{
     onEnter () {
       console.log('ENTER')
+    },
+    selectView (name) {
+      console.log('HERE')
+
+      this.currentTool = name
     }
   }
 }

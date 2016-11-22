@@ -1,4 +1,5 @@
 <template>
+SNIFFER HERE
   <div id="packet-list-container">
     <ul id="packet-list">
       <li :id="'p-idx-'+index"
@@ -10,18 +11,16 @@
       </li>
     </ul>
 
-      <stack  v-if="packets.length > 1" :packet="selectedPacket"></stack>
-      <div v-else> Go to some http sites in your browser! eg: nytimes.com</div>
   </div>
 
 </template>
 
 <script>
 import {stringifyMac, prettifyTs} from '../filters'
-import Stack from './Stack'
+// import Stack from './Stack'
 
 export default {
-  name: 'packetList',
+  name: 'sniffer',
   props: ['packets'],
   created () {
     window.addEventListener('keyup', this.keyup)
@@ -38,7 +37,6 @@ export default {
 
   },
   components:{
-    Stack
   },
   filters:{
     stringifyMac,

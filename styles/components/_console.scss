@@ -1,8 +1,58 @@
-#console-container {
-    width: 90%;
-    top: 70%;
-    bottom: 0px;
-    margin-left: 10%;
-    position: fixed;
-    background-color: white;
+.console-container {
+  position: absolute;
+  height: 100%;
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+  align-items: stretch;
 }
+
+.view-options{
+  order: 1;
+  background-color:$color5;
+  align-self:  stretch;
+  width: $sidebar-width;
+  height: 100%;
+  color: $nav-view-text;
+  font-size: #{$nav-view-font-size}px;
+}
+
+.view-contanier{
+  order: 2;
+  width: 94%;
+  background-color: white;
+  color: $nav-view-text;
+  font-size: #{$nav-view-font-size}px;
+}
+
+.view-console {
+  background-color: black;
+  text-color: $color4;
+}
+
+
+.view-info {
+    background-color: white;
+    text-color: $color4;
+}
+
+.view-option-button{
+  padding: 59px 0px;
+  background-color: $color5;
+  color: $nav-view-text;
+}
+
+.view-option-button-text{
+  transform: rotate(270deg);
+  text-align: center;
+  font-size: 20px;
+  font-size: #{$nav-view-font-size}px;
+}
+.view-option-button-active {
+  color: $nav-selected-highlight;
+  border-color: $nav-selected-highlight;
+  border-width: 1px;
+  border-top-style: solid;
+  border-bottom-style: solid;
+}
+

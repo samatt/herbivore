@@ -1,10 +1,19 @@
 .nav-container {
-  position: fixed;
-  z-index: 1000;
-  padding:0px;
-  width: 10%;
   top: 0;
-  bottom: 0;
+  left:0;
+  width: 20%;
+  min-height: 250px;
+  width: $sidebar-width;
+  min-height: 525px;
+  background-color: rgba(33,34,38,1.0);
+}
+
+.nav {
+  // position: fixed;
+  float: left;
+  padding:0px;
+  width: $sidebar-width;
+  bottom: 90%;
   background-color: rgba(33,34,38,1.0);
 }
 
@@ -34,28 +43,3 @@
   border-left-width: 1px;
   border-left-style: solid;
 }
-
-.nav-views{
-  padding: 0px;
-  height: 40%;
-  color: $nav-view-text;
-  font-size: #{$nav-view-font-size}px;
-}
-
-.nav-view{
-  height: 40%;
-  color: $nav-view-text;
-  padding: 45px 0px;
-  padding-left: 15px;
-  transform: rotate(270deg);
-  font-size: 20px;
-  font-size: #{$nav-view-font-size}px;
-}
-
-.nav-view-active {
-  color: $nav-selected-highlight;
-  border-color: $nav-selected-highlight;
-  border-width: 1px;
-  border-style: solid;
-}
-

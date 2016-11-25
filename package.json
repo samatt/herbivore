@@ -20,7 +20,8 @@
     "sass-loader": "^4.0.2",
     "socket.io": "^1.5.1",
     "vue": "^2.0.3",
-    "vue-socket.io": "^2.0.0"
+    "vue-socket.io": "^2.0.0",
+    "vuex": "^2.0.0"
   },
   "devDependencies": {
     "babel-core": "^6.18.0",

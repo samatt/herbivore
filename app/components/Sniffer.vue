@@ -1,5 +1,4 @@
 <template>
-SNIFFER HERE
   <div id="packet-list-container">
     <ul id="packet-list">
       <li :id="'p-idx-'+index"

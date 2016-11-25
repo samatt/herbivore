@@ -1,4 +1,5 @@
 import Vue from 'vue'
+import store from './store'
 import App from './App'
 import VueSocketio from 'vue-socket.io'
 
@@ -7,6 +8,7 @@ Vue.use(VueSocketio, 'http://localhost:7777')
 new Vue({
   el: '#app',
   template: '<App v-bind:packets="packets"/>',
+  store,
   components: { App },
   data () {
     return {

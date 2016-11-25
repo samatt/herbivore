@@ -1,6 +1,5 @@
 <template>
   <div class="nav-container">
-
     <ul class="nav-tools">
       <li :class="['nav-tool', index == selectedIdx ? 'nav-tool-active' : '']"
           v-for="(tool, index) in tools"
@@ -8,14 +7,6 @@
           {{tool}}
       </li>
     </ul>
-    <div class="nav-views" >
-    <template v-for="view in views">
-      <div :class="['nav-view', (selectedView == view) ? 'nav-view-active' : '']"
-          @click="updateView(view)">
-          {{view}}
-      </div>
-    </template>
-    </div>
   </div>
 </template>
 <script>
@@ -28,7 +19,6 @@ export default {
   data () {
     return {
      selectedIdx: "",
-     selectedView: ""
     }
   },
   filters:{
@@ -37,9 +27,10 @@ export default {
     updateTools (tool, index) {
       this.selectedIdx = index;
       this.$emit('select', tool)
+      this.$store.dispatch('changeTool', tool)
     },
     updateView (name) {
-      this.selectedView = name;
+      this.$store.dispatch('changeView', name)
     },
     keyup (e) {
     }

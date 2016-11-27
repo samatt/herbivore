@@ -1,17 +1,12 @@
-$color1: rgb(24,24,28);
-$color2: rgb(203,201,203);
-$color3: rgb(88,79,158);
-$color4: rgb(111,115,125);
-$color5: rgb(33,34,38);
-
 $base-font-size: 16;
 
+//colors
+$white: #fff;
+$black: #000;
+$purple: #584f9e;
 
-$nav-selected-bg: $color1;
-$nav-selected-highlight: $color2;
-$nav-selected: $color3;
-
-$nav-view-font-size:20;
-$nav-view-text: $color4;
-
-$sidebar-width: 6%;
+$primary-text-color: #cbc9cb;
+$inactive-text-color: #6f737d;
+$toolbar-bg-color: #212226;
+$button-bg-active-color: #18181c;
+$button-active-color: $purple;

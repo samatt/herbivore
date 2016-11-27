@@ -5,6 +5,7 @@
   "main": "main.js",
   "scripts": {
     "dev": "webpack && electron main.js",
+    "watch": "./node_modules/.bin/webpack-dev-server",
     "build": "webpack",
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "electron main.js"

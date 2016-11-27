@@ -46,5 +46,5 @@ jspm_packages
 # Output of 'npm pack'
 *.tgz
 
-dist/build.js
+*/dist/build.js
 test.json

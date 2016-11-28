@@ -12,7 +12,25 @@ export function  stringifyMac (addr){
     return addrStr;
 }
 
+export function toolNameFilter (tn){
+  console.log(tn)
+  if(tn === 'PcapSniffer'){
+    return 'Sniffer'
+  }
+  return tn
+}
+
 export function prettifyTs (ts){
   const pretty = new Date(ts * 1000)
   return pretty.toLocaleString();
 }
+
+// export function parseToolNames (tn){
+//   ps_i = tn.findIndex(function(element){return element == 'PcapSniffer'})
+//   if( ps_i > -1){
+//     tn[ps_i] = Sniffer
+//   }
+
+//   return tn;
+// }
+

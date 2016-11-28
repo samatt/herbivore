@@ -18,11 +18,21 @@ new Vue({
   sockets: {
     connect: function () {
       console.log('socket connected!')
+      this.list()
     },
     data: function (packet) {
-      console.log(packet)
       this.packets.push(packet)
 
+    },
+    listTools: function(toolnames){
+      console.log(`tools: ${toolnames}`)
+      this.$store.dispatch('listTools', toolnames)
+
+    }
+  },
+  methods:{
+    list: function(){
+      this.$socket.emit('list')
     }
   }
 })

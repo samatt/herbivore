@@ -1,6 +1,12 @@
 <template>
-  <div id="packet-list-container">
-    <ul id="packet-list">
+  <div v-if="currentView === 'Info'">
+    {{currentView}}
+  </div>
+  <div v-else id="packet-list-container">
+    DA FAQ
+    <!-- {{packets}} -->
+  <!-- this the alt -->
+<!--     <ul id="packet-list">
       <li :id="'p-idx-'+index"
           :class="[index == selectedIndex ? activeClass : '',
                    index == hoverIndex ? hoverClass : '']"
@@ -9,21 +15,20 @@
         {{ packet.ts | prettifyTs}} {{packet.eth.shost.addr | stringifyMac}} -> {{packet.eth.dhost.addr | stringifyMac}}
       </li>
     </ul>
-
+ -->
   </div>
 
 </template>
 
 <script>
 import {stringifyMac, prettifyTs} from '../filters'
-// import Stack from './Stack'
+import {mapGetters, mapActions} from 'vuex'
 
 export default {
   name: 'sniffer',
   props: ['packets'],
   created () {
     window.addEventListener('keyup', this.keyup)
-    // window.addEventListener('keydown', this.down)
   },
   data () {
     return {
@@ -35,6 +40,9 @@ export default {
     }
 
   },
+  computed: mapGetters({
+    currentView: 'currentView'
+  }),
   components:{
   },
   filters:{
@@ -97,23 +105,5 @@ export default {
 </script>
 
 <style scoped>
-#packet-list {
-  font-family: 'Avenir', Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  /*color: #2c3e50;*/
-  margin-top: 60px;
-  max-height: 150px;
-  border-color: #2c3e50;
-  border-style: solid;
-  border-width: thin;
-  overflow: scroll;
-}
-.active{
-}
-.hovered{
-  background-color: #2c3e50;
-  color:red;
-}
+
 </style>

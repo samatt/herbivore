@@ -8,22 +8,6 @@ class ToolManager{
     this._client = {id:'not connected'}
     this._currentTool = null
     this.tools = tools
-    // try{
-    //  // fs.accessSync(path.resolve(__dirname, 'config.json'), fs.R_OK | fs.W_OK)
-    //  // console.log(path.resolve(__dirname, 'config.json'))
-
-    //  // fs.readFile(path.resolve(__dirname, 'config.json'),'utf-8', (d) => {
-    //  //      // this.tools = d['tools']
-    //  //      console.log(d)
-    //  //    })
-
-    //  }catch(e){
-    //    console.error(`Looks like it couldnt find ajooba/network-scripts.
-    //                   But heres what the error says ${e}.
-    //                   Setting tools to []`)
-    //    this.tools = []
-    //  }
-
   }
 
   set client(socket){
@@ -43,7 +27,7 @@ class ToolManager{
   }
 
 listTools () {
-    return this.tools
+    this._client.emit('listTools', this.tools)
 }
 
 load(toolname){

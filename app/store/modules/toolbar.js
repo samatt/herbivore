@@ -2,17 +2,22 @@ import * as types from '../mutation-types'
 
 const state = {
   currentTool: null,
-  currentView: null
+  currentView: null,
+  toolNames: []
 }
 
 // getters
 const getters = {
   currentTool: state => state.currentTool,
-  currentView: state => state.currentView
+  currentView: state => state.currentView,
+  toolNames: state => state.toolNames
 }
 
 // actions
 const actions = {
+  listTools ({ commit, state }, toolnames) {
+    commit(types.LIST_TOOLS, toolnames)
+  },
   changeTool ({ commit, state }, newSelection) {
     commit(types.TOOL_CHANGE_REQUEST, newSelection)
   },
@@ -23,6 +28,9 @@ const actions = {
 
 // mutations
 const mutations = {
+  [types.LIST_TOOLS] (state, toolnames ) {
+    state.toolNames = toolnames
+  },
   [types.TOOL_CHANGE_REQUEST] (state, newSelection ) {
     state.currentTool = newSelection
   },

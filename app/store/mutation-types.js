@@ -1,2 +1,4 @@
+export const LIST_TOOLS = 'LIST_TOOLS'
 export const TOOL_CHANGE_REQUEST = 'TOOL_CHANGE_REQUEST'
 export const VIEW_CHANGE_REQUEST = 'VIEW_CHANGE_REQUEST'
+// export const NEW_PACKET = ''

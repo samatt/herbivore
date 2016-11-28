@@ -2,18 +2,20 @@
   <div class="nav-container">
     <ul class="nav-tools">
       <li :class="['nav-tool', index == selectedIdx ? 'nav-tool-active' : '']"
-          v-for="(tool, index) in tools"
+          v-for="(tool, index) in toolNames"
           @click="updateTools(tool, index)">
-          {{tool}}
+          {{tool | toolNameFilter}}
       </li>
     </ul>
   </div>
 </template>
 <script>
+import {mapGetters} from 'vuex'
+import {toolNameFilter} from '../filters'
 
 export default {
   name: 'ToolBar',
-  props: ['tools', 'views'],
+  props: ['views'],
   created () {
   },
   data () {
@@ -21,12 +23,15 @@ export default {
      selectedIdx: "",
     }
   },
+  computed: mapGetters({
+    toolNames: 'toolNames'
+  }),
   filters:{
+    toolNameFilter
   },
   methods: {
     updateTools (tool, index) {
       this.selectedIdx = index;
-      this.$emit('select', tool)
       this.$store.dispatch('changeTool', tool)
     },
     updateView (name) {

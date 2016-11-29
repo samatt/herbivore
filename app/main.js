@@ -21,6 +21,7 @@ new Vue({
       this.list()
     },
     data: function (packet) {
+      console.log(this.packets.length)
       this.packets.push(packet)
 
     },

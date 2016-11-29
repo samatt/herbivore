@@ -9,7 +9,7 @@ let mainWindow;
 
 function createWindow () {
     mainWindow = new BrowserWindow({width: 1280, height: 840});
-    BrowserWindow.addDevToolsExtension("/Users/surya/Library/Application Support/Google/Chrome/Default/Extensions/nhdogjmejiglipccpnnnanhbledajbpd/2.3.1_0")
+    // BrowserWindow.addDevToolsExtension("/Users/surya/Library/Application Support/Google/Chrome/Default/Extensions/nhdogjmejiglipccpnnnanhbledajbpd/2.3.1_0")
     mainWindow.loadURL('file://' + __dirname + '/index.html');
     mainWindow.on('closed', function() {
         mainWindow = null;
@@ -34,6 +34,7 @@ app.on('activate', function () {
 // Ajooba stuff
 io.on('connection', function (socket) {
     toolManager.client = socket
+    toolManager.registerClients(socket)
 
     socket.on('list', function(){
         toolManager.listTools()
@@ -45,11 +46,13 @@ io.on('connection', function (socket) {
     })
 
     socket.on('init', function(){
+        // console.log("IN INIT")
         toolManager.init()
 
     })
 
     socket.on('start', function(){
+        // console.log("START")
         toolManager.start()
 
     })

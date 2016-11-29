@@ -2,47 +2,57 @@ const pcap = require('pcap')
 const fs = require('fs')
 const pcapFilters = require('./pcap-filters')
 
-
 class PcapSniffer{
 
   constructor () {
+    this.name = 'PcapSniffer'
+    this.sniff = false
     this._if = 'en0'
-    this.tcp_tracker = new pcap.TCPTracker()
-    this.pcap = pcap.createSession(this._if, pcapFilters.http)
-    this.wroteOne = false
-    this.socketConnections = []
+    this._client = null
+    this.session = pcap.createSession(this._if, pcapFilters.http)
   }
 
-  init () {
-    this.pcap.on('packet', this.packetCb.bind(this))
-    this.tcp_tracker.on('session', function (session) {
-      console.log("Start of session between " + session.src_name + " and " + session.dst_name);
-      console.log(session.recv_bytes_payload);
-      session.on('end', function (session) {
-            console.log("End of TCP session between " + session.src_name + " and " + session.dst_name);
-      });
-    });
+  error (){
+    console.error(`[${this.name}] : ${msg}`)
   }
 
-  packetCb (raw) {
-    // console.log(raw)
+  set client(socket) {
+    this._client = socket
+  }
 
-    const packet = pcap.decode.packet(raw)
-    // this.tcp_tracker.track_packet(packet);
-    const parsed = this.parse(packet)
-    // console.log(parsed.http)
-    // console.log(packet)
-    // if (!this.wroteOne) {
-    //   this.savePacket('test.json', parsed)
-    //   this.wroteOne = true
-    // }
+  get client() {
+    return this._client
+  }
 
-    for (var i = 0; i < this.socketConnections.length; i++) {
-      this.socketConnections[i].emit('data', parsed);
+
+  init (){
+    this.session.on('packet', this._cb.bind(this))
+  }
+
+  start (socket) {
+    this.sniff = true
+  }
+
+  stop (socket) {
+    this.sniff = false
+  }
+
+  _cb (raw) {
+    if(this.sniff){
+      // console.log(this.session.decode)
+      const packet = pcap.decode.packet(raw)
+      const parsed = this._parse(packet)
+      if(this._client){
+        this._client.emit('data', parsed);
+      }
+      else{
+        this.error('Client socket not found!')
+      }
+
     }
   }
 
-  parse (packet) {
+  _parse (packet) {
     const ts = packet.pcap_header.tv_sec
     const eth = packet.payload
     const ip = eth.payload
@@ -56,33 +66,11 @@ class PcapSniffer{
                                         return false
                                       }
                                     })
-    // console.log(httpHeaders)
     if(httpRaw.length > 20){
       httpRaw = httpRaw.slice(0,20)
     }
     return  { ts: ts, eth: eth, ip: ip, tcp: tcp, http: httpRaw }
   }
-
-  savePacket (filename, packet) {
-    fs.writeFileSync(filename, JSON.stringify(packet))
-  }
-
-  addSocket (socket) {
-    this.socketConnections.push(socket)
-  }
-
-  removeSocket (socket_id) {
-
-    this.socketConnections.filter(function (e){
-      if
-    }).push(socket)
-  }
 }
 
-module.exports = PacketParser
-
-// console.log(raw.buf.length)
-// console.log(raw.buf.slice(0, 6))
-// console.log(raw.buf.slice(6, 12))
-// console.log(raw.buf.slice(12, 14))
-// console.log(raw.buf.slice(14).length)
+module.exports = PcapSniffer

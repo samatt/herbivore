@@ -1,13 +1,40 @@
 const fs = require('fs');
 const path = require('path');
-const tools = require('./config')['tools']
+const toolnames = require('./config')['tools']
+const PcapSniffer = require('./PcapSniffer');
+
 
 class ToolManager{
 
   constructor () {
     this._client = {id:'not connected'}
     this._currentTool = null
-    this.tools = tools
+    this.toolnames = toolnames
+    this.tools = this.loadTools()
+  }
+
+  loadTools () {
+    let tools = []
+    let sniffer =  new PcapSniffer()
+    tools.push(sniffer)
+    return tools
+  }
+
+  error (msg) {
+    console.error(`[ToolManager] ERR : ${msg}`)
+  }
+
+  info (msg) {
+    console.info(`[ToolManager] : ${msg}`)
+  }
+
+  registerClients(socket){
+    for(var tool of this.tools){
+
+      tool.client = socket
+      this.info(tool.client)
+      // this.info(` Registering ${tool.client.id} to ${tool.name}`)
+    }
   }
 
   set client(socket){
@@ -27,65 +54,51 @@ class ToolManager{
   }
 
 listTools () {
-    this._client.emit('listTools', this.tools)
+    this._client.emit('listTools', this.toolnames)
 }
 
 load(toolname){
-  if(this.tools.indexOf(toolname) > -1){
-    this.tool = _loadModule(toolname)
-      // const toolPath = path.resolve(__dirname, )
-      if(this.tool){
-        return true
-      }
-      else{
-        return false
-      }
-    }
-    else{
-      console.error(`${toolname}: not configured in ajooba/network-scripts/config.json `)
-      return false
-    }
+   let t =  this.tools.find(function(tool){
+      return tool.name === toolname
+    })
+   this._currentTool = t
+   if(t === undefined){
+    this.error(`Not Loaded ${toolname}`)
+   }
+   else{
+      this.info(`Loaded ${toolname}`)
+   }
   }
 
-  _loadModule (toolname) {
-    try{
-     fs.accessSync(path.resolve(__dirname, 'toolname.js'), fs.R_OK | fs.W_OK)
-     return  require(`./${toolname}`)
-   }catch(e){
-     console.error(`Couldn't load the tool: ${toolname}.
-      error ${e}`)
-     return false;
-   }
- }
 
-  init (){
-    if(!this._currentTool || !!this._client){
-      console.error(`Client:${this._client.id} Tool:${this.currentTool}`)
+  init () {
+    if(!this._currentTool || !this._client){
+      this.error(`Client:${this._client.id} Tool:${this.currentTool.name}`)
       return false
     }
   else{
     this._currentTool.init(this._client)
-    _}
+    }
   }
 
-  currentTool (){
-    if(!this._currentTool || !!this._client){
-      console.error(`Client:${this._client.id} Tool:${this.currentTool}`)
+  start () {
+    if(!this._currentTool || !this._client){
+      this.error(`Client:${this._client.id} Tool:${this.currentTool.name}`)
       return false
     }
     else{
       this._currentTool.start(this._client)
-    _}
+    }
   }
 
-  currentTool (){
-    if(!this._currentTool || !!this._client){
-      console.error(`Client:${this._client.id} Tool:${this.currentTool}`)
+  stop () {
+    if(!this._currentTool || !this._client){
+      this.error(`Client:${this._client.id} Tool:${this.currentTool.name}`)
       return false
     }
     else{
       this._currentTool.stop(this._client)
-    _}
+    }
   }
 }
 module.exports = ToolManager

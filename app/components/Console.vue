@@ -10,7 +10,7 @@
     </div>
   <div :class="['view-contanier', currentView === 'Console' ? 'view-console': 'view-info']" >
         Current Tool: {{ currentTool}} Current View: {{ currentView}}
-        <sniffer v-if="currentTool === 'Sniffer'"
+        <sniffer v-if="currentTool === 'PcapSniffer'"
                  v-bind:packets="packets"> </sniffer>
   </div>
 

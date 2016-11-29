@@ -1,9 +1,12 @@
 <template>
   <div v-if="currentView === 'Info'">
+  HELLOO
     {{currentView}}
   </div>
-  <div v-else id="packet-list-container">
-    DA FAQ
+  <div v-else>
+  CONSOLE
+  <div @click="start()"> Start</div>
+  <div @click="stop()"> Stop</div>
     <!-- {{packets}} -->
   <!-- this the alt -->
 <!--     <ul id="packet-list">
@@ -29,6 +32,7 @@ export default {
   props: ['packets'],
   created () {
     window.addEventListener('keyup', this.keyup)
+    this.$socket.emit('init')
   },
   data () {
     return {
@@ -50,6 +54,12 @@ export default {
     prettifyTs
   },
   methods: {
+    start (){
+      this.$socket.emit('start')
+    },
+    stop (){
+      this.$socket.emit('stop')
+    },
     updateCurrent (packet, index) {
       this.selectedPacket = packet;
       this.selectedIndex = index;

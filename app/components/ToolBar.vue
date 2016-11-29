@@ -33,6 +33,7 @@ export default {
     updateTools (tool, index) {
       this.selectedIdx = index;
       this.$store.dispatch('changeTool', tool)
+      this.$socket.emit('load',tool)
     },
     updateView (name) {
       this.$store.dispatch('changeView', name)

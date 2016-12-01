@@ -3,18 +3,18 @@
   left:0;
   width: 20%;
   min-height: 250px;
-  width: $sidebar-width;
+  width: 6%;
   min-height: 525px;
-  background-color: rgba(33,34,38,1.0);
+  background-color: $toolbar-bg-color;
 }
 
 .nav {
   // position: fixed;
   float: left;
   padding:0px;
-  width: $sidebar-width;
+  width: 6%;
   bottom: 90%;
-  background-color: rgba(33,34,38,1.0);
+  background-color: $toolbar-bg-color;
 }
 
 .nav-tools{
@@ -25,21 +25,21 @@
 }
 
 .nav-tool{
-  color: rgb(203,201,203);
+  color: $primary-text-color;
   padding: 10px 0px;
   padding-left: 8px;
 }
 
 .nav-tool-active {
-  background-color: $nav-selected-bg;
-  border-left-color: $nav-selected;
-  border-left-width: 1px;
+  background-color: $button-bg-active-color;
+  border-left-color: $purple;
+  border-left-width: $base-font-size;
   border-left-style: solid;
 }
 
 .nav-tool:hover{
-  background-color: $nav-selected-bg;
-  border-left-color: $nav-selected-highlight;
-  border-left-width: 1px;
+  background-color: $button-bg-active-color;
+  border-left-color: $primary-text-color;
+  border-left-width: $base-font-size;
   border-left-style: solid;
 }

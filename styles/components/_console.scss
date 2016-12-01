@@ -9,48 +9,52 @@
 
 .view-options{
   order: 1;
-  background-color:$color5;
-  align-self:  stretch;
-  width: $sidebar-width;
+  background-color: $toolbar-bg-color;
+  align-self: stretch;
+  width: 6%;
   height: 100%;
-  color: $nav-view-text;
-  font-size: #{$nav-view-font-size}px;
+  color: $primary-text-color;
+  font-size: $base-font-size;
 }
 
 .view-contanier{
   order: 2;
   width: 94%;
-  background-color: white;
-  color: $nav-view-text;
-  font-size: #{$nav-view-font-size}px;
+  background-color: $white;
+  color: $primary-text-color;
+  font-size: $base-font-size;
 }
 
 .view-console {
-  background-color: black;
-  text-color: $color4;
+  background-color: $black;
+  text-color: $primary-text-color;
 }
 
-
 .view-info {
-    background-color: white;
-    text-color: $color4;
+    background-color: $white;
+    text-color: $primary-text-color;
 }
 
 .view-option-button{
   padding: 59px 0px;
-  background-color: $color5;
-  color: $nav-view-text;
+  background-color: $toolbar-bg-color;
 }
 
 .view-option-button-text{
+  color: $inactive-text-color;
   transform: rotate(270deg);
   text-align: center;
   font-size: 20px;
-  font-size: #{$nav-view-font-size}px;
+  font-size: $base-font-size;
 }
+
+.view-option-button-text:hover {
+  color: $primary-text-color;
+}
+
 .view-option-button-active {
-  color: $nav-selected-highlight;
-  border-color: $nav-selected-highlight;
+  color: $primary-text-color;
+  border-color: $primary-text-color;
   border-width: 1px;
   border-top-style: solid;
   border-bottom-style: solid;

@@ -1,10 +1,10 @@
 .console-container {
   position: absolute;
-  // height: 100%;
+  height: 30%;
   width: 100%;
   display: flex;
   flex-direction: row;
-  align-items: stretch;
+  // align-items: stretch;
 }
 
 .view-options{
@@ -19,14 +19,15 @@
 
 .view-container{
   order: 2;
-  width: 94%;
+  width: 100%;
   background-color: $white;
   color: $primary-text-color;
   font-size: $base-font-size;
+  overflow-y: scroll;
 }
 
 .view-console {
-  background-color: $black;
+  background-color: $white;
   text-color: $primary-text-color;
 }
 
@@ -53,5 +54,31 @@
   border-width: 1px;
   border-top-style: solid;
   border-bottom-style: solid;
+}
+
+.packets-table {
+  flex: 1 0 0%;
+  margin: #{10 / $base-font-size}rem;
+  width: 98%;
+}
+
+.packets-table__header > tr > th {
+  color: $inactive-text-color;
+  background-color: $white;
+  font-weight: 600;
+}
+
+.packets-table__row {
+  height: #{25 / $base-font-size}rem;
+}
+
+tr:nth-child(odd) {
+  color: $inactive-text-color;
+  background-color:$primary-text-color;
+}
+
+tr:nth-child(even) {
+  color: $inactive-text-color;
+  background-color:$white;
 }
 

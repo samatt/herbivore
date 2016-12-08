@@ -18,7 +18,7 @@ export default {
   },
   data () {
     return {
-     views: ['Console','Info'],
+     views: ['Console'],
      currentTool:''
     }
 

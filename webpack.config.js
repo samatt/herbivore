@@ -6,7 +6,8 @@ module.exports = {
   entry: './app/main.js',
   output: {
     path: path.resolve(__dirname, './dist'),
-    filename: 'build.js'
+    filename: 'build.js',
+    publicPath:'http://localhost:8080/dist/'
   },
     resolve: {
     extensions: ['', '.js', '.vue'],
@@ -42,7 +43,8 @@ module.exports = {
   plugins: [
     new webpack.ExternalsPlugin('commonjs', [
         'electron'
-    ])
+    ]),
+    new webpack.HotModuleReplacementPlugin()
   ]
 }
 //     new ElectronPackager({

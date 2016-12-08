@@ -17,7 +17,7 @@
   font-size: $base-font-size;
 }
 
-.view-contanier{
+.view-container{
   order: 2;
   width: 94%;
   background-color: $white;
@@ -28,11 +28,6 @@
 .view-console {
   background-color: $black;
   text-color: $primary-text-color;
-}
-
-.view-info {
-    background-color: $white;
-    text-color: $primary-text-color;
 }
 
 .view-option-button{

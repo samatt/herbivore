@@ -8,7 +8,7 @@
           <div class="view-option-button-text"> {{view}}</div>
       </div>
     </div>
-  <div :class="['view-contanier', currentView === 'Console' ? 'view-console': 'view-info']" >
+  <div :class="['view-container', 'view-console']" >
         Current Tool: {{ currentTool}} Current View: {{ currentView}}
         <sniffer v-if="currentTool === 'PcapSniffer'"
                  v-bind:packets="packets"> </sniffer>

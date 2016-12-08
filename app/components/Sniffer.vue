@@ -1,8 +1,8 @@
 <template>
-  <div v-if="currentView === 'Info'">
+<!--   <div v-if="currentView === 'Info'">
   HELLOO
     {{currentView}}
-  </div>
+  </div> -->
   <div v-else>
   CONSOLE
   <div @click="start()"> Start</div>

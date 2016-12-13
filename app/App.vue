@@ -6,14 +6,14 @@
 </template>
 
 <script>
-import Console from './components/Console'
-import ToolBar from './components/ToolBar'
+import Console from './components/console/Console'
+import ToolBar from './components/tool-bar/ToolBar'
 
 export default {
   name: 'app',
   props: ['packets'],
   components: {
-    Console,
+    Console ,
     ToolBar
   },
   data () {
@@ -21,7 +21,6 @@ export default {
      views: ['Console','Info'],
      currentTool:''
     }
-
   },
   methods:{
     onEnter () {

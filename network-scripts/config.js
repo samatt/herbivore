@@ -1,3 +1,3 @@
 module.exports = {
-  "tools" :["PcapSniffer"]
+  "tools" :["NetworkInfo", "PcapSniffer"]
 }

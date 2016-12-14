@@ -2,6 +2,7 @@ const fs = require('fs');
 const path = require('path');
 const toolnames = require('./config')['tools']
 const PcapSniffer = require('./PcapSniffer');
+const NetworkInfo = require('./NetworkInfo');
 
 
 class ToolManager{
@@ -16,7 +17,11 @@ class ToolManager{
   loadTools () {
     let tools = []
     let sniffer =  new PcapSniffer()
+    let nInfo = new NetworkInfo()
+
     tools.push(sniffer)
+    tools.push(nInfo)
+
     return tools
   }
 
@@ -32,8 +37,7 @@ class ToolManager{
     for(var tool of this.tools){
 
       tool.client = socket
-      this.info(tool.client)
-      // this.info(` Registering ${tool.client.id} to ${tool.name}`)
+      this.info(`Registering ${tool.client.id} to ${tool.name}`)
     }
   }
 
@@ -67,13 +71,14 @@ load(toolname){
    }
    else{
       this.info(`Loaded ${toolname}`)
+      this.init()
    }
   }
 
 
   init () {
     if(!this._currentTool || !this._client){
-      this.error(`Client:${this._client.id} Tool:${this.currentTool.name}`)
+      this.error(`Bad Init Attempted`)
       return false
     }
   else{
@@ -83,7 +88,7 @@ load(toolname){
 
   start () {
     if(!this._currentTool || !this._client){
-      this.error(`Client:${this._client.id} Tool:${this.currentTool.name}`)
+      this.error(`Bad Start Attempted`)
       return false
     }
     else{
@@ -93,7 +98,7 @@ load(toolname){
 
   stop () {
     if(!this._currentTool || !this._client){
-      this.error(`Client:${this._client.id} Tool:${this.currentTool.name}`)
+      this.error(`Bad Stop Attempted`)
       return false
     }
     else{

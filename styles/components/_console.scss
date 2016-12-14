@@ -1,25 +1,25 @@
 .console-container {
   position: absolute;
-  height: 30%;
+  height: 40%;
   width: 100%;
   display: flex;
   flex-direction: row;
+  flex-wrap: nowrap
   // align-items: stretch;
 }
 
 .view-options{
-  order: 1;
+  // flex-grow: 1;
   background-color: $toolbar-bg-color;
   align-self: stretch;
-  width: 6%;
+  width: 5%;
+  position:relative;
   height: 100%;
   color: $primary-text-color;
   font-size: $base-font-size;
 }
 
 .view-container{
-  order: 2;
-  width: 100%;
   background-color: $white;
   color: $primary-text-color;
   font-size: $base-font-size;
@@ -27,20 +27,28 @@
 }
 
 .view-console {
+  width: 100%;
   background-color: $white;
   text-color: $primary-text-color;
 }
 
+.view-info {
+  width: 100%;
+  text-color: $primary-text-color;
+}
+
 .view-option-button{
-  padding: 59px 0px;
-  background-color: $toolbar-bg-color;
+    height: 100%;
+    background-image: url("../assets/imgs/play.png");
+    background-size: 60px 60px;
+    background-repeat: no-repeat;
 }
 
 .view-option-button-text{
   color: $inactive-text-color;
   transform: rotate(270deg);
   text-align: center;
-  font-size: 20px;
+  font-size: 2.9em;
   font-size: $base-font-size;
 }
 

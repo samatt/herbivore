@@ -20,6 +20,15 @@ new Vue({
       console.log('socket connected!')
       this.list()
     },
+    info: function(info) {
+      this.$store.dispatch('updateNetworkInfo', info)
+    },
+    addNode: function(node) {
+      this.$store.dispatch('addNewNode', node)
+    },
+    updatePublicIp: function(ip) {
+      this.$store.dispatch('updatePublicIp', ip)
+    },
     data: function (packet) {
       console.log(this.packets.length)
       this.packets.push(packet)

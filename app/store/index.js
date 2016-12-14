@@ -3,6 +3,7 @@ import Vuex from 'vuex'
 import * as actions from './actions'
 import * as getters from './getters'
 import toolbar from './modules/toolbar'
+import networkInfo from './modules/network_info'
 // import createLogger from 'vuex/logger'
 
 Vue.use(Vuex)
@@ -14,6 +15,7 @@ export default new Vuex.Store({
   getters,
   modules: {
     toolbar,
+    networkInfo
   },
   strict: debug,
   plugins: []

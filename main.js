@@ -46,13 +46,11 @@ io.on('connection', function (socket) {
     })
 
     socket.on('init', function(){
-        // console.log("IN INIT")
         toolManager.init()
 
     })
 
     socket.on('start', function(){
-        // console.log("START")
         toolManager.start()
 
     })

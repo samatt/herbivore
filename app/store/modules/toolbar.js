@@ -3,6 +3,7 @@ import * as types from '../mutation-types'
 const state = {
   currentTool: null,
   currentView: null,
+  toolRunning: null,
   toolNames: []
 }
 
@@ -10,6 +11,7 @@ const state = {
 const getters = {
   currentTool: state => state.currentTool,
   currentView: state => state.currentView,
+  toolRunning: state => state.toolRunning,
   toolNames: state => state.toolNames
 }
 
@@ -21,8 +23,11 @@ const actions = {
   changeTool ({ commit, state }, newSelection) {
     commit(types.TOOL_CHANGE_REQUEST, newSelection)
   },
-  changeView ({ commit, state }, newSelection) {
-    commit(types.VIEW_CHANGE_REQUEST, newSelection)
+  start ({ commit, state }) {
+    commit(types.START_TOOL)
+  },
+  stop ({ commit, state }) {
+    commit(types.STOP_TOOL)
   }
 }
 
@@ -34,8 +39,11 @@ const mutations = {
   [types.TOOL_CHANGE_REQUEST] (state, newSelection ) {
     state.currentTool = newSelection
   },
-  [types.VIEW_CHANGE_REQUEST] (state, newSelection ) {
-    state.currentView = newSelection
+  [types.START_TOOL] (state) {
+    state.toolRunning = true
+  },
+  [types.STOP_TOOL] (state) {
+    state.toolRunning = false
   }
 
 }

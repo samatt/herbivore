@@ -8,6 +8,7 @@ class PcapSniffer{
     this.name = 'PcapSniffer'
     this.sniff = false
     this._if = 'en0'
+    this.initComplete = false;
     this._client = null
     this.session = pcap.createSession(this._if, pcapFilters.http)
   }
@@ -24,9 +25,11 @@ class PcapSniffer{
     return this._client
   }
 
-
   init (){
-    this.session.on('packet', this._cb.bind(this))
+    if(!this.initComplete){
+      this.session.on('packet', this._cb.bind(this))
+      this.initComplete = true
+    }
   }
 
   start (socket) {

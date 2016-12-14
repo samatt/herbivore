@@ -1,7 +1,7 @@
 <template>
   <div id="app">
     <ToolBar> </ToolBar>
-    <Console v-bind:views="views"></Console>
+    <Console></Console>
   </div>
 </template>
 
@@ -13,12 +13,11 @@ export default {
   name: 'app',
   props: ['packets'],
   components: {
-    Console ,
+    Console,
     ToolBar
   },
   data () {
     return {
-     views: ['Console'],
      currentTool:''
     }
   },

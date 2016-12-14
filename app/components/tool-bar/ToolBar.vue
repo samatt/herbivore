@@ -11,7 +11,7 @@
 </template>
 <script>
 import {mapGetters} from 'vuex'
-import {toolNameFilter} from '../filters'
+import {toolNameFilter} from '../../filters'
 
 export default {
   name: 'ToolBar',
@@ -32,6 +32,8 @@ export default {
   methods: {
     updateTools (tool, index) {
       this.selectedIdx = index;
+      this.$store.dispatch('stop')
+      this.$socket.emit('stop')
       this.$store.dispatch('changeTool', tool)
       this.$socket.emit('load',tool)
     },

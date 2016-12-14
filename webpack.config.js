@@ -7,7 +7,7 @@ module.exports = {
   output: {
     path: path.resolve(__dirname, './dist'),
     filename: 'build.js',
-    publicPath:'http://localhost:8080/dist/'
+    publicPath:'./dist'
   },
     resolve: {
     extensions: ['', '.js', '.vue'],
@@ -15,7 +15,6 @@ module.exports = {
     alias: {
       'vue$': 'vue/dist/vue',
       'src': path.resolve(__dirname, '../src'),
-      'assets': path.resolve(__dirname, '../src/assets'),
       'components': path.resolve(__dirname, '../src/components')
     }
   },
@@ -33,6 +32,10 @@ module.exports = {
         {
             test: /\.s?css$/,
             loaders: ["style", "css", "sass"]
+        },
+        {
+           test: /\.(jpe?g|gif|png)$/,
+           loader: "file-loader?name=/public/images/[name].[ext]"
         }
     ]
   },

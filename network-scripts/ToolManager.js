@@ -2,7 +2,8 @@ const fs = require('fs');
 const path = require('path');
 const toolnames = require('./config')['tools']
 const PcapSniffer = require('./PcapSniffer');
-const NetworkInfo = require('./NetworkInfo');
+const Network = require('./Network');
+const Info = require('./Info');
 
 
 class ToolManager{
@@ -17,10 +18,12 @@ class ToolManager{
   loadTools () {
     let tools = []
     let sniffer =  new PcapSniffer()
-    let nInfo = new NetworkInfo()
+    let network = new Network()
+    let info = new Info()
 
     tools.push(sniffer)
-    tools.push(nInfo)
+    tools.push(network)
+    tools.push(info)
 
     return tools
   }

@@ -48,3 +48,5 @@ jspm_packages
 
 */dist/build.js
 test.json
+/ajooba-darwin-x64
+/app/components/old

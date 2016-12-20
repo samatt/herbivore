@@ -11,7 +11,8 @@
     <div v-else :class="['view-contanier', toolRunning === 'Run' ? 'view-console': 'view-info']" >
           Current Tool: {{ currentTool}}
           <sniffer v-if="currentTool === 'PcapSniffer'" v-bind:packets="packets"> </sniffer>
-          <network-info v-if="currentTool === 'NetworkInfo'" v-bind:packets="packets"> </network-info>
+          <network v-if="currentTool === 'Network'" v-bind:packets="packets"> </network>
+          <info v-if="currentTool === 'Info'" v-bind:packets="packets"> </info>
     </div>
 
   </div>
@@ -20,7 +21,8 @@
 
 <script>
 import Sniffer from '../tools/Sniffer'
-import NetworkInfo from '../tools/NetworkInfo'
+import Info from '../tools/Info'
+import Network from '../tools/Network'
 import {mapGetters, mapActions} from 'vuex'
 
 export default {
@@ -36,7 +38,8 @@ export default {
   },
   components:{
     Sniffer,
-    NetworkInfo
+    Network,
+    Info
   },
   filters:{
   },

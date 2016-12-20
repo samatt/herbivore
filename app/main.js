@@ -2,6 +2,8 @@ import Vue from 'vue'
 import store from './store'
 import App from './App'
 import VueSocketio from 'vue-socket.io'
+import  VueD3 from  'vue-d3'
+Vue.use(VueD3)
 
 Vue.use(VueSocketio, 'http://localhost:7777')
 /* eslint-disable no-new */
@@ -35,7 +37,7 @@ new Vue({
 
     },
     listTools: function(toolnames){
-      console.log(`tools: ${toolnames}`)
+      // console.log(`tools: ${toolnames}`)
       this.$store.dispatch('listTools', toolnames)
 
     }

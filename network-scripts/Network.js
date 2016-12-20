@@ -1,10 +1,10 @@
 const arp = require('arp-a')
 const network = require('network')
 
-class NetworkInfo{
+class Network{
 
   constructor () {
-    this.name = 'NetworkInfo'
+    this.name = 'Network'
     this._client = null
     this.tbl = []
     this.public = ""
@@ -76,7 +76,7 @@ class NetworkInfo{
         if (!!err) return console.log('arp: ' + err.message);
         if (!entry) return;
           this.tbl.push(entry)
-          // this.info(`Found device: ${entry.mac} `)
+          this.info(`Found device: ${entry.mac} `)
           if(this._client){
             this._client.emit('addNode', entry);
           }
@@ -95,4 +95,4 @@ class NetworkInfo{
   }
 }
 
-module.exports = NetworkInfo
+module.exports = Network

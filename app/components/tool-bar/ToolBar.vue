@@ -1,4 +1,5 @@
 <template>
+<div class='main-container'>
   <div class="nav-container">
     <ul class="nav-tools">
       <li :class="['nav-tool', index == selectedIdx ? 'nav-tool-active' : '']"
@@ -8,10 +9,13 @@
       </li>
     </ul>
   </div>
+  <Viz></Viz>
+</div>
 </template>
 <script>
 import {mapGetters} from 'vuex'
 import {toolNameFilter} from '../../filters'
+import Viz from '../viz/Viz'
 
 export default {
   name: 'ToolBar',
@@ -26,6 +30,9 @@ export default {
   computed: mapGetters({
     toolNames: 'toolNames'
   }),
+  components: {
+    Viz
+  },
   filters:{
     toolNameFilter
   },

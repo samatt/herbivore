@@ -20,7 +20,7 @@ import {mapGetters} from 'vuex'
 import {toolNameFilter} from '../../filters'
 
 export default {
-  name: 'NetworkInfo',
+  name: 'Network',
   created () {
   },
   data () {

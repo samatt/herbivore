@@ -9,12 +9,13 @@
 import Console from './components/console/Console'
 import ToolBar from './components/tool-bar/ToolBar'
 
+
 export default {
   name: 'app',
   props: ['packets'],
   components: {
     Console,
-    ToolBar
+    ToolBar,
   },
   data () {
     return {

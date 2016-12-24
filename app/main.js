@@ -2,21 +2,29 @@ import Vue from 'vue'
 import store from './store'
 import App from './App'
 import VueSocketio from 'vue-socket.io'
+import {mapGetters} from 'vuex'
+8
 import  VueD3 from  'vue-d3'
 Vue.use(VueD3)
-
 Vue.use(VueSocketio, 'http://localhost:7777')
+
+
 /* eslint-disable no-new */
 new Vue({
   el: '#app',
-  template: '<App v-bind:packets="packets"/>',
+  template: '<App v-bind:vdata="vdata"/>',
   store,
   components: { App },
   data () {
     return {
-      packets: []
+      vdata: {nodes:[], links:[]}
     }
   },
+  computed: mapGetters({
+      gateway:'gateway',
+      privateIp:'privateIp',
+      mac: 'mac'
+  }),
   sockets: {
     connect: function () {
       console.log('socket connected!')
@@ -25,16 +33,8 @@ new Vue({
     info: function(info) {
       this.$store.dispatch('updateNetworkInfo', info)
     },
-    addNode: function(node) {
-      this.$store.dispatch('addNewNode', node)
-    },
     updatePublicIp: function(ip) {
       this.$store.dispatch('updatePublicIp', ip)
-    },
-    data: function (packet) {
-      console.log(this.packets.length)
-      this.packets.push(packet)
-
     },
     listTools: function(toolnames){
       // console.log(`tools: ${toolnames}`)

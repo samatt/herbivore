@@ -13,7 +13,6 @@ export function  stringifyMac (addr){
 }
 
 export function toolNameFilter (tn){
-  console.log(tn)
   if(tn === 'PcapSniffer'){
     return 'Sniffer'
   }

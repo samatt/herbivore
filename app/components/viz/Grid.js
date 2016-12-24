@@ -7,17 +7,17 @@ export default  class Grid{
   }
   init () {
     this.cells = [];
-    this.gridSize = 50;
+    this.gridSize = 45;
     this.populateCells()
   }
 
   populateCells () {
     //FIXME: Make grid dimensions dynamic AND sensible
     for(let i = 0; i < this.width / this.gridSize; i++) {
-      for(let j = 0; j < 15; j++) {
+      for(let j = 0; j < 30; j++) {
         let cell;
         cell = {
-          x : i * this.gridSize + (j % 2) * this.gridSize * .5,
+          x : i * this.gridSize + (j % 2) * this.gridSize * .6,
           y : j * this.gridSize * .85
         };
 

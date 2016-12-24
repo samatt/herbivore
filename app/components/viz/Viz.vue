@@ -1,102 +1,78 @@
 <template>
 
-  <div id="viz-main"  class="viz-container">
+  <div id="viz-main" class="viz-container">
   <svg id="test"> </svg>
   </div>
-
 </template>
 
 <script>
 import Grid from './Grid'
 import * as d3Force from 'd3-force'
-import {mapGetters, mapActions} from 'vuex'
+import {mapGetters} from 'vuex'
 export default {
   name: 'Viz',
   props: [ ],
-  created () {
-    window.addEventListener('load', () => {
-      const w = this.$el.clientWidth
-      const h = this.$el.clientHeight;
-      this.vis = this.$d3.select("svg").attr("width", w).attr("height", h);
-      this.background = this.vis.append("g");
-      this.grid = new Grid(w, h)
-      this.grid.init()
-
-      let gridCanvas = this.vis.append("svg:g").attr("class", "gridcanvas");
-      this.grid.cells.map(function(c) {
-          gridCanvas.append("svg:circle").attr("cx", c.x).attr("cy", c.y).attr("r", 2).style("fill", "#555").style("opacity", .3);
-      });
-
-      this.dummy = this.loadDummy()
-
-      this.simulation = this.$d3.forceSimulation()
-                          .force("link", this.$d3.forceLink().iterations(4).id(function(d) { return d.id; }))
-                          .force("charge", this.$d3.forceManyBody().strength(-18))
-                          .force("center", this.$d3.forceCenter(w/2 ,h/2));
-
-      this.link = this.vis.append("g")
-                        .attr("class", "links")
-                        .selectAll("line")
-                        .data(this.dummy.links)
-                        .enter().append("line")
-                        .attr("stroke", function(d) { return 'blue'; })
-                        .attr("stroke-width", function(d) { return Math.sqrt(d.weight); });
-
-      this.node = this.vis.append("g")
-                    .attr("class", "nodes")
-                    .selectAll("circle")
-                    .data(this.dummy.nodes)
-                    .enter().append("circle")
-                    .attr("r", 6)
-                    .attr("fill", function(d) { return 'red'; })
-                    .call(this.$d3.drag()
-                              .subject(this.dragsubject)
-                              .on("start", this.dragstarted)
-                              .on("drag", this.dragged)
-                              .on("end", this.dragended));
-      this.simulation
-          .nodes(this.dummy.nodes)
-          .on("tick", this.gridTicked);
-
-      this.simulation.force("link")
-          .links(this.dummy.links);
-    })
+  mounted () {
+    this.dummy = this.loadDummy()
+    this.width = this.$el.clientWidth
+    this.height = this.$el.clientHeight;
   },
   data() {
     return{
       dummy: {},
+      vdata: {nodes:[], links:[]},
+      width: 0,
+      height: 0,
       node:{},
       link:{},
       force : {},
       simulation: {},
-      vis:{},
+      viz:{},
       background: {},
       grid: {}
     }
   },
-  components:{
-  },
-  filters:{
+  sockets:{
+    info: function(info){
+      const gn = {ip: this.gateway, mac:'', id: 0, router: true }
+      const n = {ip: this.privateIp, mac: this.mac, id: 1, router: false }
+      const l = {source: 0, target: 1, weight: 1}
+      this.vdata.nodes.push(gn)
+      this.vdata.nodes.push(n)
+      this.vdata.links.push(l)
+      this.init()
+    },
+    addNode: function(node) {
+      const idx = this.vdata.nodes.length;
+      node.router = node.ip === this.gateway;
+      node.id = idx
+      const l = {source: 0, target: idx, weight: 1}
+
+      this.vdata.nodes.push(node)
+      this.vdata.links.push(l)
+      this.refresh()
+    }
   },
   computed: mapGetters({
+      gateway:'gateway',
+      privateIp:'privateIp',
+      mac: 'mac'
   }),
+  filters:{
+  },
   methods:{
     loadDummy: function(){
         let dummy = {nodes:[], links:[]}
-          for(var i = 0; i < 10; i++) {
-              var node = { id : i };
+          for(var i = 0; i < 50; i++) {
+              var node = { id : i, ip:'192.168.0.1', mac:'AA:BB', router:false };
               dummy.nodes.push(node);
           }
-
           for(var i = 0; i < dummy.nodes.length; i++) {
-              for(var j = 0; j < i; j++) {
-                  if(Math.random() > .99-Math.sqrt(i)*.02)
-                      dummy.links.push({
-                          source : i,
-                          target : j,
-                          weight :2
-                      });
-              }
+              dummy.links.push({
+                  source : 0,
+                  target : i,
+                  weight :2
+              });
           }
           return dummy;
     },
@@ -107,7 +83,7 @@ export default {
           .attr("x2", function(d) { return d.target.x; })
           .attr("y2", function(d) { return d.target.y; });
 
-      this.node.attr("cx", function(d) { return d.x; })
+      this.node.attr("cx", function(d) {return d.x; })
                .attr("cy", function(d) { return d.y; });
     },
     gridTicked: function() {
@@ -127,8 +103,13 @@ export default {
             d.screenY += (gridpoint.y - d.screenY) * .2;
             d.x += (gridpoint.x - d.x) * .05;
             d.y += (gridpoint.y - d.y) * .05;
+            return "translate(" + d.screenX + "," + d.screenY + ")";
+        }else{
+            d.screenX = d.x ;
+            d.screenY = d.y ;
+            return "translate(" + d.screenX + "," + d.screenY + ")";
         }
-        return "translate(" + d.screenX + "," + d.screenY + ")";
+
       })
 
       this.link.attr("x1", function(d) {return d.source.screenX;})
@@ -152,7 +133,66 @@ export default {
     },
     dragsubject: function() {
       return this.simulation.find(this.$d3.event.x, this.$d3.event.y);
-    }
+    },
+    init: function () {
+      this.vis = this.$d3.select("svg").attr("width", this.width).attr("height", this.height);
+      this.background = this.vis.append("g");
+      this.grid = new Grid(this.width, this.height)
+      this.grid.init()
+      let gridCanvas = this.vis.append("svg:g").attr("class", "gridcanvas");
+      this.grid.cells.map(function(c) {
+          gridCanvas.append("svg:circle").attr("cx", c.x).attr("cy", c.y).attr("r", 2).style("fill", "#555").style("opacity", .3);
+      });
+
+      this.link = this.vis.append("g")
+                        .attr("class", "links")
+                        .attr("stroke", function(d) { return '#6f737d'; })
+                        .selectAll("line")
+
+      this.node = this.vis.append("g")
+                    .attr("class", "nodes")
+                    .attr("r", 6)
+                    .attr("fill", function(d) { return '#584f9e'; })
+                    .selectAll("circle")
+
+      this.simulation = this.$d3.forceSimulation()
+                          .force("link", this.$d3.forceLink().iterations(4).id(function(d, i) { return d.id; }))
+                          .force("charge", this.$d3.forceManyBody().strength(-200))
+                          .force("center", this.$d3.forceCenter(this.width/2 ,this.height/2))
+                          .on("tick", this.gridTicked);
+
+      this.refresh()
+
+    },
+    refresh: function () {
+
+        this.node = this.node.data(this.vdata.nodes, function(d) { return d.id;});
+        this.node.exit().remove();
+        this.node = this.node
+                        .enter().append("circle")
+                        .attr("r", 6)
+                        .attr("fill", function(d) { return '#584f9e'; })
+                        .merge(this.node)
+                        .call(this.$d3.drag()
+                                  .subject(this.dragsubject)
+                                  .on("start", this.dragstarted)
+                                  .on("drag", this.dragged)
+                                  .on("end", this.dragended));
+
+        // Apply the general update pattern to the links.
+        this.link = this.link.data(this.vdata.links, function(d, i) { return d.id + "-" + d.target.id; });
+        this.link.exit().remove();
+        this.link = this.link
+                        .enter().append("line")
+                        .attr("stroke", function(d) { return '#6f737d'; })
+                        .attr("stroke-width", function(d) { return Math.sqrt(d.weight); })
+                        .merge(this.link)
+
+        // Update and restart the simulation.
+        this.simulation.nodes(this.vdata.nodes);
+        this.simulation.force("link").links(this.vdata.links);
+        this.simulation.alpha(1).restart();
+    },
   }
 }
 </script>

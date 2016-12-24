@@ -19,7 +19,7 @@ import Viz from '../viz/Viz'
 
 export default {
   name: 'ToolBar',
-  props: ['views'],
+  props: [],
   created () {
   },
   data () {

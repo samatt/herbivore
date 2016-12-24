@@ -8,8 +8,9 @@ const state = {
   interface: null,
   netmask: null,
   type: null,
-  table: []
+  nodes:[]
 }
+//vdata obj because: https://github.com/d3/d3-force/issues/32
 
 // getters
 const getters = {
@@ -17,10 +18,11 @@ const getters = {
   privateIp: state => state.privateIp,
   publicIp: state => state.publicIp,
   gateway: state => state.gateway,
+  gateway: state => state.gateway,
   interface: state => state.interface,
   netmask: state => state.netmask,
   type: state => state.type,
-  table: state => state.table
+  nodes: state => state.nodes
 }
 
 // actions
@@ -47,12 +49,17 @@ const mutations = {
     state.interface = iface
     state.netmask = netmask
     state.type = type
+
+    const gn = {ip: state.gateway, mac:'', "id": 0 }
+    const n = {ip: state.privateIp, mac: state.mac, "id": 1 }
+    state.nodes.push(gn)
+    state.nodes.push(n)
   },
   [types.UPDATE_PUBLIC_IP] (state, ip) {
     state.publicIp = ip
   },
   [types.ADD_NEW_NODE] (state, node) {
-    state.table.push(node)
+    state.nodes.push(node)
   },
 
 }

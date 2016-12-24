@@ -12,7 +12,7 @@ import ToolBar from './components/tool-bar/ToolBar'
 
 export default {
   name: 'app',
-  props: ['packets'],
+  props: [],
   components: {
     Console,
     ToolBar,

@@ -1,7 +1,7 @@
 <template>
   <div v-if="toolRunning">
   Type of Connection{{ type}}
-  </br> Num devices on network: {{ this.table.length}}
+  </br> Num devices on network: {{ this.nodes.length}}
   </br> Mac: {{ mac }}
   </br>Network Interface: {{ this.interface}}
   </br>IP on local network{{ privateIp }}
@@ -37,7 +37,7 @@ export default {
     interface: 'interface',
     netmask: 'netmask',
     type: 'type',
-    table: 'table'
+    nodes: 'nodes'
   }),
   filters:{
     toolNameFilter

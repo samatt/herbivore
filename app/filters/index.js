@@ -12,6 +12,10 @@ export function  stringifyMac (addr){
     return addrStr;
 }
 
+export function  upperMac (addr){
+    return addrStr.toUpperCase();
+}
+
 export function toolNameFilter (tn){
   if(tn === 'PcapSniffer'){
     return 'Sniffer'

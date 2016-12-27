@@ -8,7 +8,8 @@ const state = {
   interface: null,
   netmask: null,
   type: null,
-  nodes:[]
+  nodes:[],
+  clickedNode: null
 }
 //vdata obj because: https://github.com/d3/d3-force/issues/32
 
@@ -22,7 +23,8 @@ const getters = {
   interface: state => state.interface,
   netmask: state => state.netmask,
   type: state => state.type,
-  nodes: state => state.nodes
+  nodes: state => state.nodes,
+  clickedNode: state => state.clickedNode
 }
 
 // actions
@@ -32,6 +34,9 @@ const actions = {
   },
   updatePublicIp ({ commit, state }, ip) {
     commit(types.UPDATE_PUBLIC_IP, ip)
+  },
+ updateClickedNode ({ commit, state }, node) {
+    commit(types.UPDATE_CLICKED_NODE, node)
   },
   addNewNode ({ commit, state }, node) {
     commit(types.ADD_NEW_NODE, node)
@@ -57,6 +62,9 @@ const mutations = {
   },
   [types.UPDATE_PUBLIC_IP] (state, ip) {
     state.publicIp = ip
+  },
+  [types.UPDATE_CLICKED_NODE] (state, node) {
+    state.clickedNode = node
   },
   [types.ADD_NEW_NODE] (state, node) {
     state.nodes.push(node)

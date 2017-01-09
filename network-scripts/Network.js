@@ -94,8 +94,8 @@ class Network{
             return;
           }
 
-          if(entry.mac !== "ff:ff:ff:ff:ff:ff"){
-            this.info(`ignore broadcast: ${entry.ifname} ${this.interface} `);
+          if(entry.mac === "ff:ff:ff:ff:ff:ff"){
+            this.info(`ignore broadcast: ${entry.ifname} ${this.mac} `);
             return;
           }
 

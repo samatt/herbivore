@@ -38,25 +38,21 @@ io.on('connection', function (socket) {
 
     socket.on('list', function(){
         toolManager.listTools()
-
     })
+
     socket.on('load', function(toolname){
         toolManager.load(toolname)
-
     })
 
     socket.on('init', function(){
         toolManager.init()
-
     })
 
     socket.on('start', function(){
         toolManager.start()
-
     })
 
     socket.on('stop', function(){
         toolManager.stop()
-
     })
 });

@@ -46,11 +46,15 @@ export default {
       const idx = this.vdata.nodes.length;
       node.router = node.ip === this.gateway;
       node.id = idx
-      const l = {source: 0, target: idx, weight: 1}
-
-      this.$store.dispatch('addNewNode', node)
-      this.vdata.nodes.push(node)
-      this.vdata.links.push(l)
+      if(node.router){
+        this.vdata.nodes[0].mac = node.mac
+      }
+      else{
+        const l = {source: 0, target: idx, weight: 1}
+        this.$store.dispatch('addNewNode', node)
+        this.vdata.nodes.push(node)
+        this.vdata.links.push(l)
+      }
       this.refresh()
     }
   },

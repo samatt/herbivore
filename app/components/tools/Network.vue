@@ -2,7 +2,7 @@
   <div v-if="toolRunning">
   <div style="float:left;">
   Type of Connection{{ type}}
-  </br> Num devices on network: {{ this.nodes.length}}
+  </br> Num devices on network: {{ this.nodes.length - 1}}
   </br> Mac: {{ mac }}
   </br>Network Interface: {{ this.interface}}
   </br>IP on local network{{ privateIp }}

@@ -44,14 +44,15 @@ module.exports = {
     "plugins": ["transform-runtime"]
   },
   plugins: [
+    new ElectronPackager({
+          dir: ".",
+          arch: "x64",
+          platform: "darwin",
+        }),
     new webpack.ExternalsPlugin('commonjs', [
         'electron'
     ]),
     new webpack.HotModuleReplacementPlugin()
   ]
 }
-//     new ElectronPackager({
-//           dir: ".",
-//           arch: "x64",
-//           platform: "darwin",
-//         })
+

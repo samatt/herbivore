@@ -29,4 +29,6 @@ export default {
   }
 }
 </script>
+<style lang="css" src="../styles/photon.css"></style>
 <style lang="sass" src="../styles/main.scss"></style>
+

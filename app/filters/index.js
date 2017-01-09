@@ -13,7 +13,7 @@ export function  stringifyMac (addr){
 }
 
 export function  upperMac (addr){
-    return addrStr.toUpperCase();
+    return addr.toUpperCase();
 }
 
 export function toolNameFilter (tn){

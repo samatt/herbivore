@@ -38,6 +38,9 @@ const actions = {
  updateClickedNode ({ commit, state }, node) {
     commit(types.UPDATE_CLICKED_NODE, node)
   },
+ updateRouterMac ({ commit, state }, mac) {
+    commit(types.UPDATE_ROUTER_MAC, mac)
+  },
   addNewNode ({ commit, state }, node) {
     commit(types.ADD_NEW_NODE, node)
   }
@@ -55,8 +58,8 @@ const mutations = {
     state.netmask = netmask
     state.type = type
 
-    const gn = {ip: state.gateway, mac:'', "id": 0 }
-    const n = {ip: state.privateIp, mac: state.mac, "id": 1 }
+    const gn = {ip: state.gateway, mac:'', "id": 0, router: true }
+    const n = {ip: state.privateIp, mac: state.mac, "id": 1, router: false }
     state.nodes.push(gn)
     state.nodes.push(n)
   },
@@ -69,7 +72,9 @@ const mutations = {
   [types.ADD_NEW_NODE] (state, node) {
     state.nodes.push(node)
   },
-
+  [types.UPDATE_ROUTER_MAC] (state, mac) {
+    state.nodes[0].mac = mac
+  }
 }
 
 export default {

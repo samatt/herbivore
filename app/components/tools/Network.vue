@@ -1,6 +1,22 @@
 <template>
   <div v-if="toolRunning">
-  <div style="float:left;">
+  <table class="table-striped">
+    <thead>
+    <tr>
+      <th>MAC Address</th>
+      <th>IP Address</th>
+      <th>Router</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr v-for="node in nodes">
+      <td>{{node.mac | upperMac}} </td>
+      <td>{{node.ip}}</td>
+      <td>{{node.router}}</td>
+    </tr>
+  </tbody>
+  </table>
+<!--   <div style="float:left;">
   Type of Connection{{ type}}
   </br> Num devices on network: {{ this.nodes.length - 1}}
   </br> Mac: {{ mac }}
@@ -14,7 +30,7 @@
    </br>Mac: {{clickedNode.mac}}
    </br>IP: {{clickedNode.ip}}
    </br>Is Router: {{clickedNode.router}}
-   </div>
+   </div> -->
 
   </div>
   <div v-else>
@@ -26,7 +42,7 @@
 </template>
 <script>
 import {mapGetters} from 'vuex'
-import {toolNameFilter} from '../../filters'
+import {upperMac} from '../../filters'
 
 export default {
   name: 'Network',
@@ -50,7 +66,7 @@ export default {
     clickedNode: 'clickedNode'
   }),
   filters:{
-    toolNameFilter
+    upperMac
   }
 }
 </script>

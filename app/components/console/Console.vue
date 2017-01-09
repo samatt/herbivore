@@ -9,7 +9,6 @@
         Select a tool to get started
     </div>
     <div v-else :class="['view-contanier', toolRunning === 'Run' ? 'view-console': 'view-info']" >
-          Current Tool: {{ currentTool}}
           <sniffer v-if="currentTool === 'PcapSniffer'" v-bind:packets="packets"> </sniffer>
           <network v-if="currentTool === 'Network'" v-bind:packets="packets"> </network>
           <info v-if="currentTool === 'Info'" v-bind:packets="packets"> </info>

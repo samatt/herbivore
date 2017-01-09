@@ -47,7 +47,8 @@ export default {
       node.router = node.ip === this.gateway;
       node.id = idx
       if(node.router){
-        this.vdata.nodes[0].mac = node.mac
+        // this.vdata.nodes[0].mac = node.mac
+        this.$store.dispatch('updateRouterMac', node.mac)
       }
       else{
         const l = {source: 0, target: idx, weight: 1}

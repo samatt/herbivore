@@ -1,10 +1,6 @@
 <template>
 
   <div  class="console-container">
-
-    <div class='view-options'>
-      <div class='view-option-button' @click="run()" />
-    </div>
     <div v-if="!currentTool">
         Select a tool to get started
     </div>
@@ -28,6 +24,7 @@ export default {
   name: 'Console',
   props: ['packets','views'],
   created () {
+    this.run()
   },
   data () {
     return {

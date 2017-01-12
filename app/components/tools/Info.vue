@@ -3,9 +3,27 @@
   The info tool is running
   </div>
   <div v-else>
-    This is the Info tool
-  </div>
-
+      <div>
+        Type of Connection: {{ type}}
+      </div>
+      <div>
+        Num devices on network: {{ this.nodes.length - 1}}
+      </div>
+      <div>
+        This computers MAC address: {{ mac }}
+      </div>
+      <div>
+        Network Interface: {{ this.interface}}
+      </div>
+      <div>
+          IP on local network{{ privateIp }}
+      </div>
+      <div>
+          Public IP :{{ publicIp}}
+      </div>
+      <div>
+          Router IP: {{ gateway}}
+      </div>
   </div>
 </template>
 <script>
@@ -30,7 +48,7 @@ export default {
     interface: 'interface',
     netmask: 'netmask',
     type: 'type',
-    table: 'table'
+    nodes: 'nodes'
   }),
   filters:{
     toolNameFilter

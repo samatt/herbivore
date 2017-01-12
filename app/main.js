@@ -35,6 +35,9 @@ new Vue({
     },
     listTools: function(toolnames){
       this.$store.dispatch('listTools', toolnames)
+    },
+    updateHostname: function (node) {
+      this.$store.dispatch('updateHostname', node)
     }
   },
   methods:{

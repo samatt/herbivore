@@ -5,13 +5,13 @@ const state = {
   privateIp: null,
   publicIp: null,
   gateway: null,
+  vendor: null,
   interface: null,
   netmask: null,
   type: null,
   nodes:[],
   clickedNode: null
 }
-//vdata obj because: https://github.com/d3/d3-force/issues/32
 
 // getters
 const getters = {
@@ -41,6 +41,9 @@ const actions = {
  updateRouterMac ({ commit, state }, mac) {
     commit(types.UPDATE_ROUTER_MAC, mac)
   },
+ updateHostname ({ commit, state }, mac) {
+    commit(types.UPDATE_HOSTNAME, mac)
+  },
   addNewNode ({ commit, state }, node) {
     commit(types.ADD_NEW_NODE, node)
   }
@@ -50,16 +53,17 @@ const actions = {
 // mutations
 const mutations = {
   [types.UPDATE_NETWORK_INFO] (state, info) {
-    let {private_ip, iface, gateway, netmask, mac, type} = info
+    let {private_ip, iface, gateway, netmask, mac, type, vendor} = info
     state.mac = mac
     state.privateIp = private_ip
     state.gateway = gateway
     state.interface = iface
     state.netmask = netmask
     state.type = type
+    state.vendor = vendor
 
-    const gn = {ip: state.gateway, mac:'', "id": 0, router: true }
-    const n = {ip: state.privateIp, mac: state.mac, "id": 1, router: false }
+    const gn = {ip: state.gateway, mac:'', "id": 0, router: true, active: false }
+    const n = {ip: state.privateIp, mac: state.mac, "id": 1, router: false, active: false, vendor: state.vendor}
     state.nodes.push(gn)
     state.nodes.push(n)
   },
@@ -67,13 +71,30 @@ const mutations = {
     state.publicIp = ip
   },
   [types.UPDATE_CLICKED_NODE] (state, node) {
-    state.clickedNode = node
+    state.nodes.forEach(function (n) {
+      if(n.ip === node.ip){
+        n.active = true
+      }
+      else{
+        n.active = false
+      }
+    })
+  },
+  [types.UPDATE_HOSTNAME] (state, node) {
+    state.nodes.forEach(function (n) {
+      if(n.ip === node.ip){
+        // console.log(node, n)
+        n.hostname = node.hostname
+      }
+    })
   },
   [types.ADD_NEW_NODE] (state, node) {
+    node.active = false
     state.nodes.push(node)
   },
-  [types.UPDATE_ROUTER_MAC] (state, mac) {
-    state.nodes[0].mac = mac
+  [types.UPDATE_ROUTER_MAC] (state, node) {
+    state.nodes[0].mac = node.mac
+    state.nodes[0].vendor = node.vendor
   }
 }
 

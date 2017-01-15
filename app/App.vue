@@ -35,17 +35,35 @@ export default {
     Console,
     Viz
   },
+  created () {
+    this.$store.dispatch('changeTool', 'Network')
+    this.$socket.emit('load','Network')
+    this.run()
+  },
   data () {
     return {
      currentTool:''
     }
   },
   computed: mapGetters({
-    connected: 'connected'
+    connected: 'connected',
+    toolRunning: 'toolRunning',
+    currentTool: 'currentTool'
   }),
   methods:{
     onEnter () {
       console.log('ENTER')
+    },
+    run () {
+      if( this.toolRunning && this.currentTool ){
+        this.$store.dispatch('stop')
+        this.$socket.emit('stop')
+      }
+      else if( this.currentTool){
+        this.$store.dispatch('start')
+        this.$socket.emit('start')
+      }
+
     }
   }
 }

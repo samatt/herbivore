@@ -22,9 +22,9 @@ import {mapGetters, mapActions} from 'vuex'
 
 export default {
   name: 'Console',
-  props: ['views'],
+  props: [],
   created () {
-    this.run()
+    // this.run()
   },
   data () {
     return {
@@ -55,7 +55,6 @@ export default {
       }
 
     }
-
   }
 }
 </script>

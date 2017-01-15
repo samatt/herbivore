@@ -42,7 +42,6 @@ new Vue({
       this.$store.dispatch('updateHostname', node)
     },
     newPacket: function (packet) {
-      // console.log('here')
       this.$store.dispatch('newPacket', packet)
     }
   },

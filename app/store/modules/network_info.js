@@ -1,6 +1,7 @@
 import * as types from '../mutation-types'
 
 const state = {
+  connected: null,
   mac: null,
   privateIp: null,
   publicIp: null,
@@ -15,6 +16,7 @@ const state = {
 
 // getters
 const getters = {
+  connected: state => state.connected,
   mac: state => state.mac,
   privateIp: state => state.privateIp,
   publicIp: state => state.publicIp,
@@ -53,19 +55,21 @@ const actions = {
 // mutations
 const mutations = {
   [types.UPDATE_NETWORK_INFO] (state, info) {
-    let {private_ip, iface, gateway, netmask, mac, type, vendor} = info
-    state.mac = mac
-    state.privateIp = private_ip
-    state.gateway = gateway
-    state.interface = iface
-    state.netmask = netmask
-    state.type = type
-    state.vendor = vendor
-
-    const gn = {ip: state.gateway, mac:'', "id": 0, router: true, active: false }
-    const n = {ip: state.privateIp, mac: state.mac, "id": 1, router: false, active: false, vendor: state.vendor}
-    state.nodes.push(gn)
-    state.nodes.push(n)
+    let {connected, private_ip, iface, gateway, netmask, mac, type, vendor} = info
+    state.connected = connected
+    if(state.connected){
+      state.mac = mac
+      state.privateIp = private_ip
+      state.gateway = gateway
+      state.interface = iface
+      state.netmask = netmask
+      state.type = type
+      state.vendor = vendor
+      const gn = {ip: state.gateway, mac:'', "id": 0, router: true, active: false }
+      const n = {ip: state.privateIp, mac: state.mac, "id": 1, router: false, active: false, vendor: state.vendor}
+      state.nodes.push(gn)
+      state.nodes.push(n)
+    }
   },
   [types.UPDATE_PUBLIC_IP] (state, ip) {
     state.publicIp = ip

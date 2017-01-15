@@ -1,29 +1,53 @@
 <template>
-  <div v-if="!toolRunning">
-    This is the packet sniffer.
-    Currently it is only sniffing HTTP packets
-  </div>
-  <div v-else>
-    <ul id="packet-list">
-      <li :id="'p-idx-'+index"
-          :class="[index == selectedIndex ? activeClass : '',
-                   index == hoverIndex ? hoverClass : '']"
-          v-for="(packet, index) in packets"
-          @click="updateCurrent(packet, index)">
-        {{ packet.ts | prettifyTs}} {{packet.eth.shost.addr | stringifyMac}} -> {{packet.eth.dhost.addr | stringifyMac}}
-      </li>
-    </ul>
-  </div>
+
+<!--   <ul id="packet-list">
+    <li :id="'p-idx-'+index"
+        :class="[index == selectedIndex ? activeClass : '',
+                 index == hoverIndex ? hoverClass : '']"
+        v-for="(packet, index) in packets"
+        @click="updateCurrent(packet, index)">
+      {{ packet.ts | prettifyTs}} {{packet.eth.shost.addr | stringifyMac}} -> {{packet.eth.dhost.addr | stringifyMac}}
+    </li>
+  </ul> -->
+
+  <table class="table">
+    <thead>
+    <tr>
+      <th>Timestamp</th>
+<!--       <th>Source MAC</th>
+      <th>Destination MAC</th> -->
+      <th>Source IP</th>
+      <th>Destination IP</th>
+      <th>Source Port</th>
+      <th>Destination Port</th>
+      <th>Payload</th>
+
+    </tr>
+  </thead>
+  <tbody>
+    <tr
+        v-for="packet in packets">
+      <td>  {{ packet.ts | prettifyTs}}</td>
+<!--       <td>{{packet.eth.shost.addr | stringifyMac}}</td>
+      <td>{{packet.eth.dhost.addr | stringifyMac}}</td> -->
+      <td>{{packet.ip.saddr | stringifyIp}}</td>
+      <td>{{packet.ip.daddr | stringifyIp}}</td>
+      <td>{{packet.tcp.sport }}</td>
+      <td>{{packet.tcp.dport }}</td>
+      <td>{{packet.payload }}</td>
+    </tr>
+  </tbody>
+  </table>
 
 </template>
 
 <script>
-import {stringifyMac, prettifyTs} from '../../filters'
+import {stringifyMac, prettifyTs, stringifyIp} from '../../filters'
 import {mapGetters, mapActions} from 'vuex'
 
 export default {
   name: 'sniffer',
-  props: ['packets'],
+  props: [],
   created () {
     window.addEventListener('keyup', this.keyup)
     this.$socket.emit('init')
@@ -39,12 +63,14 @@ export default {
 
   },
   computed: mapGetters({
-    toolRunning: 'toolRunning'
+    toolRunning: 'toolRunning',
+    packets: 'packets'
   }),
   components:{
   },
   filters:{
     stringifyMac,
+    stringifyIp,
     prettifyTs
   },
   methods: {

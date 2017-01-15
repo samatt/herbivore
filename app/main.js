@@ -4,6 +4,7 @@ import App from './App'
 import VueSocketio from 'vue-socket.io'
 import {mapGetters} from 'vuex'
 import  VueD3 from  'vue-d3'
+
 Vue.use(VueD3)
 Vue.use(VueSocketio, 'http://localhost:7777')
 
@@ -14,7 +15,8 @@ new Vue({
   components: { App },
   data () {
     return {
-      vdata: {nodes:[], links:[]}
+      vdata: {nodes:[], links:[]},
+      packets :[]
     }
   },
   computed: mapGetters({
@@ -38,6 +40,10 @@ new Vue({
     },
     updateHostname: function (node) {
       this.$store.dispatch('updateHostname', node)
+    },
+    newPacket: function (packet) {
+      // console.log('here')
+      this.$store.dispatch('newPacket', packet)
     }
   },
   methods:{

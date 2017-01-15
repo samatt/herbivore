@@ -9,6 +9,12 @@
           <Viz></Viz>
           <Console></Console>
         </div>
+      <!--  <div v-else class="pane">
+            It looks like you're not connected to the internet.
+            Unfortunately Ajooba is pretty useless without so comeback when you are connected!
+            <Console></Console>
+        </div> -->
+
       </div>
     </div>
   </div>
@@ -19,6 +25,7 @@
 import ToolBar from './components/tool-bar/ToolBar'
 import Viz from './components/viz/Viz.vue'
 import Console from './components/console/Console'
+import {mapGetters, mapActions} from 'vuex'
 
 export default {
   name: 'app',
@@ -33,6 +40,9 @@ export default {
      currentTool:''
     }
   },
+  computed: mapGetters({
+    connected: 'connected'
+  }),
   methods:{
     onEnter () {
       console.log('ENTER')

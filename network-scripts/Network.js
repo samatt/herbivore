@@ -25,7 +25,7 @@ class Network{
   }
 
   error (msg){
-    console.error(`[${this.name}] ERR : ${msg}`)
+    console.error(`[${this.name}] Error : ${msg}`)
   }
 
   set client(socket) {
@@ -38,26 +38,23 @@ class Network{
 
 
   init (){
-    if(this.public === ''){
-      network.get_public_ip( (err, ip) => {
-        if (!!err) return this.error(' get public ip: ' + err.message)
-        if (!ip) return this.error(' get public ip:  no ip found')
-        this.info(`public: ${ip} `)
-        this.public = ip
-        if(this._client){
-          this._client.emit('updatePublicIp', this.public);
-        }
-        else{
-          this.error('Client socket not found!')
-        }
-      })
-    }
 
     if(this.local === ''){
       network.get_active_interface((err, obj) => {
-        if (!!err) return this.error('get_active_interface : ' + err.message)
-        if (!obj) return this.error('get_active_interface:  no interface found')
-        this.info("%j", obj)
+
+        if (!!err){
+          let data = {iface: 'No active interface', connected: false}
+          this._client.emit('info', data);
+          this.error('get_active_interface : ' + err.message)
+          return
+        }
+
+        if (!obj){
+          let data = {iface: 'No active interface', connected: false}
+          this._client.emit('info', data);
+          this.error('get_active_interface:  no interface found')
+          return
+        }
 
         this.local = obj.ip_address
         this.gw = obj.gateway_ip
@@ -68,7 +65,8 @@ class Network{
         this.subnet = this.gw.split('.')
         this.subnet.pop()
         this.type = obj.type
-        let data = {private_ip: this.local, iface: this.interface, gateway: this.gw, netmask: this.netmask, mac: this.mac, type: this.type, vendor:this.vendor}
+
+        let data = {connected: true, private_ip: this.local, iface: this.interface, gateway: this.gw, netmask: this.netmask, mac: this.mac, type: this.type, vendor:this.vendor}
         this._pingSubnet()
         if(this._client){
           this._client.emit('info', data);
@@ -80,6 +78,22 @@ class Network{
         if(this.tbl.length === 0 ){
           this._scanArpTable();
         }
+
+        if(this.public === ''){
+          network.get_public_ip( (err, ip) => {
+            if (!!err) return this.error(' get public ip: ' + err.message)
+            if (!ip) return this.error(' get public ip:  no ip found')
+            this.info(`public: ${ip} `)
+            this.public = ip
+            if(this._client){
+              this._client.emit('updatePublicIp', this.public);
+            }
+            else{
+              this.error('Client socket not found!')
+            }
+          })
+        }
+
       })
     }
 
@@ -87,6 +101,7 @@ class Network{
 
   _getHostName (ip) {
     this.info(`Finding host for ip: ${ip}`)
+    // TODO: Add linux version
     spawn('dig', ['-x',ip,'-p','5353','@224.0.0.251'], { capture: [ 'stdout', 'stderr' ]})
     .then((result) => {
       let text = result.stdout.toString();

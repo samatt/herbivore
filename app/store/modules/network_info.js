@@ -1,6 +1,7 @@
 import * as types from '../mutation-types'
 
 const state = {
+  correctPermission: true,
   connected: null,
   mac: null,
   privateIp: null,
@@ -14,8 +15,8 @@ const state = {
   clickedNode: null
 }
 
-// getters
 const getters = {
+  correctPermission: state => state.correctPermission,
   connected: state => state.connected,
   mac: state => state.mac,
   privateIp: state => state.privateIp,
@@ -29,7 +30,6 @@ const getters = {
   clickedNode: state => state.clickedNode
 }
 
-// actions
 const actions = {
   updateNetworkInfo ({ commit, state }, info) {
     commit(types.UPDATE_NETWORK_INFO, info)
@@ -48,11 +48,12 @@ const actions = {
   },
   addNewNode ({ commit, state }, node) {
     commit(types.ADD_NEW_NODE, node)
+  },
+  bpfError ({ commit, state }) {
+    commit(types.PERMISSIONS_ERROR_FOUND)
   }
-
 }
 
-// mutations
 const mutations = {
   [types.UPDATE_NETWORK_INFO] (state, info) {
     let {connected, private_ip, iface, gateway, netmask, mac, type, vendor} = info
@@ -71,6 +72,9 @@ const mutations = {
       state.nodes.push(n)
     }
   },
+  [types.PERMISSIONS_ERROR_FOUND] (state) {
+    state.correctPermission = false
+  },
   [types.UPDATE_PUBLIC_IP] (state, ip) {
     state.publicIp = ip
   },
@@ -87,7 +91,6 @@ const mutations = {
   [types.UPDATE_HOSTNAME] (state, node) {
     state.nodes.forEach(function (n) {
       if(n.ip === node.ip){
-        // console.log(node, n)
         n.hostname = node.hostname
       }
     })

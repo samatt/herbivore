@@ -11,9 +11,14 @@ class PcapSniffer{
     this.initComplete = false;
     this._client = null
     this.mac = "60:03:08:93:6b:ba"
-    this.session = pcap.createSession(this._if, pcapFilters.http)
-    // arp.setInterface(this._if)
+    try{
+      this.session = pcap.createSession(this._if, pcapFilters.http)
+    }
+    catch(err){
+      this.session = null
+    }
   }
+
   info (){
     console.log(`[${this.name}] : ${msg}`)
   }
@@ -31,16 +36,21 @@ class PcapSniffer{
   }
 
   init (){
-
-    if(!this.initComplete){
+    if(this.session && !this.initComplete){
       this.session.on('packet', this._cb.bind(this))
       this.initComplete = true
+      // setInterval(() => {
+      //   this.arpPack()
+      // }, 5000)
     }
-
-    setInterval(() => {
-      this.arpPack()
-    }, 5000)
-
+    if(this.session === null){
+      if(this._client){
+        this._client.emit('bpfError');
+      }
+      else{
+        this.error('Client socket not found!')
+      }
+    }
   }
 
   start (socket) {

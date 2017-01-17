@@ -1,5 +1,4 @@
 const arp = require('arp-a')
-// const narp = require('node-arp')
 const ping = require('ping')
 const network = require('network')
 const oui = require('oui')
@@ -20,6 +19,7 @@ class Network{
     this.netmask = ""
     this.type = ""
   }
+
   info (msg) {
     console.log(`[${this.name}] : ${msg}`)
   }
@@ -35,7 +35,6 @@ class Network{
   get client() {
     return this._client
   }
-
 
   init (){
 
@@ -66,7 +65,15 @@ class Network{
         this.subnet.pop()
         this.type = obj.type
 
-        let data = {connected: true, private_ip: this.local, iface: this.interface, gateway: this.gw, netmask: this.netmask, mac: this.mac, type: this.type, vendor:this.vendor}
+        let data = { connected: true,
+                     private_ip: this.local,
+                     iface: this.interface,
+                     gateway: this.gw,
+                     netmask: this.netmask,
+                     mac: this.mac,
+                     type: this.type,
+                     vendor:this.vendor}
+
         this._pingSubnet()
         if(this._client){
           this._client.emit('info', data);
@@ -143,7 +150,14 @@ class Network{
 
           this.info(`Found device: ${entry.mac} `)
           if(this._client){
-            entry.vendor = oui(entry.mac).split('\n')[0]
+            let vendor_info = oui(entry.mac)
+            if(vendor_info != null && vendor_info.indexOf('\n') > -1){
+              entry.vendor = vendor_info.split('\n')[0]
+            }
+            else{
+             entry.vendor = ''
+            }
+
             entry.hostname = ''
             this._getHostName(entry.ip)
             this._client.emit('addNode', entry);
@@ -154,43 +168,6 @@ class Network{
           }
       })
   }
-
-  // arpPromise (ip) {
-  //     return new Promise(
-  //         function (resolve, reject) {
-  //             narp.getMAC(ip,
-  //                 (err, entry) => {
-  //                     if (err) {
-  //                         reject(err);
-  //                     }
-  //                     resolve({ip: ip, mac: entry});
-  //                 });
-  //         });
-  // }
-  // _scanLan () {
-  //   const subnet = this.gw.split('.')
-  //   subnet.pop()
-  //   let promises = []
-  //   for (var i = 0; i < 255; i++) {
-  //     let n = this.subnet.concat(i)
-  //     let toPing = n.join('.')
-  //     promises.push(this.arpPromise(toPing))
-  //   }
-
-  //   Promise.all(promises)
-  //   .then( (result) => {
-  //     result.forEach((r) => {
-  //       if(r.mac !== '(incomplete)'){
-  //         r.vendor = oui(r.mac).split('\n')[0]
-  //         this._client.emit('addNode', r)
-  //       }
-  //     })
-
-  //   })
-  //   .catch(function (err) {
-  //       console.error('[spawn] stderr: ', err);
-  //   })
-  // }
 
   _pingSubnet () {
     const subnet = this.gw.split('.')
@@ -211,8 +188,45 @@ class Network{
   }
 
   stop (socket) {
-
   }
+
 }
 
 module.exports = Network
+
+// arpPromise (ip) {
+//     return new Promise(
+//         function (resolve, reject) {
+//             narp.getMAC(ip,
+//                 (err, entry) => {
+//                     if (err) {
+//                         reject(err);
+//                     }
+//                     resolve({ip: ip, mac: entry});
+//                 });
+//         });
+// }
+// _scanLan () {
+//   const subnet = this.gw.split('.')
+//   subnet.pop()
+//   let promises = []
+//   for (var i = 0; i < 255; i++) {
+//     let n = this.subnet.concat(i)
+//     let toPing = n.join('.')
+//     promises.push(this.arpPromise(toPing))
+//   }
+
+//   Promise.all(promises)
+//   .then( (result) => {
+//     result.forEach((r) => {
+//       if(r.mac !== '(incomplete)'){
+//         r.vendor = oui(r.mac).split('\n')[0]
+//         this._client.emit('addNode', r)
+//       }
+//     })
+
+//   })
+//   .catch(function (err) {
+//       console.error('[spawn] stderr: ', err);
+//   })
+// }

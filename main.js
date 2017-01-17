@@ -4,7 +4,6 @@ const app = electron.app;
 const io = require('socket.io').listen(7777);
 const BrowserWindow = electron.BrowserWindow;
 let toolManager = new ToolManager()
-
 let mainWindow;
 
 function createWindow () {
@@ -32,6 +31,7 @@ app.on('activate', function () {
 });
 
 // Ajooba stuff
+// TODO: Remove socket/refresh functionality
 io.on('connection', function (socket) {
     toolManager.client = socket
     toolManager.registerClients(socket)

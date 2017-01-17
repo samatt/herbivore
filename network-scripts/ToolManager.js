@@ -38,7 +38,6 @@ class ToolManager{
 
   registerClients(socket){
     for(var tool of this.tools){
-
       tool.client = socket
       this.info(`Registering ${tool.client.id} to ${tool.name}`)
     }
@@ -109,4 +108,5 @@ load(toolname){
     }
   }
 }
+
 module.exports = ToolManager

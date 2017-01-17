@@ -16,6 +16,10 @@ export default {
     this.dummy = this.loadDummy()
     this.width = this.$el.clientWidth
     this.height = this.$el.clientHeight < 500? 500 :this.$el.clientHeight;
+    if (this.vdata.node.length > 0){
+      // this.init()
+      // TODO: STORE GRAPH STATE
+    }
   },
   components:{
     Console

@@ -102,7 +102,7 @@ export default {
             this.hoverIndex -= 1;
         }
         if(document.getElementsByClassName('hovered')){
-          const cur =   document.getElementsByClassName('hovered')[0];
+          const cur = document.getElementsByClassName('hovered')[0];
           if(cur){
             const id = cur.id.split('-')
             const index =id.pop()

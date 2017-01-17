@@ -5,16 +5,18 @@
         <div class="pane-mini pane-sm sidebar">
           <ToolBar> </ToolBar>
         </div>
-        <div class="pane">
-          <Viz></Viz>
-          <Console></Console>
+        <div v-if="correctPermission || currentTool !=='PcapSniffer'" class="pane">
+          <Viz v-if="connected"></Viz>
+          <Console v-if="connected || currentTool =='Info'"></Console>
+          <div v-else><p> Ajooba can't detect an internet connection. This tool is useless without it. Please connect to the internet and try again. </p> </div>
         </div>
-      <!--  <div v-else class="pane">
-            It looks like you're not connected to the internet.
-            Unfortunately Ajooba is pretty useless without so comeback when you are connected!
-            <Console></Console>
-        </div> -->
-
+       <div v-else class="pane">
+          <p>
+            To run the Packet Sniffer you need to change permissions to /dev/bpf*<p>
+            <p>Open up a terminal and type: <span >sudo chmod o+r /dev/bpf*</span>
+            This allows the app to read packets from the network interface
+          </p>
+       </div>
       </div>
     </div>
   </div>
@@ -48,7 +50,8 @@ export default {
   computed: mapGetters({
     connected: 'connected',
     toolRunning: 'toolRunning',
-    currentTool: 'currentTool'
+    currentTool: 'currentTool',
+    correctPermission: 'correctPermission'
   }),
   methods:{
     onEnter () {

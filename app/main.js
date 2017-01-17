@@ -43,6 +43,9 @@ new Vue({
     },
     newPacket: function (packet) {
       this.$store.dispatch('newPacket', packet)
+    },
+    bpfError: function () {
+      this.$store.dispatch('bpfError')
     }
   },
   methods:{

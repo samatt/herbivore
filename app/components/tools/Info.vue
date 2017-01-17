@@ -1,6 +1,11 @@
 <template>
-  <div v-if="toolRunning">
-  The info tool is running
+  <div v-if="!connected">
+    <div>
+      Type of Connection: Disconnected
+    </div>
+    <div>
+        Network Interface: Can't detect an active network interface. Make sure you're connected to the internet.
+    </div>
   </div>
   <div v-else>
       <div>
@@ -24,7 +29,6 @@
       <div>
           Router IP: {{ gateway}}
       </div>
-  </div>
 </template>
 <script>
 import {mapGetters} from 'vuex'
@@ -42,6 +46,7 @@ export default {
   computed: mapGetters({
     toolRunning: 'toolRunning',
     mac: 'mac',
+    connected: 'connected',
     privateIp: 'privateIp',
     publicIp: 'publicIp',
     gateway: 'gateway',

@@ -138,8 +138,8 @@ class PcapSniffer{
     // if(httpRaw.length > 20){
     //   httpRaw = httpRaw.slice(0,20)
     // }
-    return  { ts: ts, eth: eth, ip: ip, tcp: tcp, payload: httpHeaders}
-    // return  { ts: ts, eth: eth, ip: ip, tcp: tcp, http: httpRaw }
+    // return  { ts: ts, eth: eth, ip: ip, tcp: tcp, payload: httpHeaders}
+    return  { ts: ts, eth: eth, ip: ip, tcp: tcp, payload: httpRaw }
   }
 
   mac_to_arr(macAddr) {

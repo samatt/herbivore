@@ -6,7 +6,7 @@
           <ToolBar> </ToolBar>
         </div>
         <div v-if="correctPermission || currentTool !=='PcapSniffer'" class="pane">
-          <Viz v-if="connected"></Viz>
+          <Viz></Viz>
           <Console v-if="connected || currentTool =='Info'"></Console>
           <div v-else><p> Ajooba can't detect an internet connection. This tool is useless without it. Please connect to the internet and try again. </p> </div>
         </div>

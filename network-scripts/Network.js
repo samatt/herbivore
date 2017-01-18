@@ -77,13 +77,25 @@ class Network{
         this._pingSubnet()
         if(this._client){
           this._client.emit('info', data);
-          this._getHostName(this.local)
+            try{
+              this._getHostName(this.local)
+            }
+            catch(err){
+              this.error(err)
+            }
+
         }
         else{
           this.error('Client socket not found!')
         }
         if(this.tbl.length === 0 ){
-          this._scanArpTable();
+            try{
+              this._scanArpTable();
+            }
+            catch(err){
+              this.error(err)
+            }
+
         }
 
         if(this.public === ''){

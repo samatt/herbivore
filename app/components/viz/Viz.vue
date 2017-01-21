@@ -15,7 +15,7 @@ export default {
   mounted () {
     this.dummy = this.loadDummy()
     this.width = this.$el.clientWidth
-    this.height = this.$el.clientHeight < 500? 500 :this.$el.clientHeight;
+    this.height = this.$el.clientHeight < 500? 450 :this.$el.clientHeight;
     // if (this.vdata.node.length > 0){
     //   // this.init()
     //   // TODO: STORE GRAPH STATE

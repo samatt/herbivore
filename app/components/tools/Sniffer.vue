@@ -1,49 +1,40 @@
 <template>
-
-<!--   <ul id="packet-list">
-    <li :id="'p-idx-'+index"
-        :class="[index == selectedIndex ? activeClass : '',
-                 index == hoverIndex ? hoverClass : '']"
-        v-for="(packet, index) in packets"
-        @click="updateCurrent(packet, index)">
-      {{ packet.ts | prettifyTs}} {{packet.eth.shost.addr | stringifyMac}} -> {{packet.eth.dhost.addr | stringifyMac}}
-    </li>
-  </ul> -->
-
+<div>
+  <SnifferPayload class="sniff-payload" v-if="selectedPacket" v-bind:packet="selectedPacket">
+    {{selectedPacket.payload}}
+  </SnifferPayload>
+<div class="sniff-table">
   <table class="table">
     <thead>
     <tr>
       <th>Timestamp</th>
-<!--       <th>Source MAC</th>
-      <th>Destination MAC</th> -->
       <th>Source IP</th>
       <th>Destination IP</th>
       <th>Source Port</th>
       <th>Destination Port</th>
-      <th>Payload</th>
-
     </tr>
   </thead>
   <tbody>
-    <tr
-        v-for="packet in packets">
-      <td>  {{ packet.ts | prettifyTs}}</td>
-<!--       <td>{{packet.eth.shost.addr | stringifyMac}}</td>
-      <td>{{packet.eth.dhost.addr | stringifyMac}}</td> -->
-      <td>{{packet.ip.saddr | stringifyIp}}</td>
-      <td>{{packet.ip.daddr | stringifyIp}}</td>
-      <td>{{packet.tcp.sport }}</td>
-      <td>{{packet.tcp.dport }}</td>
-      <td>{{packet.payload }}</td>
+    <tr :id="'p-idx-'+index"
+        :class="[index == hoverIndex ? hoverClass : '']"
+        v-for="(packet, index) in packets"
+        @click="updateCurrent(packet, index)">
+      <td class="selectable-text">  {{ packet.ts | prettifyTs}}</td>
+      <td class="selectable-text">{{packet.ip.saddr | stringifyIp}}</td>
+      <td class="selectable-text">{{packet.ip.daddr | stringifyIp}}</td>
+      <td class="selectable-text">{{packet.tcp.sport }}</td>
+      <td class="selectable-text">{{packet.tcp.dport }}</td>
     </tr>
   </tbody>
   </table>
-
+  </div>
+  </div>
 </template>
 
 <script>
 import {stringifyMac, prettifyTs, stringifyIp} from '../../filters'
 import {mapGetters, mapActions} from 'vuex'
+import SnifferPayload  from './SnifferPayload'
 
 export default {
   name: 'sniffer',
@@ -54,10 +45,10 @@ export default {
   },
   data () {
     return {
-     selectedPacket: {},
+     selectedPacket: null,
      selectedIndex: -1,
      hoverIndex: -1,
-     activeClass: 'active',
+     activeClass: 'activepacket',
      hoverClass: 'hovered'
     }
 
@@ -67,6 +58,7 @@ export default {
     packets: 'packets'
   }),
   components:{
+    SnifferPayload
   },
   filters:{
     stringifyMac,
@@ -129,5 +121,20 @@ export default {
 </script>
 
 <style scoped>
+.sniff-table{
+  max-height: 226px;
+  overflow: scroll;
+}
+.sniff-payload{
+  max-height: 132px;
+  overflow: scroll;
+}
+.activepacket{
+  background: blue;
+}
+
+.hovered{
+  background: #584f9e;
+}
 
 </style>

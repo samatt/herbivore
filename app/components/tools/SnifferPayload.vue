@@ -8,7 +8,7 @@
 </template>
 
 <script>
-import {payloadParser} from '../../filters'
+// import {payloadParser} from '../../filters'
 import {mapGetters, mapActions} from 'vuex'
 
 export default {
@@ -24,7 +24,6 @@ export default {
   components:{
   },
   filters:{
-    payloadParser
   },
   methods: {
   }

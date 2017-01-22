@@ -1,6 +1,8 @@
 const pcap = require('pcap')
 const fs = require('fs')
 const pcapFilters = require('./pcap-filters')
+const tlsClientHello = require('is-tls-client-hello')
+const sni = require('sni')
 
 class PcapSniffer {
 
@@ -14,7 +16,7 @@ class PcapSniffer {
     // TODO: Make this dynamic
     // this.mac = "60:03:08:93:6b:ba"
     try{
-      this.session = pcap.createSession(this._if, pcapFilters.http)
+      this.session = pcap.createSession(this._if, pcapFilters.https)
     }
     catch(err){
       this.session = null
@@ -129,27 +131,53 @@ class PcapSniffer {
 
   _cb (raw) {
       const packet = pcap.decode.packet(raw)
-      const parsed = this._parse(packet)
+      const parsed = this._parse(packet, raw)
       if(this._client && parsed){
         this._client.emit('newPacket', parsed);
       }
   }
 
-  _parse (packet) {
+  _parse (packet, raw) {
     const ts = packet.pcap_header.tv_sec
     const eth = packet.payload
     const ip = eth.payload
     const tcp = ip.payload
     // console.log(ip.saddr, ip.daddr)
-    // console.log(eth.dhost, eth.shost)
-    let raw = tcp.data.toString('utf-8')
-    if(raw.indexOf('Content-Length') === -1 &&
-        raw.indexOf('Host') === -1 &&
-        raw.indexOf('Content-Type') === -1 ){
+
+    if( tcp.sport === 8443 ||
+        tcp.sport === 443  ||
+        tcp.dport === 443  ||
+        tcp.dport === 8443 ){
+      // console.log(tcp.data)
+      if(tlsClientHello(raw.buf)){
+        console.log('found 1!')
+      }
+      if(tlsClientHello(ip)){
+        console.log('found 2!')
+      }
+
+      if(tcp.data){
+        // console.log(tcp.data)
+        if(tlsClientHello(tcp.data)){
+          // console.log(sni(tcp.data))
+          return  { ts: ts, eth: eth, ip: ip, tcp: tcp, payload: [sni(tcp.data)]}
+        }
+      }
+
+
+    return false
+    }
+    if(!tcp.data){
       return false;
     }
-    let httpRaw = raw.split('\r\n')
-    let httpHeaders = httpRaw.filter(function (o) {
+    let r = tcp.data.toString('utf-8')
+    if(r.indexOf('Content-Length') === -1 &&
+        r.indexOf('Host') === -1 &&
+        r.indexOf('Content-Type') === -1 ){
+      return false;
+    }
+    let httpr = r.split('\r\n')
+    let httpHeaders = httpr.filter(function (o) {
                                       if( (o.indexOf(':') > -1 ||
                                            o.indexOf('HTTP') > -1 ||
                                            o.indexOf('GET') > -1 ||

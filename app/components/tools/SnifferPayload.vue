@@ -1,6 +1,7 @@
 <template>
   <div>
-    <div v-for="p in packet.payload">
+   <span v-if="!packet"> Click a packet to see its payload information. You can use the up and down keys to navigate</span>
+    <div v-else v-for="p in packet.payload">
       {{p}}
     </div>
 

@@ -157,10 +157,8 @@ class PcapSniffer {
       }
 
       if(tcp.data){
-        // console.log(tcp.data)
         if(tlsClientHello(tcp.data)){
-          // console.log(sni(tcp.data))
-          return  { ts: ts, eth: eth, ip: ip, tcp: tcp, payload: [sni(tcp.data)]}
+          return  { ts: ts, eth: eth, ip: ip, tcp: tcp, payload: [`https host name: ${sni(tcp.data)}`]}
         }
       }
 

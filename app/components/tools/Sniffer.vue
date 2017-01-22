@@ -1,10 +1,9 @@
 <template>
 <div>
-  <SnifferPayload class="sniff-payload" v-if="selectedPacket" v-bind:packet="selectedPacket">
-    {{selectedPacket.payload}}
+  <SnifferPayload class="sniff-payload" v-bind:packet="selectedPacket">
   </SnifferPayload>
 <div class="sniff-table">
-  <table class="table">
+  <table class="table test">
     <thead>
     <tr>
       <th>Timestamp</th>
@@ -14,6 +13,8 @@
       <th>Destination Port</th>
     </tr>
   </thead>
+  </table>
+  <table class="table">
   <tbody>
     <tr :id="'p-idx-'+index"
         :class="[index == hoverIndex ? hoverClass : '']"
@@ -85,7 +86,6 @@ export default {
             this.selectedPacket = this.packets[index];
             cur.scrollIntoViewIfNeeded({block: "end", behavior: "smooth"});
           }
-
         }
       }
       //UP
@@ -126,7 +126,7 @@ export default {
   overflow: scroll;
 }
 .sniff-payload{
-  max-height: 132px;
+  height: 132px;
   overflow: scroll;
 }
 .activepacket{
@@ -137,4 +137,8 @@ export default {
   background: #584f9e;
 }
 
+.test{
+  position: fixed;
+  width: 100%;
+}
 </style>

@@ -1,12 +1,12 @@
 <template>
 <div>
-  <SnifferPayload class="sniff-payload" v-bind:packet="selectedPacket">
-  </SnifferPayload>
+  <SnifferPayload class="sniff-payload " v-bind:packet="selectedPacket"> </SnifferPayload>
 <div class="sniff-table">
   <table class="table test">
     <thead>
     <tr>
-      <th>Timestamp</th>
+      <th class="oh">Timestamp</th>
+      <th class="hh">Host</th>
       <th>Source IP</th>
       <th>Destination IP</th>
       <th>Source Port</th>
@@ -14,13 +14,14 @@
     </tr>
   </thead>
   </table>
-  <table class="table">
+  <table class="table padded sniff-body">
   <tbody>
     <tr :id="'p-idx-'+index"
         :class="[index == hoverIndex ? hoverClass : '']"
         v-for="(packet, index) in packets"
         @click="updateCurrent(packet, index)">
-      <td class="selectable-text">  {{ packet.ts | prettifyTs}}</td>
+      <td class="selectable-text oh">  {{ packet.ts | prettifyTs}}</td>
+      <td class="selectable-text hh">{{packet.payload.host }}</td>
       <td class="selectable-text">{{packet.ip.saddr | stringifyIp}}</td>
       <td class="selectable-text">{{packet.ip.daddr | stringifyIp}}</td>
       <td class="selectable-text">{{packet.tcp.sport }}</td>
@@ -73,9 +74,11 @@ export default {
       this.hoverIndex = index;
     },
     keyup (e) {
+      // console.log(e)
       //DOWN
+
       if((e.keyCode || e.which) === 40 ){
-        if(this.hoverIndex < this.packets.length){
+        if(this.hoverIndex < this.packets.length-1){
             this.hoverIndex += 1;
         }
         if(document.getElementsByClassName('hovered')){
@@ -83,7 +86,9 @@ export default {
           if(cur){
             const id = cur.id.split('-')
             const index =id.pop()
-            this.selectedPacket = this.packets[index];
+            this.selectedPacket = this.packets[this.hoverIndex];
+            console.log(this.hoverIndex, index,'down', this.packets.length)
+            // cur.scrollIntoViewIfNeeded({block: "end", behavior: "smooth"});
             cur.scrollIntoViewIfNeeded({block: "end", behavior: "smooth"});
           }
         }
@@ -98,10 +103,10 @@ export default {
           if(cur){
             const id = cur.id.split('-')
             const index =id.pop()
-            this.selectedPacket = this.packets[index];
+            this.selectedPacket = this.packets[this.hoverIndex];
+            console.log(this.hoverIndex, index,'up', this.packets.length)
             cur.scrollIntoViewIfNeeded({block: "end", behavior: "smooth"});
           }
-
         }
       }
       else if((e.keyCode || e.which) === 13 ){
@@ -125,7 +130,12 @@ export default {
   max-height: 226px;
   overflow: scroll;
 }
+.sniff-body{
+  margin-top: 12px;
+}
 .sniff-payload{
+  border-width: 1px;
+  border-style: solid;
   height: 132px;
   overflow: scroll;
 }
@@ -141,4 +151,14 @@ export default {
   position: fixed;
   width: 100%;
 }
+.oh{
+  overflow: hidden;
+  max-width: 45px;
+}
+
+.hh{
+  overflow: hidden;
+  max-width: 100px;
+}
+
 </style>

@@ -142,57 +142,38 @@ class PcapSniffer {
     const eth = packet.payload
     const ip = eth.payload
     const tcp = ip.payload
-    // console.log(ip.saddr, ip.daddr)
 
     if( tcp.sport === 8443 ||
         tcp.sport === 443  ||
         tcp.dport === 443  ||
         tcp.dport === 8443 ){
-      // console.log(tcp.data)
-      if(tlsClientHello(raw.buf)){
-        console.log('found 1!')
-      }
-      if(tlsClientHello(ip)){
-        console.log('found 2!')
-      }
-
       if(tcp.data){
         if(tlsClientHello(tcp.data)){
-          return  { ts: ts, eth: eth, ip: ip, tcp: tcp, payload: [`https host name: ${sni(tcp.data)}`]}
+          return  { ts: ts, eth: eth, ip: ip, tcp: tcp, payload: {type:'https', host:sni(tcp.data)}}
         }
       }
-
-
-    return false
+      return false
     }
+
     if(!tcp.data){
       return false;
     }
+
     let r = tcp.data.toString('utf-8')
     if(r.indexOf('Content-Length') === -1 &&
         r.indexOf('Host') === -1 &&
         r.indexOf('Content-Type') === -1 ){
       return false;
     }
-    let httpr = r.split('\r\n')
-    let httpHeaders = httpr.filter(function (o) {
-                                      if( (o.indexOf(':') > -1 ||
-                                           o.indexOf('HTTP') > -1 ||
-                                           o.indexOf('GET') > -1 ||
-                                           o.indexOf('POST') > -1 ) )
-                                      {
-                                        return true;
-                                      }
-                                      else{
-                                        return false
-                                      }
-                                    })
 
-    if(httpHeaders.length < 1){
+    let httpr = r.split('\r\n')
+    try{
+      return  { ts: ts, eth: eth, ip: ip, tcp: tcp, payload: this.parseHTTP(httpr)}
+    }
+    catch(err){
+      this.error(err)
       return false
     }
-
-    return  { ts: ts, eth: eth, ip: ip, tcp: tcp, payload: httpHeaders}
   }
 
   mac_to_arr(macAddr) {
@@ -213,6 +194,53 @@ class PcapSniffer {
     }
     return ip_arr;
   }
+
+  parseHTTP(headers){
+    let packet = {}
+    packet.http = true
+    packet.host = ''
+    let firstline = headers.shift()
+    if( firstline.indexOf('GET') > -1 ||
+        firstline.indexOf('POST') > -1 ||
+        firstline.indexOf('PUT') > -1){
+      let [verb, url, version] = firstline.split(' ')
+      packet.type = 'request'
+      packet.method = verb
+      packet.url = url
+      packet.version = version
+    }
+    else{
+      let [version, code, status] = firstline.split(' ')
+      packet.type = 'response '
+      packet.code = code
+      packet.status = status
+      packet.version = version
+    }
+
+    packet.headers = []
+
+    for (var i = 0; i < headers.length; i++) {
+      if(headers[i] === ''){
+        break;
+      }
+
+      let header = headers[i].split(': ')
+      if(header.length <2 ){
+        continue
+      }
+      else{
+        if(header[0].indexOf('Host') > -1){
+          packet.host = header[1]
+        }
+        packet.headers.push([header[0], header[1]])
+      }
+    }
+
+    let lastline =  headers.pop()
+    packet.payload = lastline
+    return packet
+  }
+
 }
 
 module.exports = PcapSniffer

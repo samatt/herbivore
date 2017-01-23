@@ -1,5 +1,4 @@
 <template>
-
   <div  class="console-container">
     <div v-if="!currentTool">
         Select a tool to get started
@@ -9,9 +8,7 @@
           <network v-if="currentTool === 'Network'"> </network>
           <info v-if="currentTool === 'Info'"> </info>
     </div>
-
   </div>
-
 </template>
 
 <script>
@@ -24,7 +21,6 @@ export default {
   name: 'Console',
   props: [],
   created () {
-    // this.run()
   },
   data () {
     return {
@@ -44,17 +40,6 @@ export default {
     toolRunning: 'toolRunning'
   }),
   methods:{
-    run () {
-      if( this.toolRunning && this.currentTool ){
-        this.$store.dispatch('stop')
-        this.$socket.emit('stop')
-      }
-      else if( this.currentTool){
-        this.$store.dispatch('start')
-        this.$socket.emit('start')
-      }
-
-    }
   }
 }
 </script>

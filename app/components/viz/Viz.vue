@@ -130,11 +130,26 @@ export default {
                 .attr("x2", function(d) { return d.target.screenX;})
                 .attr("y2", function(d) {return d.target.screenY;});
     },
+    mouseover: function(d){
+      this.$d3.select(d).attr({
+          fill: "red"
+        });
+      this.$store.dispatch('updateClickedNode', d)
+    },
+    mouseout: function(d) {
+      // this.$d3.select(d).attr({
+      //     fill: "#584f9e"
+      //   });
+    },
+    mouseoverLink: function(d){
+      console.log( d.source.ip, d.source.mac)
+      console.log( d.target.ip, d.target.mac)
+      // console.log( this.vdata.nodes[d.source.index], this.vdata[d.target.index])
+    },
     dragstarted: function(d) {
       if (!this.$d3.event.active) this.simulation.alphaTarget(0.3).restart();
       d.fx = d.x;
       d.fy = d.y;
-      this.$store.dispatch('updateClickedNode', d)
     },
     dragged: function(d) {
       d.fx = this.$d3.event.x;
@@ -185,8 +200,11 @@ export default {
         this.node = this.node
                         .enter().append("circle")
                         .attr("r", 6)
+                        .attr("id", function (d){return d.id})
                         .attr("fill", function(d) { return d.router? '#6f737d' :'#584f9e'; })
                         .merge(this.node)
+                        .on('mouseover',this.mouseover)
+                        .on('mouseout',this.mouseout)
                         .call(this.$d3.drag()
                                   .subject(this.dragsubject)
                                   .on("start", this.dragstarted)
@@ -201,6 +219,7 @@ export default {
                         .attr("stroke", function(d) { return '#6f737d'; })
                         .attr("stroke-width", function(d) { return Math.sqrt(d.weight); })
                         .merge(this.link)
+                        .on('mouseover',this.mouseoverLink)
 
         // Update and restart the simulation.
         this.simulation.nodes(this.vdata.nodes);

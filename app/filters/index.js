@@ -37,16 +37,7 @@ export function prettifyTs (ts){
   const pretty = new Date(ts * 1000)
   return pretty.toLocaleString().split(',')[1];
 }
+
 export function capitalize (str) {
       return str.charAt(0).toUpperCase() + str.slice(1)
 }
-
-// export function parseToolNames (tn){
-//   ps_i = tn.findIndex(function(element){return element == 'PcapSniffer'})
-//   if( ps_i > -1){
-//     tn[ps_i] = Sniffer
-//   }
-
-//   return tn;
-// }
-

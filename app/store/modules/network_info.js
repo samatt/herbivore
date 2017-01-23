@@ -1,20 +1,23 @@
 import * as types from '../mutation-types'
 
 const state = {
+  correctPermission: true,
+  connected: null,
   mac: null,
   privateIp: null,
   publicIp: null,
   gateway: null,
+  vendor: null,
   interface: null,
   netmask: null,
   type: null,
   nodes:[],
   clickedNode: null
 }
-//vdata obj because: https://github.com/d3/d3-force/issues/32
 
-// getters
 const getters = {
+  correctPermission: state => state.correctPermission,
+  connected: state => state.connected,
   mac: state => state.mac,
   privateIp: state => state.privateIp,
   publicIp: state => state.publicIp,
@@ -27,7 +30,6 @@ const getters = {
   clickedNode: state => state.clickedNode
 }
 
-// actions
 const actions = {
   updateNetworkInfo ({ commit, state }, info) {
     commit(types.UPDATE_NETWORK_INFO, info)
@@ -38,38 +40,69 @@ const actions = {
  updateClickedNode ({ commit, state }, node) {
     commit(types.UPDATE_CLICKED_NODE, node)
   },
+ updateRouterMac ({ commit, state }, mac) {
+    commit(types.UPDATE_ROUTER_MAC, mac)
+  },
+ updateHostname ({ commit, state }, mac) {
+    commit(types.UPDATE_HOSTNAME, mac)
+  },
   addNewNode ({ commit, state }, node) {
     commit(types.ADD_NEW_NODE, node)
+  },
+  bpfError ({ commit, state }) {
+    commit(types.PERMISSIONS_ERROR_FOUND)
   }
-
 }
 
-// mutations
 const mutations = {
   [types.UPDATE_NETWORK_INFO] (state, info) {
-    let {private_ip, iface, gateway, netmask, mac, type} = info
-    state.mac = mac
-    state.privateIp = private_ip
-    state.gateway = gateway
-    state.interface = iface
-    state.netmask = netmask
-    state.type = type
-
-    const gn = {ip: state.gateway, mac:'', "id": 0 }
-    const n = {ip: state.privateIp, mac: state.mac, "id": 1 }
-    state.nodes.push(gn)
-    state.nodes.push(n)
+    let {connected, private_ip, iface, gateway, netmask, mac, type, vendor} = info
+    state.connected = connected
+    if(state.connected){
+      state.mac = mac
+      state.privateIp = private_ip
+      state.gateway = gateway
+      state.interface = iface
+      state.netmask = netmask
+      state.type = type
+      state.vendor = vendor
+      const gn = {ip: state.gateway, mac:'', "id": 0, router: true, active: false }
+      const n = {ip: state.privateIp, mac: state.mac, "id": 1, router: false, active: false, vendor: state.vendor}
+      state.nodes.push(gn)
+      state.nodes.push(n)
+    }
+  },
+  [types.PERMISSIONS_ERROR_FOUND] (state) {
+    state.correctPermission = false
   },
   [types.UPDATE_PUBLIC_IP] (state, ip) {
     state.publicIp = ip
   },
   [types.UPDATE_CLICKED_NODE] (state, node) {
-    state.clickedNode = node
+    state.nodes.forEach(function (n) {
+      if(n.ip === node.ip){
+        n.active = true
+      }
+      else{
+        n.active = false
+      }
+    })
+  },
+  [types.UPDATE_HOSTNAME] (state, node) {
+    state.nodes.forEach(function (n) {
+      if(n.ip === node.ip){
+        n.hostname = node.hostname
+      }
+    })
   },
   [types.ADD_NEW_NODE] (state, node) {
+    node.active = false
     state.nodes.push(node)
   },
-
+  [types.UPDATE_ROUTER_MAC] (state, node) {
+    state.nodes[0].mac = node.mac
+    state.nodes[0].vendor = node.vendor
+  }
 }
 
 export default {

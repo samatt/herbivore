@@ -1,50 +1,70 @@
 <template>
-  <div v-if="!toolRunning">
-    This is the packet sniffer.
-    Currently it is only sniffing HTTP packets
+<div>
+  <SnifferPayload class="sniff-payload " v-bind:packet="selectedPacket"> </SnifferPayload>
+<div class="sniff-table">
+  <table class="table test">
+    <thead>
+    <tr>
+      <th class="oh">Timestamp</th>
+      <th class="hh">Host</th>
+      <th>Source IP</th>
+      <th>Destination IP</th>
+      <th>Source Port</th>
+      <th>Destination Port</th>
+    </tr>
+  </thead>
+  </table>
+  <table class="table padded sniff-body">
+  <tbody>
+    <tr :id="'p-idx-'+index"
+        :class="[index == hoverIndex ? hoverClass : '']"
+        v-for="(packet, index) in packets"
+        @click="updateCurrent(packet, index)">
+      <td class="selectable-text oh">  {{ packet.ts | prettifyTs}}</td>
+      <td class="selectable-text hh">{{packet.payload.host }}</td>
+      <td class="selectable-text">{{packet.ip.saddr | stringifyIp}}</td>
+      <td class="selectable-text">{{packet.ip.daddr | stringifyIp}}</td>
+      <td class="selectable-text">{{packet.tcp.sport }}</td>
+      <td class="selectable-text">{{packet.tcp.dport }}</td>
+    </tr>
+  </tbody>
+  </table>
   </div>
-  <div v-else>
-    <ul id="packet-list">
-      <li :id="'p-idx-'+index"
-          :class="[index == selectedIndex ? activeClass : '',
-                   index == hoverIndex ? hoverClass : '']"
-          v-for="(packet, index) in packets"
-          @click="updateCurrent(packet, index)">
-        {{ packet.ts | prettifyTs}} {{packet.eth.shost.addr | stringifyMac}} -> {{packet.eth.dhost.addr | stringifyMac}}
-      </li>
-    </ul>
   </div>
-
 </template>
 
 <script>
-import {stringifyMac, prettifyTs} from '../../filters'
+import {stringifyMac, prettifyTs, stringifyIp} from '../../filters'
 import {mapGetters, mapActions} from 'vuex'
+import SnifferPayload  from './SnifferPayload'
 
 export default {
   name: 'sniffer',
-  props: ['packets'],
+  props: [],
   created () {
     window.addEventListener('keyup', this.keyup)
     this.$socket.emit('init')
   },
   data () {
     return {
-     selectedPacket: {},
+     selectedPacket: null,
      selectedIndex: -1,
      hoverIndex: -1,
-     activeClass: 'active',
+     activeClass: 'activepacket',
      hoverClass: 'hovered'
     }
 
   },
   computed: mapGetters({
-    toolRunning: 'toolRunning'
+    toolRunning: 'toolRunning',
+    packets: 'packets'
   }),
   components:{
+    SnifferPayload
   },
   filters:{
     stringifyMac,
+    stringifyIp,
     prettifyTs
   },
   methods: {
@@ -54,9 +74,11 @@ export default {
       this.hoverIndex = index;
     },
     keyup (e) {
+      // console.log(e)
       //DOWN
+
       if((e.keyCode || e.which) === 40 ){
-        if(this.hoverIndex < this.packets.length){
+        if(this.hoverIndex < this.packets.length-1){
             this.hoverIndex += 1;
         }
         if(document.getElementsByClassName('hovered')){
@@ -64,10 +86,11 @@ export default {
           if(cur){
             const id = cur.id.split('-')
             const index =id.pop()
-            this.selectedPacket = this.packets[index];
+            this.selectedPacket = this.packets[this.hoverIndex];
+            console.log(this.hoverIndex, index,'down', this.packets.length)
+            // cur.scrollIntoViewIfNeeded({block: "end", behavior: "smooth"});
             cur.scrollIntoViewIfNeeded({block: "end", behavior: "smooth"});
           }
-
         }
       }
       //UP
@@ -76,14 +99,14 @@ export default {
             this.hoverIndex -= 1;
         }
         if(document.getElementsByClassName('hovered')){
-          const cur =   document.getElementsByClassName('hovered')[0];
+          const cur = document.getElementsByClassName('hovered')[0];
           if(cur){
             const id = cur.id.split('-')
             const index =id.pop()
-            this.selectedPacket = this.packets[index];
+            this.selectedPacket = this.packets[this.hoverIndex];
+            console.log(this.hoverIndex, index,'up', this.packets.length)
             cur.scrollIntoViewIfNeeded({block: "end", behavior: "smooth"});
           }
-
         }
       }
       else if((e.keyCode || e.which) === 13 ){
@@ -103,5 +126,39 @@ export default {
 </script>
 
 <style scoped>
+.sniff-table{
+  max-height: 226px;
+  overflow: scroll;
+}
+.sniff-body{
+  margin-top: 12px;
+}
+.sniff-payload{
+  border-width: 1px;
+  border-style: solid;
+  height: 132px;
+  overflow: scroll;
+}
+.activepacket{
+  background: blue;
+}
+
+.hovered{
+  background: #584f9e;
+}
+
+.test{
+  position: fixed;
+  width: 100%;
+}
+.oh{
+  overflow: hidden;
+  max-width: 45px;
+}
+
+.hh{
+  overflow: hidden;
+  max-width: 100px;
+}
 
 </style>

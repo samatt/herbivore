@@ -80,13 +80,13 @@
   height: #{25 / $base-font-size}rem;
 }
 
-tr:nth-child(odd) {
-  color: $inactive-text-color;
-  background-color:$primary-text-color;
-}
+// tr:nth-child(odd) {
+//   color: $inactive-text-color;
+//   // background-color:$primary-text-color;
+// }
 
-tr:nth-child(even) {
-  color: $inactive-text-color;
-  background-color:$white;
-}
+// tr:nth-child(even) {
+//   color: $inactive-text-color;
+//   background-color:$white;
+// }
 

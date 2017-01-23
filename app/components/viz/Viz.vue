@@ -1,7 +1,6 @@
 <template>
-
-  <div id="viz-main" class="viz-container">
-  <svg id="test"> </svg>
+  <div id="viz-main">
+    <svg id="test"> </svg>
   </div>
 </template>
 
@@ -9,13 +8,21 @@
 import Grid from './Grid'
 import * as d3Force from 'd3-force'
 import {mapGetters} from 'vuex'
+import Console from '../console/Console'
 export default {
   name: 'Viz',
   props: [ ],
   mounted () {
     this.dummy = this.loadDummy()
     this.width = this.$el.clientWidth
-    this.height = this.$el.clientHeight;
+    this.height = this.$el.clientHeight < 500? 450 :this.$el.clientHeight;
+    // if (this.vdata.node.length > 0){
+    //   // this.init()
+    //   // TODO: STORE GRAPH STATE
+    // }
+  },
+  components:{
+    Console
   },
   data() {
     return{
@@ -47,7 +54,8 @@ export default {
       node.router = node.ip === this.gateway;
       node.id = idx
       if(node.router){
-        this.vdata.nodes[0].mac = node.mac
+        // this.vdata.nodes[0].mac = node.mac
+        this.$store.dispatch('updateRouterMac', node)
       }
       else{
         const l = {source: 0, target: idx, weight: 1}
@@ -126,6 +134,7 @@ export default {
       if (!this.$d3.event.active) this.simulation.alphaTarget(0.3).restart();
       d.fx = d.x;
       d.fy = d.y;
+      this.$store.dispatch('updateClickedNode', d)
     },
     dragged: function(d) {
       d.fx = this.$d3.event.x;
@@ -135,7 +144,6 @@ export default {
       if (!this.$d3.event.active) this.simulation.alphaTarget(0);
       d.fx = null;
       d.fy = null;
-      this.$store.dispatch('updateClickedNode', d)
     },
     dragsubject: function() {
       return this.simulation.find(this.$d3.event.x, this.$d3.event.y);

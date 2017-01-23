@@ -1,18 +1,13 @@
 <template>
 
   <div  class="console-container">
-
-    <div class='view-options'>
-      <div class='view-option-button' @click="run()" />
-    </div>
     <div v-if="!currentTool">
         Select a tool to get started
     </div>
     <div v-else :class="['view-contanier', toolRunning === 'Run' ? 'view-console': 'view-info']" >
-          Current Tool: {{ currentTool}}
-          <sniffer v-if="currentTool === 'PcapSniffer'" v-bind:packets="packets"> </sniffer>
-          <network v-if="currentTool === 'Network'" v-bind:packets="packets"> </network>
-          <info v-if="currentTool === 'Info'" v-bind:packets="packets"> </info>
+          <sniffer v-if="currentTool === 'PcapSniffer'"> </sniffer>
+          <network v-if="currentTool === 'Network'"> </network>
+          <info v-if="currentTool === 'Info'"> </info>
     </div>
 
   </div>
@@ -27,8 +22,9 @@ import {mapGetters, mapActions} from 'vuex'
 
 export default {
   name: 'Console',
-  props: ['packets','views'],
+  props: [],
   created () {
+    // this.run()
   },
   data () {
     return {
@@ -59,7 +55,6 @@ export default {
       }
 
     }
-
   }
 }
 </script>

@@ -24,13 +24,9 @@ class Info{
     return this._client
   }
 
-
   init (){
 
   }
-
-
-
 
   start (socket) {
   }

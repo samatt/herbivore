@@ -4,12 +4,11 @@ const app = electron.app;
 const io = require('socket.io').listen(7777);
 const BrowserWindow = electron.BrowserWindow;
 let toolManager = new ToolManager()
-
 let mainWindow;
 
 function createWindow () {
     mainWindow = new BrowserWindow({width: 1280, height: 840});
-    // BrowserWindow.addDevToolsExtension("/Users/surya/Library/Application Support/Google/Chrome/Default/Extensions/nhdogjmejiglipccpnnnanhbledajbpd/2.3.1_0")
+    // BrowserWindow.addDevToolsExtension("/Users/surya/Library/Application Support/Google/Chrome/Default/Extensions/nhdogjmejiglipccpnnnanhbledajbpd/3.0.5_0")
     mainWindow.loadURL('file://' + __dirname + '/index.html');
     mainWindow.on('closed', function() {
         mainWindow = null;
@@ -32,6 +31,7 @@ app.on('activate', function () {
 });
 
 // Ajooba stuff
+// TODO: Remove socket/refresh functionality
 io.on('connection', function (socket) {
     toolManager.client = socket
     toolManager.registerClients(socket)

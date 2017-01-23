@@ -9,19 +9,9 @@
               {{tool | toolNameFilter}}
             </span>
       </nav>
-  <!-- <div class="nav-container"> -->
-<!--     <ul class="nav-tools">
-      <li :class="['nav-tool', index == selectedIdx ? 'nav-tool-active' : '']"
-          v-for="(tool, index) in toolNames"
-          @click="updateTools(tool, index)">
-          {{tool | toolNameFilter}}
-      </li>
-    </ul> -->
-  <!-- </div> -->
-  <!-- <Viz></Viz> -->
 </template>
 <script>
-// import Viz from '../viz/Viz.vue'
+
 import {mapGetters} from 'vuex'
 import {toolNameFilter} from '../../filters'
 export default {

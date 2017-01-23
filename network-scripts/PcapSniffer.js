@@ -126,15 +126,16 @@ class PcapSniffer {
 
     var arpRequest = new Buffer(pktArr);
     this.session.inject(arpRequest);
-    // console.log('packet sent');
   }
 
   _cb (raw) {
-      const packet = pcap.decode.packet(raw)
-      const parsed = this._parse(packet, raw)
-      if(this._client && parsed){
-        this._client.emit('newPacket', parsed);
-      }
+    if(this.sniff){
+        const packet = pcap.decode.packet(raw)
+        const parsed = this._parse(packet, raw)
+        if(this._client && parsed){
+          this._client.emit('newPacket', parsed);
+        }
+    }
   }
 
   _parse (packet, raw) {

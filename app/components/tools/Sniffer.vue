@@ -74,9 +74,8 @@ export default {
       this.hoverIndex = index;
     },
     keyup (e) {
-      // console.log(e)
-      //DOWN
 
+      //DOWN
       if((e.keyCode || e.which) === 40 ){
         if(this.hoverIndex < this.packets.length-1){
             this.hoverIndex += 1;
@@ -87,8 +86,6 @@ export default {
             const id = cur.id.split('-')
             const index =id.pop()
             this.selectedPacket = this.packets[this.hoverIndex];
-            console.log(this.hoverIndex, index,'down', this.packets.length)
-            // cur.scrollIntoViewIfNeeded({block: "end", behavior: "smooth"});
             cur.scrollIntoViewIfNeeded({block: "end", behavior: "smooth"});
           }
         }
@@ -104,7 +101,6 @@ export default {
             const id = cur.id.split('-')
             const index =id.pop()
             this.selectedPacket = this.packets[this.hoverIndex];
-            console.log(this.hoverIndex, index,'up', this.packets.length)
             cur.scrollIntoViewIfNeeded({block: "end", behavior: "smooth"});
           }
         }

@@ -43,6 +43,7 @@ export default {
       this.$store.dispatch('stop')
       this.$store.dispatch('changeTool', tool)
       this.$socket.emit('stop')
+      this.$store.dispatch('clearClickedLink')
       this.$socket.emit('load',tool)
     },
     updateView (name) {

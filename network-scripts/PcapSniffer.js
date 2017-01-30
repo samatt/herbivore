@@ -129,12 +129,10 @@ class PcapSniffer {
   }
 
   _cb (raw) {
-    if(this.sniff){
-        const packet = pcap.decode.packet(raw)
-        const parsed = this._parse(packet, raw)
-        if(this._client && parsed){
-          this._client.emit('newPacket', parsed);
-        }
+    const packet = pcap.decode.packet(raw)
+    const parsed = this._parse(packet, raw)
+    if(this._client && parsed){
+      this._client.emit('newPacket', parsed);
     }
   }
 

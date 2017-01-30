@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="selectable text">
      <span v-if="!packet"> Click a packet to see its payload information. You can use the up and down keys to navigate</span>
      <template v-else>
          <template v-if="packet.payload.type !== 'https'">
@@ -19,7 +19,7 @@
           <div v-else>
             This is an encrypted HTTPS packet for {{packet.payload.host}}
          </div>
-        <div  v-for="p in packet.payload.headers">
+        <div v-for="p in packet.payload.headers">
           <strong>{{p[0]}}:</strong> {{p[1]}}
         </div>
      </template>

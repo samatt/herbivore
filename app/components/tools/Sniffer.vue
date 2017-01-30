@@ -1,6 +1,8 @@
 <template>
 <div>
-  <SnifferPayload class="sniff-payload " v-bind:packet="selectedPacket"> </SnifferPayload>
+<div v-if="clickedLink" >
+  {{clickedLink.router.mac}} - {{clickedLink.router.ip}} : {{clickedLink.target.mac}} - {{clickedLink.target.ip}}
+</div>
 <div class="sniff-table">
   <table class="table test">
     <thead>
@@ -30,6 +32,7 @@
   </tbody>
   </table>
   </div>
+  <SnifferPayload class="sniff-payload " v-bind:packet="selectedPacket"> </SnifferPayload>
   </div>
 </template>
 
@@ -57,7 +60,8 @@ export default {
   },
   computed: mapGetters({
     toolRunning: 'toolRunning',
-    packets: 'packets'
+    packets: 'packets',
+    clickedLink: 'clickedLink'
   }),
   components:{
     SnifferPayload
@@ -123,7 +127,7 @@ export default {
 
 <style scoped>
 .sniff-table{
-  max-height: 226px;
+  height: 226px;
   overflow: scroll;
 }
 .sniff-body{

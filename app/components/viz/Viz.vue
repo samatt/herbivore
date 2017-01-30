@@ -15,11 +15,14 @@ export default {
   mounted () {
     this.dummy = this.loadDummy()
     this.width = this.$el.clientWidth
-    this.height = this.$el.clientHeight < 500? 450 :this.$el.clientHeight;
+    this.height = this.$el.clientHeight < 500? 400 :this.$el.clientHeight;
     // if (this.vdata.node.length > 0){
     //   // this.init()
     //   // TODO: STORE GRAPH STATE
     // }
+  },
+  update () {
+    console.log("VIZ UPDATE")
   },
   components:{
     Console
@@ -43,11 +46,18 @@ export default {
     info: function(info){
       const gn = {ip: this.gateway, mac:'', id: 0, router: true }
       const n = {ip: this.privateIp, mac: this.mac, id: 1, router: false }
-      const l = {source: 0, target: 1, weight: 1}
+      const l = {source: 0, target: 1, weight: 4}
       this.vdata.nodes.push(gn)
       this.vdata.nodes.push(n)
       this.vdata.links.push(l)
       this.init()
+    },
+    clearStyles: function () {
+      // console.log(this.$d3.selectAll('.links'))
+      this.$d3.selectAll('line').attr("stroke", '#6f737d')
+      // this.$d3.selectAll('.links').attr("stroke", '#6f737d')
+      // this.$d3.selectAll(".nodes")
+      //               .attr("fill",'blue')
     },
     addNode: function(node) {
       const idx = this.vdata.nodes.length;
@@ -58,7 +68,7 @@ export default {
         this.$store.dispatch('updateRouterMac', node)
       }
       else{
-        const l = {source: 0, target: idx, weight: 1}
+        const l = {source: 0, target: idx, weight: 4}
         this.$store.dispatch('addNewNode', node)
         this.vdata.nodes.push(node)
         this.vdata.links.push(l)
@@ -69,7 +79,8 @@ export default {
   computed: mapGetters({
       gateway:'gateway',
       privateIp:'privateIp',
-      mac: 'mac'
+      mac: 'mac',
+      currentTool: 'currentTool'
   }),
   filters:{
   },
@@ -130,21 +141,60 @@ export default {
                 .attr("x2", function(d) { return d.target.screenX;})
                 .attr("y2", function(d) {return d.target.screenY;});
     },
-    mouseover: function(d){
-      this.$d3.select(d).attr({
-          fill: "red"
-        });
-      this.$store.dispatch('updateClickedNode', d)
+    mouseover: function(){
+      const vue = this
+      return function (d) {
+        if(vue.currentTool === 'Network'){
+          vue.$d3.select(this).attr('fill','#4D74AB').attr('r', 10)
+          vue.$store.dispatch('updateClickedNode', d)
+        }
+      }
     },
     mouseout: function(d) {
-      // this.$d3.select(d).attr({
-      //     fill: "#584f9e"
-      //   });
+      const vue = this
+      return function (d) {
+        if(vue.currentTool === 'Network'){
+          const fill =  d.router? '#6f737d' :'#584f9e';
+          vue.$d3.select(this).attr('fill',fill).attr('r', 8)
+          vue.$store.dispatch('updateClickedNode', d)
+        }
+      }
     },
     mouseoverLink: function(d){
-      console.log( d.source.ip, d.source.mac)
-      console.log( d.target.ip, d.target.mac)
-      // console.log( this.vdata.nodes[d.source.index], this.vdata[d.target.index])
+      const vue = this
+      return function (d) {
+        if(vue.currentTool === 'PcapSniffer'){
+          vue.$d3.select(this).attr("stroke-width", 6)
+          // vue.$d3.select(this).attr('fill','#4D74AB').attr('r', 10)
+            // console.log( d.source.ip, d.source.mac)
+            // console.log( d.target.ip, d.target.mac)
+          // vue.$store.dispatch('updateClickedNode', d)
+        }
+      }
+    },
+    mouseoutLink: function(d){
+      const vue = this
+      return function (d) {
+        if(vue.currentTool === 'PcapSniffer'){
+          vue.$d3.select(this).attr("stroke-width",4)
+          // console.log( d.source.ip, d.source.mac)
+          // console.log( d.target.ip, d.target.mac)
+        // vue.$store.dispatch('updateClickedNode', d)
+        }
+      }
+    },
+    clickLink: function(d){
+      const vue = this
+      return function (d) {
+        if(vue.currentTool === 'PcapSniffer'){
+          vue.$d3.selectAll('line').attr("stroke", '#6f737d')
+          vue.$store.dispatch('updateClickedLink', d.target)
+          vue.$d3.select(this).attr("stroke", 'orange')
+          // console.log( d.source.ip, d.source.mac)
+          // console.log( d.target.ip, d.target.mac)
+        // vue.$store.dispatch('updateClickedNode', d)
+        }
+      }
     },
     dragstarted: function(d) {
       if (!this.$d3.event.active) this.simulation.alphaTarget(0.3).restart();
@@ -180,7 +230,7 @@ export default {
 
       this.node = this.vis.append("g")
                     .attr("class", "nodes")
-                    .attr("r", 6)
+                    .attr("r", 8)
                     .attr("fill", function(d) { '#584f9e'; })
                     .selectAll("circle")
 
@@ -199,12 +249,12 @@ export default {
         this.node.exit().remove();
         this.node = this.node
                         .enter().append("circle")
-                        .attr("r", 6)
+                        .attr("r", 8)
                         .attr("id", function (d){return d.id})
                         .attr("fill", function(d) { return d.router? '#6f737d' :'#584f9e'; })
                         .merge(this.node)
-                        .on('mouseover',this.mouseover)
-                        .on('mouseout',this.mouseout)
+                        .on('mouseover',this.mouseover())
+                        .on('mouseout',this.mouseout())
                         .call(this.$d3.drag()
                                   .subject(this.dragsubject)
                                   .on("start", this.dragstarted)
@@ -217,9 +267,11 @@ export default {
         this.link = this.link
                         .enter().append("line")
                         .attr("stroke", function(d) { return '#6f737d'; })
-                        .attr("stroke-width", function(d) { return Math.sqrt(d.weight); })
+                        .attr("stroke-width", function(d) { return d.weight; })
                         .merge(this.link)
-                        .on('mouseover',this.mouseoverLink)
+                        .on('mouseover',this.mouseoverLink())
+                        .on('mouseout',this.mouseoutLink())
+                        .on('click',this.clickLink())
 
         // Update and restart the simulation.
         this.simulation.nodes(this.vdata.nodes);

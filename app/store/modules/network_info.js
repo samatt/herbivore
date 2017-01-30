@@ -12,7 +12,8 @@ const state = {
   netmask: null,
   type: null,
   nodes:[],
-  clickedNode: null
+  clickedNode: null,
+  clickedLink: null
 }
 
 const getters = {
@@ -22,12 +23,12 @@ const getters = {
   privateIp: state => state.privateIp,
   publicIp: state => state.publicIp,
   gateway: state => state.gateway,
-  gateway: state => state.gateway,
   interface: state => state.interface,
   netmask: state => state.netmask,
   type: state => state.type,
   nodes: state => state.nodes,
-  clickedNode: state => state.clickedNode
+  clickedNode: state => state.clickedNode,
+  clickedLink: state => state.clickedLink
 }
 
 const actions = {
@@ -40,6 +41,9 @@ const actions = {
  updateClickedNode ({ commit, state }, node) {
     commit(types.UPDATE_CLICKED_NODE, node)
   },
+ updateClickedLink ({ commit, state }, node) {
+    commit(types.UPDATE_CLICKED_LINK, node)
+  },
  updateRouterMac ({ commit, state }, mac) {
     commit(types.UPDATE_ROUTER_MAC, mac)
   },
@@ -51,6 +55,9 @@ const actions = {
   },
   bpfError ({ commit, state }) {
     commit(types.PERMISSIONS_ERROR_FOUND)
+  },
+  clearClickedLink ({ commit, state }) {
+    commit(types.CLEAR_CLICKED_LINK)
   }
 }
 
@@ -87,6 +94,15 @@ const mutations = {
         n.active = false
       }
     })
+  },
+  [types.UPDATE_CLICKED_LINK] (state, node) {
+    let l = state.nodes.filter(function (n) {
+              return node.ip === n.ip
+            })
+    state.clickedLink = {router: state.nodes[0], target: l[0]}
+  },
+  [types.CLEAR_CLICKED_LINK] (state, node) {
+    state.clickedLink = null
   },
   [types.UPDATE_HOSTNAME] (state, node) {
     state.nodes.forEach(function (n) {

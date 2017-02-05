@@ -58,7 +58,7 @@ export default {
       console.log('ENTER')
     },
     run () {
-      if( this.toolRunning && this.currentTool ){
+      if(  this.currentTool ){
         this.$store.dispatch('stop')
         this.$socket.emit('stop')
       }

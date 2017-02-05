@@ -80,6 +80,7 @@ export default {
       gateway:'gateway',
       privateIp:'privateIp',
       mac: 'mac',
+      gatewayMac: 'gatewayMac',
       currentTool: 'currentTool'
   }),
   filters:{
@@ -188,8 +189,13 @@ export default {
       return function (d) {
         if(vue.currentTool === 'PcapSniffer'){
           vue.$d3.selectAll('line').attr("stroke", '#6f737d')
-          vue.$store.dispatch('updateClickedLink', d.target)
           vue.$d3.select(this).attr("stroke", 'orange')
+          vue.$store.dispatch('updateClickedLink', d.target)
+          vue.$socket.emit('updateTarget', {'target_ip':d.target.ip,
+                                            'target_mac':d.target.mac,
+                                            'self_mac':vue.mac,
+                                            'gw_ip': vue.gateway,
+                                            'gw_mac': vue.gatewayMac})
           // console.log( d.source.ip, d.source.mac)
           // console.log( d.target.ip, d.target.mac)
         // vue.$store.dispatch('updateClickedNode', d)

@@ -3,6 +3,7 @@ const ping = require('ping')
 const network = require('network')
 const oui = require('oui')
 const spawn = require('child-process-promise').spawn
+const exec = require('child_process').exec;
 
 class Network{
 
@@ -10,6 +11,8 @@ class Network{
     this.name = 'Network'
     this._client = null
     this.tbl = []
+    this.ips = []
+    this.currentIndex = 0
     this.public = ""
     this.local = ""
     this.gw = ""
@@ -118,13 +121,14 @@ class Network{
 
   }
 
-  _getHostName (ip) {
+  _getHostNamePromise (ip) {
     this.info(`Finding host for ip: ${ip}`)
     // TODO: Add linux version
     spawn('dig', ['-x',ip,'-p','5353','@224.0.0.251'], { capture: [ 'stdout', 'stderr' ]})
     .then((result) => {
       let text = result.stdout.toString();
       let lines = text.split('\n')
+      console.log(lines)
       let line = lines[11]
       let hostAdd = line.split('\t').pop()
       let hostname = hostAdd.split('.')[0]
@@ -136,12 +140,29 @@ class Network{
     })
   }
 
+  _getHostName (ip) {
+    this.info(`Finding host for ip: ${ip}`)
+    // TODO: Add linux version
+    exec(`dig -x ${ip} -p 5353 @224.0.0.251`,  (err, stdout, stderr) => {
+
+        if(err) { this.error(`err: ${ip} ${err} `); return}
+        if(stderr) {this.error(`err: ${ip} ${stderr} `); return }
+        let text = stdout;
+        let lines = text.split('\n')
+        let line = lines[11]
+        let hostAdd = line.split('\t').pop()
+        let hostname = hostAdd.split('.')[0]
+        this.info(hostname)
+        this._client.emit('updateHostname', {ip: ip, hostname: hostname});
+    })
+  }
+
   _scanArpTable () {
       arp.table( (err, entry) => {
           if (!!err) return console.log('arp: ' + err.message);
           if (!entry) return;
           let t = entry.ip.split('.')
-          t.pop()
+          let lo = t.pop()
 
           if(this.interface !== entry.ifname){
             this.info(`wrong interface: ${entry.ifname} ${this.interface} `);
@@ -157,7 +178,6 @@ class Network{
             this.info(`wrong subnet: ${t} ${this.subnet} `);
             return;
           }
-
           this.tbl.push(entry)
 
           this.info(`Found device: ${entry.mac} `)
@@ -171,8 +191,32 @@ class Network{
             }
 
             entry.hostname = ''
-            this._getHostName(entry.ip)
+            // this._getHostName(entry.ip)
             this._client.emit('addNode', entry);
+            if(lo === '255'){
+              this.ips.push(entry.ip)
+                // Promise.all(this.ips.slice(0,20))
+                // .then( (result) => {
+                //   this.info(result)
+                //   result.forEach((r) => {
+                //     let text = r;
+                //     let lines = text.split('\n')
+                //     let line = lines[11]
+                //     let hostAdd = line.split('\t').pop()
+                //     let hostname = hostAdd.split('.')[0]
+                //     this.info(hostname)
+                //   })
+
+                // })
+                // .catch(function (err) {
+                //     console.error('[exec] stderr: ', err);
+                // })
+            }
+            else{
+              // this.ips.push(this.hostPromise(entry.ip))
+              this.ips.push(entry.ip)
+              this._getAllHostnames(0)
+            }
 
           }
           else{
@@ -196,6 +240,26 @@ class Network{
     }
   }
 
+  _getAllHostnames(index) {
+    // (index >= this.ips.length ) {
+    //   this.info('Completed Hosts')
+    // }
+    // exec(`dig -x ${ip} -p 5353 @224.0.0.251`, (err, stdout, stderr) => {
+
+    // })
+  }
+  // hostPromise (ip) {
+  //     return new Promise(
+  //         function (resolve, reject) {
+  //           exec(`dig -x ${ip} -p 5353 @224.0.0.251`,
+  //             (err, stdout, stderr) => {
+  //                     if (err || stderr) {
+  //                         reject(err);
+  //                     }
+  //                     resolve(stdout);
+  //                 });
+  //         });
+  // }
   start (socket) {
   }
 
@@ -206,18 +270,8 @@ class Network{
 
 module.exports = Network
 
-// arpPromise (ip) {
-//     return new Promise(
-//         function (resolve, reject) {
-//             narp.getMAC(ip,
-//                 (err, entry) => {
-//                     if (err) {
-//                         reject(err);
-//                     }
-//                     resolve({ip: ip, mac: entry});
-//                 });
-//         });
-// }
+
+
 // _scanLan () {
 //   const subnet = this.gw.split('.')
 //   subnet.pop()

@@ -107,6 +107,17 @@ load(toolname){
       this._currentTool.stop(this._client)
     }
   }
+
+  updateTarget (data) {
+    if(!this._currentTool || !this._client
+        || this.currentTool.name !== "PcapSniffer"){
+      this.error(`Cant sniff, probably because current tool is not sniffer`)
+      return false
+    }
+    else{
+      this._currentTool.updateTarget(this._client, data)
+    }
+  }
 }
 
 module.exports = ToolManager

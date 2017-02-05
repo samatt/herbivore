@@ -7,6 +7,7 @@ const state = {
   privateIp: null,
   publicIp: null,
   gateway: null,
+  gatewayMac: null,
   vendor: null,
   interface: null,
   netmask: null,
@@ -23,6 +24,7 @@ const getters = {
   privateIp: state => state.privateIp,
   publicIp: state => state.publicIp,
   gateway: state => state.gateway,
+  gatewayMac: state => state.gatewayMac,
   interface: state => state.interface,
   netmask: state => state.netmask,
   type: state => state.type,
@@ -118,6 +120,7 @@ const mutations = {
   [types.UPDATE_ROUTER_MAC] (state, node) {
     state.nodes[0].mac = node.mac
     state.nodes[0].vendor = node.vendor
+    state.gatewayMac = node.mac
   }
 }
 

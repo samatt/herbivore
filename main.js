@@ -8,7 +8,7 @@ let mainWindow;
 
 function createWindow () {
     mainWindow = new BrowserWindow({width: 1280, height: 840});
-    // BrowserWindow.addDevToolsExtension("/Users/surya/Library/Application Support/Google/Chrome/Default/Extensions/nhdogjmejiglipccpnnnanhbledajbpd/3.0.5_0")
+    BrowserWindow.addDevToolsExtension("/Users/surya/Library/Application Support/Google/Chrome/Default/Extensions/nhdogjmejiglipccpnnnanhbledajbpd/3.0.6_0")
     mainWindow.loadURL('file://' + __dirname + '/index.html');
     mainWindow.on('closed', function() {
         mainWindow = null;
@@ -42,6 +42,8 @@ io.on('connection', function (socket) {
 
     socket.on('load', function(toolname){
         toolManager.load(toolname)
+        //FIXME: Need a better way of doing this
+        socket.emit('clearStyles')
     })
 
     socket.on('init', function(){
@@ -49,10 +51,15 @@ io.on('connection', function (socket) {
     })
 
     socket.on('start', function(){
+        console.log("HERE")
         toolManager.start()
     })
 
     socket.on('stop', function(){
         toolManager.stop()
+    })
+
+    socket.on('updateTarget', function(data){
+        toolManager.updateTarget(data)
     })
 });

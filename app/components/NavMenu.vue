@@ -13,9 +13,9 @@
 <script>
 
 import {mapGetters} from 'vuex'
-import {toolNameFilter} from '../../filters'
+import {toolNameFilter} from '../filters'
 export default {
-  name: 'ToolBar',
+  name: 'NavMenu',
   props: [],
   created () {
   },

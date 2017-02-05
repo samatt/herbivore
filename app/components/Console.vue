@@ -12,9 +12,9 @@
 </template>
 
 <script>
-import Sniffer from '../tools/Sniffer'
-import Info from '../tools/Info'
-import Network from '../tools/Network'
+import Sniffer from './tools/Sniffer'
+import Info from './tools/Info'
+import Network from './tools/Network'
 import {mapGetters, mapActions} from 'vuex'
 
 export default {

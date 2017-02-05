@@ -3,7 +3,7 @@
     <div class="window-content">
       <div class='pane-group'>
         <div class="pane-mini pane-sm sidebar">
-          <ToolBar> </ToolBar>
+          <NavMenu> </NavMenu>
         </div>
         <div v-if="correctPermission || currentTool !=='PcapSniffer'" class="pane">
           <Viz></Viz>
@@ -24,16 +24,16 @@
 
 <script>
 
-import ToolBar from './components/tool-bar/ToolBar'
+import NavMenu from './components/NavMenu'
 import Viz from './components/viz/Viz.vue'
-import Console from './components/console/Console'
+import Console from './components/Console'
 import {mapGetters, mapActions} from 'vuex'
 
 export default {
   name: 'app',
   props: [],
   components: {
-    ToolBar,
+    NavMenu,
     Console,
     Viz
   },
@@ -58,7 +58,7 @@ export default {
       console.log('ENTER')
     },
     run () {
-      if(  this.currentTool ){
+      if( this.currentTool ){
         this.$store.dispatch('stop')
         this.$socket.emit('stop')
       }

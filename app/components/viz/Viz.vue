@@ -8,7 +8,6 @@
 import Grid from './Grid'
 import * as d3Force from 'd3-force'
 import {mapGetters} from 'vuex'
-import Console from '../console/Console'
 export default {
   name: 'Viz',
   props: [ ],
@@ -25,7 +24,6 @@ export default {
     console.log("VIZ UPDATE")
   },
   components:{
-    Console
   },
   data() {
     return{

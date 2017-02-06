@@ -1,4 +1,4 @@
-##ajooba
+##herbivore
 
 install: `npm install`
 

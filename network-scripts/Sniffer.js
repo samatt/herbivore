@@ -52,23 +52,6 @@ class Sniffer {
         this.error('Client socket not found!')
       }
     }
-    // try {
-    //   this.info('In init')
-    //   if (!this.initComplete) {
-    //     this.session = pcap.createSession(this._if, pcapFilters.https)
-    //     this.session.on('packet', this._cb.bind(this))
-    //     this.initComplete = true
-    //     this.info('Sniffer initComplete')
-    //   } else {
-    //     this.info('Sniffer session already loaded')
-    //   }
-    // } catch (err) {
-    //   if (this._client) {
-    //     this._client.emit('bpfError')
-    //   } else {
-    //     this.error('Client socket not found!')
-    //   }
-    // }
   }
 
   cmd (name, ...args) {
@@ -97,19 +80,13 @@ class Sniffer {
       this.arpTarget = params.toRouter.src_ip
     } else {
       this.info(`Spoof already running. clearing current spoof and restarting`)
-      clearInterval(this.arpInterval)
-      this.arpInterval = setInterval(() => {
-        this.arpPack(params.toRouter)
-        this.arpPack(params.toTarget)
-      }, this.arpIntervalPeriod)
-      this.arpInterval = null
-      this.arpTarget = null
+      this.stopArpSpoof()
       this.startArpSpoof(params)
     }
   }
 
   stopArpSpoof () {
-    if (!this.arpInterval) {
+    if (this.arpInterval) {
       this.info(`Stop arp spoof`)
       clearInterval(this.arpInterval)
       this.arpInterval = null
@@ -198,6 +175,17 @@ class Sniffer {
     const eth = packet.payload
     const ip = eth.payload
     const tcp = ip.payload
+    const src = ip.saddr.addr.join('.')
+    const dst = ip.daddr.addr.join('.')
+    if (this.arpTarget) {
+      if (this.arpTarget !== src && this.arpTarget !== dst) {
+        return false
+      }
+    } else {
+      if (this.local !== src && this.local !== dst) {
+        return false
+      }
+    }
 
     if (tcp.sport === 8443 ||
         tcp.sport === 443 ||
@@ -209,17 +197,6 @@ class Sniffer {
         }
       }
       return false
-    }
-
-    if (this.arpTarget) {
-      const src = ip.saddr.addr.join('.')
-      const dst = ip.daddr.addr.join('.')
-      //
-      if (this.arpTarget !== src && this.arpTarget !== dst) {
-        // console.log(`target: ${this.arpTarget} src: ${src} dst: ${dst}`)
-        // console.log(`ignoring packet that isnt ${this.arpTarget }`)
-        return false
-      }
     }
 
     if (!tcp.data) {

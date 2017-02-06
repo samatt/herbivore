@@ -22,7 +22,8 @@ export default {
     return {}
   },
   computed: mapGetters({
-    toolNames: 'toolNames'
+    toolNames: 'toolNames',
+    currentTool: 'currentTool'
   }),
   components: {
   },
@@ -35,7 +36,13 @@ export default {
       this.$socket.emit('clear')
     },
     rescan () {
-      this.$socket.emit('cmd', 'rescan')
+      if (this.currentTool === 'Network') {
+        this.$socket.emit('cmd', 'rescan')
+      }
+      else if (this.currentTool === 'Sniffer') {
+        this.$store.dispatch('clearSnifferInfo')
+      }
+
     },
     updateView (name) {
     },

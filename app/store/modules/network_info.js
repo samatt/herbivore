@@ -12,7 +12,7 @@ const state = {
   interface: null,
   netmask: null,
   type: null,
-  nodes:[],
+  nodes: [],
   clickedNode: null,
   clickedLink: null
 }
@@ -40,16 +40,16 @@ const actions = {
   updatePublicIp ({ commit, state }, ip) {
     commit(types.UPDATE_PUBLIC_IP, ip)
   },
- updateClickedNode ({ commit, state }, node) {
+  updateClickedNode ({ commit, state }, node) {
     commit(types.UPDATE_CLICKED_NODE, node)
   },
- updateClickedLink ({ commit, state }, node) {
+  updateClickedLink ({ commit, state }, node) {
     commit(types.UPDATE_CLICKED_LINK, node)
   },
- updateRouterMac ({ commit, state }, mac) {
+  updateRouterMac ({ commit, state }, mac) {
     commit(types.UPDATE_ROUTER_MAC, mac)
   },
- updateHostname ({ commit, state }, mac) {
+  updateHostname ({ commit, state }, mac) {
     commit(types.UPDATE_HOSTNAME, mac)
   },
   addNewNode ({ commit, state }, node) {
@@ -60,23 +60,26 @@ const actions = {
   },
   clearClickedLink ({ commit, state }) {
     commit(types.CLEAR_CLICKED_LINK)
+  },
+  clearNetworkInfo ({ commit, state }) {
+    commit(types.CLEAR_NETWORK_INFO)
   }
 }
 
 const mutations = {
   [types.UPDATE_NETWORK_INFO] (state, info) {
-    let {connected, private_ip, iface, gateway, netmask, mac, type, vendor} = info
+    let {connected, privateIp, iface, gateway, netmask, mac, type, vendor} = info
     state.connected = connected
-    if(state.connected){
+    if (state.connected) {
       state.mac = mac
-      state.privateIp = private_ip
+      state.privateIp = privateIp
       state.gateway = gateway
       state.interface = iface
       state.netmask = netmask
       state.type = type
       state.vendor = vendor
-      const gn = {ip: state.gateway, mac:'', "id": 0, router: true, active: false }
-      const n = {ip: state.privateIp, mac: state.mac, "id": 1, router: false, active: false, vendor: state.vendor}
+      const gn = { ip: state.gateway, mac: '', id: 0, router: true, active: false }
+      const n = { ip: state.privateIp, mac: state.mac, id: 1, router: false, active: false, vendor: state.vendor }
       state.nodes.push(gn)
       state.nodes.push(n)
     }
@@ -89,18 +92,17 @@ const mutations = {
   },
   [types.UPDATE_CLICKED_NODE] (state, node) {
     state.nodes.forEach(function (n) {
-      if(n.ip === node.ip){
+      if (n.ip === node.ip) {
         n.active = true
-      }
-      else{
+      } else {
         n.active = false
       }
     })
   },
   [types.UPDATE_CLICKED_LINK] (state, node) {
     let l = state.nodes.filter(function (n) {
-              return node.ip === n.ip
-            })
+      return node.ip === n.ip
+    })
     state.clickedLink = {router: state.nodes[0], target: l[0]}
   },
   [types.CLEAR_CLICKED_LINK] (state, node) {
@@ -108,7 +110,7 @@ const mutations = {
   },
   [types.UPDATE_HOSTNAME] (state, node) {
     state.nodes.forEach(function (n) {
-      if(n.ip === node.ip){
+      if (n.ip === node.ip) {
         n.hostname = node.hostname
       }
     })
@@ -121,6 +123,22 @@ const mutations = {
     state.nodes[0].mac = node.mac
     state.nodes[0].vendor = node.vendor
     state.gatewayMac = node.mac
+  },
+  [types.CLEAR_NETWORK_INFO] (state) {
+    state.correctPermission = true
+    state.connected = null
+    state.mac = null
+    state.privateIp = null
+    state.publicIp = null
+    state.gateway = null
+    state.gatewayMac = null
+    state.vendor = null
+    state.interface = null
+    state.netmask = null
+    state.type = null
+    state.nodes = []
+    state.clickedNode = null
+    state.clickedLink = null
   }
 }
 

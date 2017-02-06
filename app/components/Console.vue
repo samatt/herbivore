@@ -4,16 +4,14 @@
         Select a tool to get started
     </div>
     <div v-else :class="['view-contanier', toolRunning === 'Run' ? 'view-console': 'view-info']" >
-          <sniffer v-if="currentTool === 'PcapSniffer'"> </sniffer>
+          <sniffer v-if="currentTool === 'Sniffer'"> </sniffer>
           <network v-if="currentTool === 'Network'"> </network>
-          <info v-if="currentTool === 'Info'"> </info>
     </div>
   </div>
 </template>
 
 <script>
 import Sniffer from './tools/Sniffer'
-import Info from './tools/Info'
 import Network from './tools/Network'
 import {mapGetters, mapActions} from 'vuex'
 
@@ -26,12 +24,10 @@ export default {
     return {
       noToolSelected: true
     }
-
   },
   components:{
     Sniffer,
-    Network,
-    Info
+    Network
   },
   filters:{
   },

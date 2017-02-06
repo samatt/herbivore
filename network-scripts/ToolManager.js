@@ -1,5 +1,4 @@
-const toolnames = require('./config')['tools']
-const PcapSniffer = require('./PcapSniffer')
+const Sniffer = require('./Sniffer')
 const Network = require('./Network')
 
 class ToolManager {
@@ -7,20 +6,16 @@ class ToolManager {
   constructor () {
     this._client = {id: 'not connected'}
     this._currentTool = null
-    this.toolnames = toolnames
+    // this.toolnames = ['Network', 'Info', 'Sniffer']
     this.tools = this.loadTools()
   }
 
   loadTools () {
     let tools = []
-    let sniffer = new PcapSniffer()
+    let sniffer = new Sniffer()
     let network = new Network()
-    // let info = new Info()
-
     tools.push(sniffer)
     tools.push(network)
-    // tools.push(info)
-
     return tools
   }
 
@@ -56,6 +51,7 @@ class ToolManager {
   }
 
   listTools () {
+    // Placeholder for when I make the tools modular
     this._client.emit('listTools', this.toolnames)
   }
 
@@ -81,6 +77,15 @@ class ToolManager {
     }
   }
 
+  cmd (name, ...args) {
+    if (!this._currentTool || !this._client) {
+      this.error(`Bad Start Attempted`)
+      return false
+    } else {
+      this._currentTool.cmd(name, ...args)
+    }
+  }
+
   start () {
     if (!this._currentTool || !this._client) {
       this.error(`Bad Start Attempted`)
@@ -99,13 +104,13 @@ class ToolManager {
     }
   }
 
-  updateTarget (data) {
-    if (!this._currentTool || !this._client || this.currentTool.name !== 'PcapSniffer') {
-      this.error(`Cant sniff, probably because current tool is not sniffer`)
-      return false
-    } else {
-      this._currentTool.updateTarget(this._client, data)
-    }
-  }
+  // updateTarget (data) {
+  //   if (!this._currentTool || !this._client || this.currentTool.name !== 'Sniffer') {
+  //     this.error(`Cant sniff, probably because current tool is not sniffer`)
+  //     return false
+  //   } else {
+  //     this._currentTool.updateTarget(this._client, data)
+  //   }
+  // }
 }
 module.exports = ToolManager

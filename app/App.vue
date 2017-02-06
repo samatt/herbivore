@@ -1,31 +1,35 @@
 <template>
   <div id="app" class="window">
+    <ToolBar/>
     <div class="window-content">
       <div class='pane-group'>
         <div class="pane-mini pane-sm sidebar">
-          <NavMenu> </NavMenu>
+          <NavMenu/>
         </div>
-        <div v-if="correctPermission || currentTool !=='PcapSniffer'" class="pane">
+        <div v-if="correctPermission || currentTool !=='Sniffer'" class="pane">
           <Viz></Viz>
           <Console v-if="connected || currentTool =='Info'"></Console>
           <div v-else><p> Ajooba can't detect an internet connection. This tool is useless without it. Please connect to the internet and try again. </p> </div>
         </div>
-       <div v-else class="pane">
+        <div v-else class="pane">
           <p>
-            To run the Packet Sniffer you need to change permissions to /dev/bpf*<p>
-            <p>Open up a terminal and type: <span >sudo chmod o+r /dev/bpf*</span>
-            This allows the app to read packets from the network interface
+          To run the Packet Sniffer you need to change permissions to /dev/bpf*
+          Open up a terminal and type: <span >sudo chmod o+r /dev/bpf*</span>
+          This allows the app to read packets from the network interface
           </p>
-       </div>
+        </div>
       </div>
     </div>
+    <InfoBar/>
   </div>
 </template>
 
 <script>
 
 import NavMenu from './components/NavMenu'
-import Viz from './components/viz/Viz.vue'
+import ToolBar from './components/ToolBar'
+import InfoBar from './components/InfoBar'
+import Viz from './components/viz/Viz'
 import Console from './components/Console'
 import {mapGetters, mapActions} from 'vuex'
 
@@ -35,9 +39,12 @@ export default {
   components: {
     NavMenu,
     Console,
+    ToolBar,
+    InfoBar,
     Viz
   },
   created () {
+    // Step 1
     this.$store.dispatch('changeTool', 'Network')
     this.$socket.emit('load','Network')
     this.run()
@@ -54,19 +61,14 @@ export default {
     correctPermission: 'correctPermission'
   }),
   methods:{
-    onEnter () {
-      console.log('ENTER')
-    },
     run () {
-      if( this.currentTool ){
+      if (this.currentTool) {
         this.$store.dispatch('stop')
         this.$socket.emit('stop')
-      }
-      else if( this.currentTool){
+      } else {
         this.$store.dispatch('start')
         this.$socket.emit('start')
       }
-
     }
   }
 }

@@ -4,10 +4,9 @@ const state = {
   currentTool: null,
   currentView: null,
   toolRunning: null,
-  toolNames: []
+  toolNames: ['Network', 'Sniffer']
 }
 
-// getters
 const getters = {
   currentTool: state => state.currentTool,
   currentView: state => state.currentView,
@@ -15,7 +14,6 @@ const getters = {
   toolNames: state => state.toolNames
 }
 
-// actions
 const actions = {
   listTools ({ commit, state }, toolnames) {
     commit(types.LIST_TOOLS, toolnames)
@@ -28,15 +26,17 @@ const actions = {
   },
   stop ({ commit, state }) {
     commit(types.STOP_TOOL)
+  },
+  clearToolbarInfo ({ commit, state }) {
+    commit(types.CLEAR_TOOLBAR_INFO)
   }
 }
 
-// mutations
 const mutations = {
-  [types.LIST_TOOLS] (state, toolnames ) {
+  [types.LIST_TOOLS] (state, toolnames) {
     state.toolNames = toolnames
   },
-  [types.TOOL_CHANGE_REQUEST] (state, newSelection ) {
+  [types.TOOL_CHANGE_REQUEST] (state, newSelection) {
     state.currentTool = newSelection
   },
   [types.START_TOOL] (state) {
@@ -44,8 +44,12 @@ const mutations = {
   },
   [types.STOP_TOOL] (state) {
     state.toolRunning = false
+  },
+  [types.CLEAR_TOOLBAR_INFO] (state) {
+    state.currentTool = null
+    state.currentView = null
+    state.toolRunning = null
   }
-
 }
 
 export default {

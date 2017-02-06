@@ -12,7 +12,7 @@ export default {
   name: 'Viz',
   props: [ ],
   mounted () {
-    this.dummy = this.loadDummy()
+    // this.dummy = this.loadDummy()
     this.width = this.$el.clientWidth
     this.height = this.$el.clientHeight < 500? 400 :this.$el.clientHeight;
     // if (this.vdata.node.length > 0){
@@ -51,11 +51,11 @@ export default {
       this.init()
     },
     clearStyles: function () {
-      // console.log(this.$d3.selectAll('.links'))
       this.$d3.selectAll('line').attr("stroke", '#6f737d')
-      // this.$d3.selectAll('.links').attr("stroke", '#6f737d')
-      // this.$d3.selectAll(".nodes")
-      //               .attr("fill",'blue')
+    },
+    clearViz: function () {
+      this.vdata = {nodes:[], links:[]}
+      this.refresh()
     },
     addNode: function(node) {
       const idx = this.vdata.nodes.length;
@@ -162,7 +162,7 @@ export default {
     mouseoverLink: function(d){
       const vue = this
       return function (d) {
-        if(vue.currentTool === 'PcapSniffer'){
+        if(vue.currentTool === 'Sniffer'){
           vue.$d3.select(this).attr("stroke-width", 6)
           // vue.$d3.select(this).attr('fill','#4D74AB').attr('r', 10)
             // console.log( d.source.ip, d.source.mac)
@@ -174,7 +174,7 @@ export default {
     mouseoutLink: function(d){
       const vue = this
       return function (d) {
-        if(vue.currentTool === 'PcapSniffer'){
+        if(vue.currentTool === 'Sniffer'){
           vue.$d3.select(this).attr("stroke-width",4)
           // console.log( d.source.ip, d.source.mac)
           // console.log( d.target.ip, d.target.mac)
@@ -185,11 +185,11 @@ export default {
     clickLink: function(d){
       const vue = this
       return function (d) {
-        if(vue.currentTool === 'PcapSniffer'){
+        if(vue.currentTool === 'Sniffer'){
           vue.$d3.selectAll('line').attr("stroke", '#6f737d')
           vue.$d3.select(this).attr("stroke", 'orange')
           vue.$store.dispatch('updateClickedLink', d.target)
-          vue.$socket.emit('updateTarget', {'target_ip':d.target.ip,
+          vue.$socket.emit('cmd', 'updateTarget', {'target_ip':d.target.ip,
                                             'target_mac':d.target.mac,
                                             'self_mac':vue.mac,
                                             'gw_ip': vue.gateway,

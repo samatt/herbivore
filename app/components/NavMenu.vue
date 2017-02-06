@@ -25,7 +25,7 @@ export default {
      icons: {
       'Network': 'icon-search',
       'Info':'icon-info',
-      'PcapSniffer':'icon-signal'
+      'Sniffer':'icon-signal'
      }
     }
   },
@@ -42,14 +42,9 @@ export default {
       this.selectedIdx = index;
       this.$store.dispatch('stop')
       this.$store.dispatch('changeTool', tool)
-      this.$socket.emit('stop')
       this.$store.dispatch('clearClickedLink')
+      this.$socket.emit('stop')
       this.$socket.emit('load',tool)
-    },
-    updateView (name) {
-      this.$store.dispatch('changeView', name)
-    },
-    keyup (e) {
     }
   }
 }

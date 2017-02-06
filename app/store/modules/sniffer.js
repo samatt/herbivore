@@ -4,22 +4,25 @@ const state = {
   packets: []
 }
 
-// getters
 const getters = {
-  packets: state => state.packets,
+  packets: state => state.packets
 }
 
-// actions
 const actions = {
   newPacket ({ commit, state }, packet) {
     commit(types.NEW_PACKET, packet)
+  },
+  clearSnifferInfo ({ commit, state }, packet) {
+    commit(types.CLEAR_SNIFFER_INFO, packet)
   }
 }
 
-// mutations
 const mutations = {
   [types.NEW_PACKET] (state, packet) {
     state.packets.push(packet)
+  },
+  [types.CLEAR_SNIFFER_INFO] (state, packet) {
+    state.packets = []
   }
 }
 

@@ -5,7 +5,6 @@ import * as getters from './getters'
 import toolbar from './modules/toolbar'
 import networkInfo from './modules/network_info'
 import sniffer from './modules/sniffer'
-// import createLogger from 'vuex/logger'
 
 Vue.use(Vuex)
 

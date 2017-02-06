@@ -12,7 +12,6 @@ class Network {
     this._client = null
     this.tbl = []
     this.unresolvedIps = []
-    this.currentIndex = 0
     this.public = ''
     this.local = ''
     this.gw = ''
@@ -22,6 +21,7 @@ class Network {
     this.netmask = ''
     this.type = ''
     this.hostInterval = null
+    this.hostIntervalPeriod = 1000
   }
 
   info (msg) {
@@ -41,8 +41,8 @@ class Network {
   }
 
   init () {
-    this.checkHost()
     if (this.local === '') {
+      this._checkHost()
       network.get_active_interface((err, obj) => {
         if (err) {
           let data = {iface: 'No active interface', connected: false}
@@ -69,7 +69,7 @@ class Network {
         this.type = obj.type
 
         let data = { connected: true,
-          private_ip: this.local,
+          privateIp: this.local,
           iface: this.interface,
           gateway: this.gw,
           netmask: this.netmask,
@@ -143,6 +143,9 @@ class Network {
       let text = stdout
       let lines = text.split('\n')
       let line = lines[11]
+      if (typeof line === 'undefined') {
+        return
+      }
       let hostAdd = line.split('\t').pop()
       let hostname = hostAdd.split('.')[0]
       this.info(`ip: ${ip} hostname: ${hostname}`)
@@ -171,6 +174,16 @@ class Network {
         this.info(`wrong subnet: ${t} ${this.subnet} `)
         return
       }
+
+      let exisiting = this.tbl.filter((e) => {
+        return e.mac === entry.mac
+      })
+
+      if (exisiting.length > 0) {
+        this.info(`Ignoring ${entry.mac} as it already exists`)
+        return
+      }
+
       this.tbl.push(entry)
 
       this.info(`Found device: ${entry.mac} `)
@@ -228,13 +241,19 @@ class Network {
     }
   }
 
-  checkHost () {
-    this.hostInterval = setInterval(() => {
-      this.getHostBuffer()
-    }, 1000)
+  _checkHost () {
+    if (this.hostInterval) {
+      clearInterval(this.hostInterval)
+      this.hostInterval = null
+      this._checkHost()
+    } else {
+      this.hostInterval = setInterval(() => {
+        this._getHostBuffer()
+      }, this.hostIntervalPeriod)
+    }
   }
 
-  getHostBuffer () {
+  _getHostBuffer () {
     let bufferSize = 5
     if (this.unresolvedIps.length < 1) {
       // this.info(`No unresolved Ips`)
@@ -252,6 +271,34 @@ class Network {
       }
     }
   }
+
+  _clear () {
+    this.info('Clearing network info')
+    this.tbl = []
+    this.unresolvedIps = []
+    this.public = ''
+    this.local = ''
+    this.gw = ''
+    this.subnet = ''
+    this.mac = ''
+    this.interface = ''
+    this.netmask = ''
+    this.type = ''
+    this.hostInterval = null
+  }
+
+  cmd (name, ...args) {
+    if (name === 'rescan') {
+      this.info('Rescanning network...')
+      this._pingSubnet()
+      setTimeout(() => {
+        this._scanArpTable()
+      }, 500)
+    } else if (name === 'clear') {
+      this._clear()
+    }
+  }
+
   start (socket) {
   }
 

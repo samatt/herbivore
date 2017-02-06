@@ -19,7 +19,6 @@
     "css-loader": "^0.26.0",
     "d3-force": "^1.0.4",
     "is-tls-client-hello": "^1.0.0",
-    "moment": "^2.15.2",
     "network": "^0.3.0",
     "node-sass": "^3.13.0",
     "oui": "^4.4.19",

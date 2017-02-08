@@ -144,8 +144,8 @@ class Network {
     this.debug(`Finding host for ip: ${ip}`)
     // TODO: Add linux version
     exec(`dig -x ${ip} -p 5353 @224.0.0.251`, (err, stdout, stderr) => {
-      if (err) { this.error(`err: ${ip} ${err} `); return }
-      if (stderr) { this.error(`err: ${ip} ${stderr} `); return }
+      if (err) { this.debug(`err: ${ip} ${err} `); return }
+      if (stderr) { this.debug(`err: ${ip} ${stderr} `); return }
       let text = stdout
       let lines = text.split('\n')
       let line = lines[11]

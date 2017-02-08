@@ -48,27 +48,28 @@ const template = [
         click () {
           sudo.exec('chmod o+r /dev/bpf*', options, function (error, stdout, stderr) {
             if (error) console.log(error)
+            sudo.exec('sysctl -w net.inet.ip.forwarding=1', options, function (error, stdout, stderr) {
+              if (error) console.log(error)
+              sudo.exec('sysctl -w net.inet.ip.fw.enable=1', options, function (error, stdout, stderr) {
+                if (error) console.log(error)
+              })
+            })
           })
-          sudo.exec('sysctl -w net.inet.ip.forwarding=1', options, function (error, stdout, stderr) {
-            if (error) console.log(error)
-          })
-          sudo.exec('sysctl -w net.inet.ip.fw.enable=1', options, function (error, stdout, stderr) {
-            if (error) console.log(error)
-          })
+
           console.log('Set Permissions')
         }
       },
       {
         label: 'Clear',
         click () {
-          sudo.exec('sysctl -w net.inet.ip.forwarding=0', options, function (error, stdout, stderr) {
-            if (error) console.log(error)
-          })
-          sudo.exec('sysctl -w net.inet.ip.fw.enable=0', options, function (error, stdout, stderr) {
-            if (error) console.log(error)
-          })
           sudo.exec('chmod o-r /dev/bpf*', options, function (error, stdout, stderr) {
             if (error) console.log(error)
+            sudo.exec('sysctl -w net.inet.ip.fw.enable=0', options, function (error, stdout, stderr) {
+              if (error) console.log(error)
+              sudo.exec('chmod o-r /dev/bpf*', options, function (error, stdout, stderr) {
+                if (error) console.log(error)
+              })
+            })
           })
           console.log('Clear Permissions')
         }

@@ -22,6 +22,10 @@ export function upperMac (addr) {
   return (typeof addr !== 'undefined') ? addr.toUpperCase() : ''
 }
 
+export function statusString (node) {
+  return node.router ? 'Cant Target Router' : ''
+}
+
 export function toolNameFilter (tn) {
   if (tn === 'PcapSniffer') {
     return 'Sniffer'

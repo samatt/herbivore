@@ -14,7 +14,7 @@ export default {
   mounted () {
     // this.dummy = this.loadDummy()
     this.width = this.$el.clientWidth
-    this.height = this.$el.clientHeight < 500? 400 :this.$el.clientHeight;
+    this.height = this.$el.clientHeight < 800 ? 400 :this.$el.clientHeight;
     // if (this.vdata.node.length > 0){
     //   // this.init()
     //   // TODO: STORE GRAPH STATE
@@ -62,7 +62,6 @@ export default {
       node.router = node.ip === this.gateway;
       node.id = idx
       if(node.router){
-        // this.vdata.nodes[0].mac = node.mac
         this.$store.dispatch('updateRouterMac', node)
       }
       else{
@@ -79,11 +78,30 @@ export default {
       privateIp:'privateIp',
       mac: 'mac',
       gatewayMac: 'gatewayMac',
-      currentTool: 'currentTool'
+      currentTool: 'currentTool',
+      hoveredNode: 'hoveredNode',
+      target: 'target'
   }),
-  filters:{
+  watch: {
+    hoveredNode (val) {
+      if (val) {
+        this.tableHover(val)
+      }
+      else{
+        this.clearNodesStyles()
+      }
+
+    },
+    target (val) {
+      if (val) {
+        this.setTarget(val)
+      } else {
+        this.clearNodesStyles()
+      }
+    }
+
   },
-  methods:{
+  methods: {
     loadDummy: function(){
         let dummy = {nodes:[], links:[]}
           for(var i = 0; i < 50; i++) {
@@ -144,18 +162,35 @@ export default {
       const vue = this
       return function (d) {
         if(vue.currentTool === 'Network'){
+          vue.clearNodesStyles()
           vue.$d3.select(this).attr('fill','#4D74AB').attr('r', 10)
-          vue.$store.dispatch('updateClickedNode', d)
+          vue.$store.dispatch('setHoverNode', d)
         }
       }
     },
     mouseout: function(d) {
       const vue = this
       return function (d) {
-        if(vue.currentTool === 'Network'){
-          const fill =  d.router? '#6f737d' :'#584f9e';
+        if (vue.currentTool === 'Network') {
+          let fill =  d.router? '#6f737d' :'#584f9e';
+          if (vue.target) {
+            fill = (vue.target.ip === d.ip) ? 'orange' :'#584f9e' ;
+          }
           vue.$d3.select(this).attr('fill',fill).attr('r', 8)
-          vue.$store.dispatch('updateClickedNode', d)
+        }
+      }
+    },
+    clickNode: function (d) {
+      const vue = this
+      return function (d){
+        if (vue.currentTool === 'Network' && !d.router) {
+          vue.$d3.select(this).attr('fill','orange')
+          vue.$store.dispatch('setTarget', d)
+          // vue.$socket.emit('cmd', 'updateTarget', {'target_ip':d.ip,
+          //                                   'target_mac':d.mac,
+          //                                   'self_mac':vue.mac,
+          //                                   'gw_ip': vue.gateway,
+          //                                   'gw_mac': vue.gatewayMac})
         }
       }
     },
@@ -189,16 +224,50 @@ export default {
           vue.$d3.selectAll('line').attr("stroke", '#6f737d')
           vue.$d3.select(this).attr("stroke", 'orange')
           vue.$store.dispatch('updateClickedLink', d.target)
-          vue.$socket.emit('cmd', 'updateTarget', {'target_ip':d.target.ip,
-                                            'target_mac':d.target.mac,
-                                            'self_mac':vue.mac,
-                                            'gw_ip': vue.gateway,
-                                            'gw_mac': vue.gatewayMac})
+          // vue.$socket.emit('cmd', 'updateTarget', {'target_ip':d.target.ip,
+          //                                   'target_mac':d.target.mac,
+          //                                   'self_mac':vue.mac,
+          //                                   'gw_ip': vue.gateway,
+          //                                   'gw_mac': vue.gatewayMac})
           // console.log( d.source.ip, d.source.mac)
           // console.log( d.target.ip, d.target.mac)
         // vue.$store.dispatch('updateClickedNode', d)
         }
       }
+    },
+    tableHover: function (node) {
+      this.clearNodesStyles()
+      this.$d3.selectAll("circle")
+              .filter(function(d, i) { return (typeof d === 'undefined') ? false : (d.ip === node.ip); })
+              .attr('fill','#4D74AB').attr('r', 10);
+      if (this.target){
+        const target = this.target
+        this.$d3.selectAll("circle")
+                .filter(function(d, i) { return (typeof d === 'undefined') ? false : (d.ip === target.ip); })
+                .attr('fill','#4D74AB').attr('r', 10);
+      }
+    },
+    setTarget: function (node) {
+      this.clearNodesStyles()
+      this.$d3.selectAll("circle")
+              .filter(function(d, i) { return (typeof d === 'undefined') ? false : (d.ip === node.ip); })
+              .attr('fill','orange');
+    },
+    clearNodesStyles: function () {
+      this.$d3.selectAll("circle")
+              .filter(function(d, i) { return typeof d !== 'undefined'})
+              .attr('fill','#584f9e').attr('r', 8)
+
+      this.$d3.selectAll("circle")
+              .filter(function(d, i) { return (typeof d === 'undefined') ? false : d.router })
+              .attr('fill','#6f737d').attr('r', 8)
+      if(this.target){
+        let target = this.target
+        this.$d3.selectAll("circle")
+                .filter(function(d, i) { return (typeof d === 'undefined') ? false : (d.ip === target.ip); })
+                .attr('fill','orange');
+      }
+
     },
     dragstarted: function(d) {
       if (!this.$d3.event.active) this.simulation.alphaTarget(0.3).restart();
@@ -259,6 +328,7 @@ export default {
                         .merge(this.node)
                         .on('mouseover',this.mouseover())
                         .on('mouseout',this.mouseout())
+                        .on('click', this.clickNode())
                         .call(this.$d3.drag()
                                   .subject(this.dragsubject)
                                   .on("start", this.dragstarted)
@@ -281,7 +351,7 @@ export default {
         this.simulation.nodes(this.vdata.nodes);
         this.simulation.force("link").links(this.vdata.links);
         this.simulation.alpha(1).restart();
-    },
+    }
   }
 }
 </script>

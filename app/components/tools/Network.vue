@@ -2,9 +2,9 @@
 <div>
   <div>
     <input class="form-control" type="text" placeholder="Search nodes" v-model="filterKey">
-    <span> {{filteredData.length}} items </span>
   </div>
-  <table class="table">
+  <div class="network-table">
+  <table class="table stick">
     <thead>
     <tr>
     <th v-for="key in columns"
@@ -16,8 +16,13 @@
     </th>
     </tr>
   </thead>
+  </table>
+  <table class="table padded network-body">
   <tbody>
-    <tr :class="[node.active ? 'active' : '']"
+    <tr @click="setTarget(node)"
+        @mouseover="mouseOver(node)"
+        @mouseout="mouseOut()"
+        :class="[node.active ? 'active' : '']"
         v-for="node in filteredData">
       <td>{{ node.mac | upperMac }} </td>
       <td>{{ node.ip }}</td>
@@ -27,6 +32,7 @@
     </tr>
   </tbody>
   </table>
+  </div>
 </div>
 </template>
 
@@ -89,6 +95,15 @@ export default {
     sortBy: function (key) {
       this.sortKey = key
       this.sortOrders[key] = this.sortOrders[key] * -1
+    },
+    mouseOver: function (node) {
+      this.$store.dispatch('setHoverNode', node)
+    },
+    mouseOut: function (node) {
+      this.$store.dispatch('clearHoverNode', node)
+    },
+    setTarget: function (node) {
+      this.$store.dispatch('setTarget', node)
     }
   },
   filters:{
@@ -99,6 +114,19 @@ export default {
 </script>
 
 <style scoped>
+
+.stick{
+  position: fixed;
+  width: 100%;
+}
+.network-body{
+  margin-top: 12px;
+}
+.network-table{
+  max-height: 326px;
+  overflow: scroll;
+}
+
 .arrow.asc {
   border-left: 4px solid transparent;
   border-right: 4px solid transparent;

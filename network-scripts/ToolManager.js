@@ -3,9 +3,11 @@ const Network = require('./Network')
 
 class ToolManager {
 
-  constructor () {
+  constructor (logDebug = false) {
+    this.name = 'ToolManager'
     this._client = {id: 'not connected'}
     this._currentTool = null
+    this.logDebug
     // this.toolnames = ['Network', 'Info', 'Sniffer']
     this.tools = this.loadTools()
   }
@@ -19,12 +21,18 @@ class ToolManager {
     return tools
   }
 
-  error (msg) {
-    console.error(`[ToolManager] ERR : ${msg}`)
+  info (msg) {
+    console.log(`[ INFO ] [${this.name}]: ${msg}`)
   }
 
-  info (msg) {
-    console.info(`[ToolManager] : ${msg}`)
+  debug (msg) {
+    if (this.logDebug) {
+      console.log(`[ DEBUG ] [${this.name}]: ${msg}`)
+    }
+  }
+
+  error (msg) {
+    console.log(`[ ERROR ] [${this.name}]: ${msg}`)
   }
 
   registerClients (socket) {
@@ -82,6 +90,7 @@ class ToolManager {
       this.error(`Bad Start Attempted`)
       return false
     } else {
+      this.info(`${name}: ${args}`)
       this._currentTool.cmd(name, ...args)
     }
   }

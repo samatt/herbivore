@@ -13,8 +13,9 @@ const state = {
   netmask: null,
   type: null,
   nodes: [],
-  clickedNode: null,
-  clickedLink: null
+  clickedLink: null,
+  hoveredNode: null,
+  target: null
 }
 
 const getters = {
@@ -29,7 +30,8 @@ const getters = {
   netmask: state => state.netmask,
   type: state => state.type,
   nodes: state => state.nodes,
-  clickedNode: state => state.clickedNode,
+  target: state => state.target,
+  hoveredNode: state => state.hoveredNode,
   clickedLink: state => state.clickedLink
 }
 
@@ -40,11 +42,20 @@ const actions = {
   updatePublicIp ({ commit, state }, ip) {
     commit(types.UPDATE_PUBLIC_IP, ip)
   },
-  updateClickedNode ({ commit, state }, node) {
-    commit(types.UPDATE_CLICKED_NODE, node)
+  setTarget ({ commit, state }, node) {
+    commit(types.SET_TARGET, node)
+  },
+  clearTarget ({ commit, state }, node) {
+    commit(types.CLEAR_TARGET)
   },
   updateClickedLink ({ commit, state }, node) {
     commit(types.UPDATE_CLICKED_LINK, node)
+  },
+  setHoverNode ({ commit, state }, node) {
+    commit(types.SET_HOVER_NODE, node)
+  },
+  clearHoverNode ({ commit, state }, node) {
+    commit(types.CLEAR_HOVER_NODE)
   },
   updateRouterMac ({ commit, state }, mac) {
     commit(types.UPDATE_ROUTER_MAC, mac)
@@ -90,13 +101,30 @@ const mutations = {
   [types.UPDATE_PUBLIC_IP] (state, ip) {
     state.publicIp = ip
   },
-  [types.UPDATE_CLICKED_NODE] (state, node) {
+  [types.SET_TARGET] (state, node) {
+    state.nodes.forEach(function (n) {
+      if (n.ip === node.ip) {
+        state.target = node
+      }
+    })
+  },
+  [types.CLEAR_TARGET] (state) {
+    state.target = null
+  },
+  [types.SET_HOVER_NODE] (state, node) {
     state.nodes.forEach(function (n) {
       if (n.ip === node.ip) {
         n.active = true
+        state.hoveredNode = node
       } else {
         n.active = false
       }
+    })
+  },
+  [types.CLEAR_HOVER_NODE] (state) {
+    state.hoveredNode = null
+    state.nodes.forEach(function (n) {
+      n.active = false
     })
   },
   [types.UPDATE_CLICKED_LINK] (state, node) {
@@ -137,7 +165,7 @@ const mutations = {
     state.netmask = null
     state.type = null
     state.nodes = []
-    state.clickedNode = null
+
     state.clickedLink = null
   }
 }

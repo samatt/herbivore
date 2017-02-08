@@ -2,14 +2,89 @@ const ToolManager = require('./network-scripts/ToolManager')
 const electron = require('electron')
 const path = require('path')
 const app = electron.app
-const io = require('socket.io').listen(7777)
+const Menu = electron.Menu
 const BrowserWindow = electron.BrowserWindow
+const io = require('socket.io').listen(7777)
+require('electron-debug')({showDevTools: true})
+
+const sudo = require('sudo-prompt')
+const options = {
+  name: 'Herbivore'
+}
+
 let toolManager = new ToolManager()
 let mainWindow
 
+const template = [
+  {
+    role: 'window',
+    submenu: [
+      {
+        role: 'minimize'
+      },
+      {
+        role: 'close'
+      },
+      {
+        role: 'quit'
+      }
+    ]
+  },
+  {
+    label: 'About',
+    submenu: [
+      {
+        label: 'About',
+        role: 'about'
+      }
+    ]
+  },
+  {
+    label: 'Permissions',
+
+    submenu: [
+      {
+        label: 'Set',
+        click () {
+          sudo.exec('chmod o+r /dev/bpf*', options, function (error, stdout, stderr) {
+            if (error) console.log(error)
+          })
+          sudo.exec('sysctl -w net.inet.ip.fw.enable=1', options, function (error, stdout, stderr) {
+            if (error) console.log(error)
+          })
+          sudo.exec('sysctl -w net.inet.ip.forwarding=1', options, function (error, stdout, stderr) {
+            if (error) console.log(error)
+          })
+          sudo.exec('sysctl -w net.inet.ip.fw.enable=1', options, function (error, stdout, stderr) {
+            if (error) console.log(error)
+          })
+          console.log('Set Permissions')
+        }
+      },
+      {
+        label: 'Clear',
+        click () {
+          sudo.exec('sysctl -w net.inet.ip.forwarding=0', options, function (error, stdout, stderr) {
+            if (error) console.log(error)
+          })
+          sudo.exec('sysctl -w net.inet.ip.fw.enable=0', options, function (error, stdout, stderr) {
+            if (error) console.log(error)
+          })
+          sudo.exec('chmod o-r /dev/bpf*', options, function (error, stdout, stderr) {
+            if (error) console.log(error)
+          })
+          console.log('Clear Permissions')
+        }
+      }
+    ]
+  }
+]
+const menu = Menu.buildFromTemplate(template)
+
 function createWindow () {
+  Menu.setApplicationMenu(menu)
   mainWindow = new BrowserWindow({width: 1280, height: 840, frame: false})
-  BrowserWindow.addDevToolsExtension('/Users/surya/Library/Application Support/Google/Chrome/Default/Extensions/nhdogjmejiglipccpnnnanhbledajbpd/3.0.6_0')
+  // BrowserWindow.addDevToolsExtension('/Users/surya/Library/Application Support/Google/Chrome/Default/Extensions/nhdogjmejiglipccpnnnanhbledajbpd/3.0.6_0')
   mainWindow.loadURL(path.join('file://', __dirname, '/index.html'))
   mainWindow.on('closed', function () {
     mainWindow = null

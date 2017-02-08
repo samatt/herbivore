@@ -7,9 +7,10 @@ const sni = require('sni')
 // https://www.npmjs.com/package/electron-sudo
 class Sniffer {
 
-  constructor () {
+  constructor (logDebug = false) {
     this.name = 'Sniffer'
     this.sniff = false
+    this.debug = logDebug
     // FIXME: Need to get active interface from other tool
     this._if = 'en0'
     this.initComplete = false
@@ -25,11 +26,17 @@ class Sniffer {
   }
 
   info (msg) {
-    console.log(`[${this.name}] : ${msg}`)
+    console.log(`[ INFO ] [${this.name}]: ${msg}`)
+  }
+
+  debug (msg) {
+    if (this.logDebug) {
+      console.log(`[ DEBUG ] [${this.name}]: ${msg}`)
+    }
   }
 
   error (msg) {
-    console.log(`[${this.name} - Err] : ${msg}`)
+    console.log(`[ ERROR ] [${this.name}]: ${msg}`)
   }
 
   set client (socket) {
@@ -57,6 +64,8 @@ class Sniffer {
   cmd (name, ...args) {
     if (name === 'updateTarget') {
       this.updateTarget(this._client, ...args)
+    } else if (name === 'setLocalInterface') {
+      this.setLocalInterface(...args)
     }
   }
 
@@ -94,24 +103,33 @@ class Sniffer {
     }
   }
 
-  updateTarget (socket, d) {
-    let params = {}
-    params.toRouter = {
-      src_ip: d.target_ip,
-      src_mac: d.target_mac,
-      self_mac: d.self_mac,
-      target_ip: d.gw_ip,
-      target_mac: d.gw_mac
-    }
+  setLocalInterface (mac, ip) {
+    this.info(`ip: ${ip}`)
+    this.info(`mac: ${mac}`)
+  }
 
-    params.toTarget = {
-      src_ip: d.gw_ip,
-      src_mac: d.gw_mac,
-      self_mac: d.self_mac,
-      target_ip: d.target_ip,
-      target_mac: d.target_mac
+  updateTarget (socket, d) {
+    if (d.hasOwnProperty('stop') && d.stop) {
+      this.stopArpSpoof
+    } else {
+      let params = {}
+      params.toRouter = {
+        src_ip: d.target_ip,
+        src_mac: d.target_mac,
+        self_mac: d.self_mac,
+        target_ip: d.gw_ip,
+        target_mac: d.gw_mac
+      }
+
+      params.toTarget = {
+        src_ip: d.gw_ip,
+        src_mac: d.gw_mac,
+        self_mac: d.self_mac,
+        target_ip: d.target_ip,
+        target_mac: d.target_mac
+      }
+      this.startArpSpoof(params)
     }
-    this.startArpSpoof(params)
   }
 // src ip  (the IP you're targetting )
 // src mac (the MAC you're targetting)

@@ -4,7 +4,7 @@
   {{clickedLink.router.mac}} - {{clickedLink.router.ip}} : {{clickedLink.target.mac}} - {{clickedLink.target.ip}}
 </div>
 <div class="sniff-table">
-  <table class="table test">
+  <table class="table stick">
     <thead>
     <tr>
       <th class="oh">Timestamp</th>
@@ -147,7 +147,7 @@ export default {
   background: #584f9e;
 }
 
-.test{
+.stick{
   position: fixed;
   width: 100%;
 }

@@ -22,6 +22,7 @@ export default {
   data () {
     return {
      selectedIdx: "",
+     interfaceUpdated: false,
      icons: {
       'Network': 'icon-search',
       'Info':'icon-info',
@@ -30,7 +31,12 @@ export default {
     }
   },
   computed: mapGetters({
-    toolNames: 'toolNames'
+    toolNames: 'toolNames',
+    privateIp: 'privateIp',
+    mac: 'mac',
+    gateway: 'gateway',
+    gatewayMac: 'gatewayMac',
+    target: 'target'
   }),
   components: {
   },
@@ -45,6 +51,23 @@ export default {
       this.$store.dispatch('clearClickedLink')
       this.$socket.emit('stop')
       this.$socket.emit('load',tool)
+
+      if( tool === 'Sniffer'){
+        if ( this.target ) {
+          this.$socket.emit('cmd', 'updateTarget', {'target_ip':this.target.ip,
+          'target_mac':this.target.mac,
+          'self_mac':this.mac,
+          'gw_ip': this.gateway,
+          'gw_mac': this.gatewayMac})
+        }
+        if (!this.interfaceUpdated) {
+          this.interfaceUpdated = true;
+          this.updateSniffer()
+        }
+      }
+    },
+    updateSniffer: function () {
+      this.$socket.emit('cmd', 'setLocalInterface', this.privateIp, this.mac)
     }
   }
 }

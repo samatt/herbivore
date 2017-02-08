@@ -7,9 +7,10 @@ const exec = require('child_process').exec
 
 class Network {
 
-  constructor () {
+  constructor (debug = false) {
     this.name = 'Network'
     this._client = null
+    this.logDebug = debug
     this.tbl = []
     this.unresolvedIps = []
     this.public = ''
@@ -25,11 +26,17 @@ class Network {
   }
 
   info (msg) {
-    console.log(`[${this.name}] : ${msg}`)
+    console.log(`[ INFO ] [${this.name}]: ${msg}`)
+  }
+
+  debug (msg) {
+    if (this.logDebug) {
+      console.log(`[ DEBUG ] [${this.name}]: ${msg}`)
+    }
   }
 
   error (msg) {
-    console.error(`[${this.name}] Error : ${msg}`)
+    console.log(`[ ERROR ] [${this.name}]: ${msg}`)
   }
 
   set client (socket) {
@@ -126,7 +133,6 @@ class Network {
       let line = lines[11]
       let hostAdd = line.split('\t').pop()
       let hostname = hostAdd.split('.')[0]
-      this.info(hostname)
       this._client.emit('updateHostname', {ip: ip, hostname: hostname})
     })
     .catch(function (err) {
@@ -135,7 +141,7 @@ class Network {
   }
 
   _getHostName (ip) {
-    this.info(`Finding host for ip: ${ip}`)
+    this.debug(`Finding host for ip: ${ip}`)
     // TODO: Add linux version
     exec(`dig -x ${ip} -p 5353 @224.0.0.251`, (err, stdout, stderr) => {
       if (err) { this.error(`err: ${ip} ${err} `); return }
@@ -148,7 +154,7 @@ class Network {
       }
       let hostAdd = line.split('\t').pop()
       let hostname = hostAdd.split('.')[0]
-      this.info(`ip: ${ip} hostname: ${hostname}`)
+      this.debug(`ip: ${ip} hostname: ${hostname}`)
       this._client.emit('updateHostname', {ip: ip, hostname: hostname})
     })
   }
@@ -161,17 +167,17 @@ class Network {
       t.pop()
 
       if (this.interface !== entry.ifname) {
-        this.info(`wrong interface: ${entry.ifname} ${this.interface} `)
+        this.debug(`wrong interface: ${entry.ifname} ${this.interface} `)
         return
       }
 
       if (entry.mac === 'ff:ff:ff:ff:ff:ff') {
-        this.info(`ignore broadcast: ${entry.ifname} ${this.mac} `)
+        this.debug(`ignore broadcast: ${entry.ifname} ${this.mac} `)
         return
       }
 
       if (t.join('.') !== this.subnet.join('.')) {
-        this.info(`wrong subnet: ${t} ${this.subnet} `)
+        this.debug(`wrong subnet: ${t} ${this.subnet} `)
         return
       }
 
@@ -180,13 +186,13 @@ class Network {
       })
 
       if (exisiting.length > 0) {
-        this.info(`Ignoring ${entry.mac} as it already exists`)
+        this.debug(`Ignoring ${entry.mac} as it already exists`)
         return
       }
 
       this.tbl.push(entry)
 
-      this.info(`Found device: ${entry.mac} `)
+      this.debug(`Found device: ${entry.mac} `)
       if (this._client) {
         let vendorInfo = oui(entry.mac)
         if (vendorInfo != null && vendorInfo.indexOf('\n') > -1) {
@@ -224,10 +230,10 @@ class Network {
       this.info('Completed Hosts')
     } else {
       const ip = this.ips[index]
-      this.info(`Finding hostname for ${ip}`)
+      this.debug(`Finding hostname for ${ip}`)
       exec(`dig -x ${ip} -p 5353 @224.0.0.251`, (err, stdout, stderr) => {
-        if (err) { this.error(`err: ${ip} ${err} `); return }
-        if (stderr) { this.error(`err: ${ip} ${stderr} `); return }
+        if (err) { this.debug(`err: ${ip} ${err} `); return }
+        if (stderr) { this.debug(`err: ${ip} ${stderr} `); return }
         let text = stdout
         let lines = text.split('\n')
         let line = lines[11]
@@ -254,7 +260,7 @@ class Network {
   }
 
   _getHostBuffer () {
-    let bufferSize = 5
+    let bufferSize = 10
     if (this.unresolvedIps.length < 1) {
       // this.info(`No unresolved Ips`)
       return

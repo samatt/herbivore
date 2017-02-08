@@ -49,9 +49,6 @@ const template = [
           sudo.exec('chmod o+r /dev/bpf*', options, function (error, stdout, stderr) {
             if (error) console.log(error)
           })
-          sudo.exec('sysctl -w net.inet.ip.fw.enable=1', options, function (error, stdout, stderr) {
-            if (error) console.log(error)
-          })
           sudo.exec('sysctl -w net.inet.ip.forwarding=1', options, function (error, stdout, stderr) {
             if (error) console.log(error)
           })

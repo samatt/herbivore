@@ -125,10 +125,10 @@ export default {
         })
         this.$store.dispatch('addNewNode', node)
       }
-      this.root = this.$d3.hierarchy(empty, function(d) { return d.children; });
-      this.root.x0 = this.width/2;
-      this.root.y0 = 0;
-      this.update(this.root)
+      // this.root = this.$d3.hierarchy(empty, function(d) { return d.children; });
+      // this.root.x0 = this.width/2;
+      // this.root.y0 = 0;
+      // this.update(this.root)
 
       this.root = this.$d3.hierarchy(this.testData, function(d) { return d.children; });
       this.root.x0 = this.width/2;
@@ -159,7 +159,7 @@ export default {
     },
     target (val) {
       if (val) {
-        console.log(val)
+        // console.log(val)
         this.setTarget(val)
       } else {
         this.clearNodesStyles()

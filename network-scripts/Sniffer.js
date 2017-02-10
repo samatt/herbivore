@@ -103,14 +103,19 @@ class Sniffer {
     }
   }
 
-  setLocalInterface (mac, ip) {
+  setLocalInterface (ip, mac) {
+    this.local = ip
+    this.mac = ip
     this.info(`ip: ${ip}`)
     this.info(`mac: ${mac}`)
   }
 
   updateTarget (socket, d) {
     if (d.hasOwnProperty('stop') && d.stop) {
-      this.stopArpSpoof
+      this.stopArpSpoof()
+    } else if (d.target_ip === this.local) {
+      this.stopArpSpoof()
+      this.info('Target is the this computer, not arp spoofing')
     } else {
       let params = {}
       params.toRouter = {
@@ -204,7 +209,6 @@ class Sniffer {
         return false
       }
     }
-
     if (tcp.sport === 8443 ||
         tcp.sport === 443 ||
         tcp.dport === 443 ||
@@ -230,6 +234,7 @@ class Sniffer {
 
     let httpr = r.split('\r\n')
     try {
+          console.log({ts: ts, eth: eth, ip: ip, tcp: tcp, payload: this.parseHTTP(httpr)})
       return {ts: ts, eth: eth, ip: ip, tcp: tcp, payload: this.parseHTTP(httpr)}
     } catch (err) {
       this.error(err)

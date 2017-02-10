@@ -45,7 +45,7 @@ export default {
       if(this.target){
         // Have to do this because of stupid d3/vuex data mismatch
         let t = this.nodes.filter( (n) => { return n.ip === this.target.ip} )
-        return `${this.target.mac} ${t[0].vendor}`
+        return `${this.target.mac.toUpperCase()} ${t[0].hostname}`
       }
 
       if(this.hoveredNode){
@@ -103,7 +103,7 @@ export default {
 }
 
 .target {
-  color: orange;
+  color: #5997ce;
 }
 
 </style>

@@ -30,6 +30,7 @@ import NavMenu from './components/NavMenu'
 import ToolBar from './components/ToolBar'
 import InfoBar from './components/InfoBar'
 import VizTree from './components/viz/VizTree'
+import Viz from './components/viz/Viz'
 import Console from './components/Console'
 import {mapGetters, mapActions} from 'vuex'
 
@@ -41,7 +42,8 @@ export default {
     Console,
     ToolBar,
     InfoBar,
-    VizTree
+    VizTree,
+    Viz
   },
   created () {
     // Step 1

@@ -1,6 +1,21 @@
 <template>
   <div id="viz-main">
-    <svg> </svg>
+    <svg>
+      <defs>
+      <linearGradient id="Router" x1="0%" y1="100%" x2="100%" y2="0%" >
+        <stop offset="0%" style="stop-color:rgb(191,31,151);stop-opacity:1" />
+        <stop offset="100%" style="stop-color:rgb(0,255,255);stop-opacity:1" />
+      </linearGradient>
+      <linearGradient id="Device" x1="93%" y1="100%" x2="7%" y2="0%" >
+        <stop offset="0%" style="stop-color:rgb(148,255,198);stop-opacity:1" />
+        <stop offset="100%" style="stop-color:rgb(0,0,255);stop-opacity:1" />
+      </linearGradient>
+      <linearGradient id="Target" x1="0%" y1="34%" x2="100%" y2="66%" >
+        <stop offset="0%" style="stop-color:rgb(15,191,97);stop-opacity:1" />
+        <stop offset="100%" style="stop-color:rgb(0,255,255);stop-opacity:1" />
+      </linearGradient>
+      </defs>
+    </svg>
   </div>
 </template>
 
@@ -54,42 +69,32 @@ export default {
       root: {},
       svg: {},
       duration: 750,
+      shortDuration: 250,
       testData: {
-        "name": "Gateway",
-        "router" :true,
-        "children": [
-          {
-            "name": "192.168.1.10",
-            "children": [
-              { "name": "Son of A" },
-              { "name": "Daughter of A" }
-            ]
-          },
-          { "name": "192.168.1.10" },
-          { "name": "192.168.1.10" },
-          { "name": "192.168.1.10" },
-          { "name": "192.168.1.10" },
-          { "name": "192.168.1.10" },
-          { "name": "192.168.1.10" },
-          { "name": "192.168.1.10" },
-          { "name": "192.168.1.10" },
-          { "name": "192.168.1.10" },
-          { "name": "192.168.1.10" },
-
-          { "name": "192.168.1.10" },
-          { "name": "192.168.1.10" }
-        ]
+        id: 0,
+        name: "Gateway",
+        ip : "",
+        router :true,
+        children: []
       }
     }
   },
+  watch: {
+    gatewayMac (val) {
+      testData.mac = val
+    }
+
+  },
   sockets:{
     info: function(info){
-      const gn = {ip: this.gateway, mac:'', id: 0, router: true }
-      const n = {ip: this.privateIp, mac: this.mac, id: 1, router: false }
-      const l = {source: 0, target: 1, weight: 4}
-      this.vdata.nodes.push(gn)
-      this.vdata.nodes.push(n)
-      this.vdata.links.push(l)
+      this.testData.ip = this.gateway
+
+      this.testData.children.push({
+          id: 1,
+          ip : this.privateIp,
+          mac : this.mac,
+          router: false
+      })
       this.init()
     },
     clearStyles: function () {
@@ -97,19 +102,40 @@ export default {
     clearViz: function () {
     },
     addNode: function(node) {
-      // const idx = this.vdata.nodes.length;
-      // node.router = node.ip === this.gateway;
-      // node.id = idx
-      // if(node.router){
-      //   this.$store.dispatch('updateRouterMac', node)
-      // }
-      // else{
-      //   const l = {source: 0, target: idx, weight: 4}
-      //   this.$store.dispatch('addNewNode', node)
-      //   this.vdata.nodes.push(node)
-      //   this.vdata.links.push(l)
-      // }
-      // this.refresh()
+      const idx = this.testData.children.length + 1 ;
+      const empty = {
+        id: 0,
+        name: "Gateway",
+        ip : "",
+        router :true,
+        children: []
+      }
+      node.router = node.ip === this.gateway;
+      node.id = idx
+      if(node.router){
+        this.$store.dispatch('updateRouterMac', node)
+      }
+      else{
+        this.testData.children.push({
+            id: idx,
+            ip : node.ip,
+            mac : node.mac,
+            hostname : node.hostname,
+            router: false
+        })
+        this.$store.dispatch('addNewNode', node)
+      }
+      this.root = this.$d3.hierarchy(empty, function(d) { return d.children; });
+      this.root.x0 = this.width/2;
+      this.root.y0 = 0;
+      this.update(this.root)
+
+      this.root = this.$d3.hierarchy(this.testData, function(d) { return d.children; });
+      this.root.x0 = this.width/2;
+      this.root.y0 = 0;
+      this.root.children.forEach(this.collapse);
+      this.update(this.root)
+
     }
   },
   computed: mapGetters({
@@ -122,6 +148,23 @@ export default {
       target: 'target'
   }),
   watch: {
+    hoveredNode (val) {
+      if (val) {
+        this.tableHover(val)
+      }
+      else{
+        this.clearNodesStyles()
+      }
+
+    },
+    target (val) {
+      if (val) {
+        console.log(val)
+        this.setTarget(val)
+      } else {
+        this.clearNodesStyles()
+      }
+    }
   },
   methods: {
     init: function () {
@@ -130,7 +173,7 @@ export default {
                     .attr("height", this.height);
       this.g =  this.svg.append("g").attr("transform", `translate(0,${this.height/4})`)//"translate(" + (this.width / 2 + 40) + "," + (this.height / 2 + ")")
       this.root = this.$d3.hierarchy(this.testData, function(d) { return d.children; });
-      this.root.x0 = 0;
+      this.root.x0 = this.width/2;
       this.root.y0 = 0;
       this.root.children.forEach(this.collapse);
 
@@ -149,34 +192,37 @@ export default {
 
       nodes.forEach(function(d){ d.y = d.depth * 180});
       let node = this.g.selectAll("g.node")
-          .data(nodes, (d) => { return d.id || (d.id = ++this.i); });
+          .data(nodes, (d) => { return d.id });
 
       let nodeEnter = node.enter().append("g")
           .attr("class", "node")
           .attr("width", "10px")
           .attr("height", "10px")
           .attr("transform", function(d) { return "translate(" + source.x0 + "," + source.y0 + ")"; })
-          .on("click", this.click);
+          .on('mouseover',this.mouseover())
+          .on('mouseout',this.mouseout())
+          .on('click', this.clickNode());
 
       nodeEnter.append('path')
+          .attr("class", "icon")
           .attr("d",  (d) => {return  d.data.router ? this.router : this.devices})
           .attr("transform", function (d) {return d.data.router ? "translate(-25,-990)" : "translate(-10,0)"} )
-          .style("fill", function(d) {
-              return d.data.router ? "#70C041" : "#EC5D57";
+          .attr("fill", function(d) {
+              return d.data.router ? "url(#Router)" : "url(#Device)";
           });
-          // .attr('class', 'node')
-          // .attr('r', 1e-6)
-          // .attr("dx", "-7em")
-          // .attr("dy", "0.4em")
       nodeEnter.append('text')
           .attr("transform", (d) => {
+            if (d.data.router) {
+              return "rotate(0)"
+            }
+
             return this.testData.children.length < 15 ? 'rotate(0)' : 'rotate(270)'
           })
           .attr("dx", (d) => {
             if (d.data.router) {
               return "-2.0em"
             }
-            console.log(this.testData.children.length); return this.testData.children.length < 15 ? "-2.6em" : "-7em"
+            return this.testData.children.length < 15 ? "-2.6em" : "-9em"
           })
           .attr("dy", (d) => {
             if (d.data.router) {
@@ -184,10 +230,8 @@ export default {
             }
             return this.testData.children.length < 15 ? "3.36em" : "0.4em"
           })
-          .text(function(d) { return d.data.name; });
-          // .attr("text-anchor", function(d) {
-          //     return d.children || d._children ? "end" : "start";
-          // })
+          .text(function(d) { return d.data.ip; });
+
       let nodeUpdate = nodeEnter.merge(node);
       nodeUpdate.transition()
           .duration(this.duration)
@@ -195,15 +239,8 @@ export default {
               return "translate(" + d.x + "," + d.y + ")";
            });
 
-      nodeUpdate.select('circle.node')
-        .attr('r', 10)
-        .style("fill", function(d) {
-          return d._children ? "lightsteelblue" : "#fff";
-        })
-        .attr('cursor', 'pointer');
-
       let nodeExit = node.exit().transition()
-        .duration(this.duration)
+        .duration(this.shortDuration)
         .attr("transform", function(d) {
           return "translate(" + source.x + "," + source.y + ")";
         })
@@ -221,7 +258,7 @@ export default {
       let linkEnter = link.enter().insert('path', "g")
         .attr("class", "link")
         .attr('d', (d) => {
-          var o = {x: source.y0, y: source.y0}
+          var o = {x: source.x0, y: source.y0}
           return this.diagonal(o, o)
         });
 
@@ -232,7 +269,7 @@ export default {
         .attr('d', (d) => { return this.diagonal(d, d.parent) });
 
     let linkExit = link.exit().transition()
-      .duration(this.duration)
+      .duration(this.shortDuration)
       .attr('d', (d) => {
         var o = {x: source.x, y: source.y}
         return this.diagonal(o, o)
@@ -268,19 +305,71 @@ export default {
               ${d.x} ${(s.y + d.y) / 2},
               ${d.x} ${d.y}`
   },
-  clearNodesStyles: function () {
-    this.$d3.selectAll("circle")
-            .filter(function(d, i) { return typeof d !== 'undefined'})
-            .attr('fill','#584f9e').attr('r', 8)
+  mouseover: function(){
+    const vue = this
+    return function (d) {
+      if(vue.currentTool === 'Network'){
+        vue.clearNodesStyles()
+        // console.log(this.path)
+        vue.$d3.select(this).attr('fill','url(#Target)')
+        vue.$store.dispatch('setHoverNode', d.data)
+      }
+    }
+  },
+    mouseout: function(d) {
+      const vue = this
+      return function (d) {
+        if (vue.currentTool === 'Network') {
+          let fill =  d.data.router? 'url(#Router)' :'url(#Device)';
+          if (vue.target) {
+            fill = (vue.target.ip === d.data.ip) ? 'url(#Target)' :'url(#Device)' ;
+          }
+          vue.$d3.select(this).attr('fill',"#222")
+        }
+      }
+    },
+  clickNode: function (d) {
+    const vue = this
+    return function (d){
+      if (vue.currentTool === 'Network' && !d.data.router) {
+        vue.clearNodesStyles()
+        vue.$d3.select(this).attr('fill','url(#Target)')
+        vue.$store.dispatch('setTarget', d.data)
+      }
+    }
+  },
+  tableHover: function (node) {
 
-    this.$d3.selectAll("circle")
-            .filter(function(d, i) { return (typeof d === 'undefined') ? false : d.router })
-            .attr('fill','#6f737d').attr('r', 8)
+    this.clearNodesStyles()
+    this.$d3.selectAll("path.icon")
+            .filter(function(d, i) {  return (typeof d.data === 'undefined') ? false : (d.data.ip === node.ip); })
+            .attr('fill','url(#Target)')
+    if (this.target){
+      const target = this.target
+      this.$d3.selectAll("path.icon")
+              .filter(function(d, i) { return (typeof d.data === 'undefined') ? false : (d.data.ip === target.ip); })
+              .attr('fill','url(#Target)')
+    }
+  },
+  setTarget: function (node) {
+    this.clearNodesStyles()
+    this.$d3.selectAll("path.icon")
+            .filter(function(d, i) { console.log(d.data.ip === node.ip); return (typeof d.data === 'undefined') ? false : (d.data.ip === node.ip); })
+            .attr('fill','url(#Target)');
+  },
+  clearNodesStyles: function () {
+    this.$d3.selectAll("path.icon")
+            .filter(function(d, i) { return typeof d.data !== 'undefined'})
+            .attr('fill','url(#Device)')
+
+    this.$d3.selectAll("path.icon")
+            .filter(function(d, i) { return (typeof d.data === 'undefined') ? false : d.data.router })
+            .attr('fill','url(#Router)')
     if(this.target){
       let target = this.target
-      this.$d3.selectAll("circle")
-              .filter(function(d, i) { return (typeof d === 'undefined') ? false : (d.ip === target.ip); })
-              .attr('fill','orange');
+      this.$d3.selectAll("icon")
+              .filter(function(d, i) { return (typeof d.data === 'undefined') ? false : (d.data.ip === target.ip); })
+              .attr('fill','url(#Target)');
     }
 
   }
@@ -289,6 +378,9 @@ export default {
 </script>
 
 <style>
+  .icon {
+    /*color: white;*/
+  }
   .node circle {
     fill: #fff;
     stroke: steelblue;

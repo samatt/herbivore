@@ -7,7 +7,7 @@
           <NavMenu/>
         </div>
         <div v-if="correctPermission || currentTool !=='Sniffer'" class="pane">
-          <Viz></Viz>
+          <VizTree/>
           <Console v-if="connected || currentTool =='Info'"></Console>
           <div v-else><p> Ajooba can't detect an internet connection. This tool is useless without it. Please connect to the internet and try again. </p> </div>
         </div>
@@ -29,7 +29,7 @@
 import NavMenu from './components/NavMenu'
 import ToolBar from './components/ToolBar'
 import InfoBar from './components/InfoBar'
-import Viz from './components/viz/Viz'
+import VizTree from './components/viz/VizTree'
 import Console from './components/Console'
 import {mapGetters, mapActions} from 'vuex'
 
@@ -41,7 +41,7 @@ export default {
     Console,
     ToolBar,
     InfoBar,
-    Viz
+    VizTree
   },
   created () {
     // Step 1

@@ -34,7 +34,7 @@ export default {
   props: [ ],
   mounted () {
     this.width = this.$el.clientWidth
-    this.height = this.$el.clientHeight < 800 ? 300  :this.$el.clientHeight;
+    this.height = this.$el.clientHeight < 800 ? 250  :this.$el.clientHeight;
     // this.styleParams = styleParams
     // console.log(styleParams)
   },
@@ -89,19 +89,14 @@ export default {
     },
     addNode: function(node) {
       const idx = this.testData.children.length + 1 ;
-      const empty = {
-        id: 0,
-        name: "Gateway",
-        ip : "",
-        router :true,
-        children: []
-      }
+      console.log(idx)
       node.router = node.ip === this.gateway;
       node.id = idx
       if(node.router){
         this.$store.dispatch('updateRouterMac', node)
       }
       else{
+
         this.testData.children.push({
             id: idx,
             ip : node.ip,
@@ -110,13 +105,12 @@ export default {
             router: false
         })
         this.$store.dispatch('addNewNode', node)
+        let newTree = this.$d3.hierarchy(this.testData, function(d) { return d.children; });
+        let treeData = this.tree(newTree)
+        this.root.children.push(treeData.children.pop())
+        console.log(this.root.children)
+        this.update(this.root)
       }
-
-      let newTree = this.$d3.hierarchy(this.testData, function(d) { return d.children; });
-      let treeData = this.tree(newTree)
-      this.root.children.push(treeData.children.pop())
-      this.update(this.root)
-
     }
   },
   computed: mapGetters({
@@ -152,7 +146,7 @@ export default {
       this.svg = this.$d3.select("svg")
                     .attr("width", this.width)
                     .attr("height", this.height);
-      this.g =  this.svg.append("g").attr("transform", `translate(0,${this.height/4})`)//"translate(" + (this.width / 2 + 40) + "," + (this.height / 2 + ")")
+      this.g =  this.svg.append("g").attr("transform", `translate(0,${this.height/4})`)
       this.root = this.$d3.hierarchy(this.testData, function(d) { return d.children; });
       this.root.x0 = this.width/2;
       this.root.y0 = 0;
@@ -160,9 +154,6 @@ export default {
 
       this.tree =  this.$d3.tree()
                             .size([this.width, this.height])
-                            // .separation(function(a, b) { return (a.parent == b.parent ? 1 : 2) / a.depth; });
-
-
       this.update(this.root)
 
     },
@@ -254,7 +245,9 @@ export default {
         .attr('d', (d) => {
           var o = {x: source.x0, y: source.y0}
           return this.diagonal(o, o)
-        });
+        })
+        .attr("stroke", function(d) { return "url(#Link)";})
+        ;
 
       let linkUpdate = linkEnter.merge(link);
 
@@ -268,6 +261,7 @@ export default {
         var o = {x: source.x, y: source.y}
         return this.diagonal(o, o)
       })
+      .attr("stroke", function(d) { return "url(#Link)";})
       .remove();
 
     nodes.forEach(function(d){
@@ -392,7 +386,7 @@ export default {
 
   .link {
     fill: none;
-    stroke: #ccc;
+    /*stroke: #ccc;*/
     stroke-width: 2px;
   }
 </style>

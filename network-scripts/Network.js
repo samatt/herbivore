@@ -76,6 +76,7 @@ class Network {
         this.type = obj.type
 
         let data = { connected: true,
+          self: true,
           privateIp: this.local,
           iface: this.interface,
           gateway: this.gw,

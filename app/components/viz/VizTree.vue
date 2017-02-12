@@ -35,8 +35,6 @@ export default {
   mounted () {
     this.width = this.$el.clientWidth
     this.height = this.$el.clientHeight < 800 ? 250  :this.$el.clientHeight;
-    // this.styleParams = styleParams
-    // console.log(styleParams)
   },
   update () {
     console.log("VIZ UPDATE")
@@ -48,7 +46,6 @@ export default {
     i:0,
     g:{},
     dummy: {},
-    vdata: {nodes:[], links:[]},
     width: 0,
     height: 0,
     tree: {},
@@ -57,7 +54,7 @@ export default {
     largeMax: 20,
     duration: 750,
     shortDuration: 250,
-    testData: {
+    treeData: {
       id: 0,
       name: "Gateway",
       ip : "",
@@ -67,15 +64,16 @@ export default {
   }},
   sockets:{
     info: function(info){
-      this.testData.ip = this.gateway
+      this.treeData.ip = this.gateway
 
-      this.testData.children.push({
+      this.treeData.children.push({
           id: 1,
           ip : this.privateIp,
           mac : this.mac,
           router: false
       })
       this.init()
+      // Use this for testing
       // setInterval(() => { this.testAddNodes() }, 1000)
       // this.testAddNodes()
     },
@@ -84,7 +82,7 @@ export default {
     clearViz: function () {
     },
     addNode: function(node) {
-      const idx = this.testData.children.length + 1 ;
+      const idx = this.treeData.children.length + 1 ;
       node.router = node.ip === this.gateway;
       node.id = idx
       if(node.router){
@@ -92,7 +90,7 @@ export default {
       }
       else{
 
-        this.testData.children.push({
+        this.treeData.children.push({
             id: idx,
             ip : node.ip,
             mac : node.mac,
@@ -100,7 +98,7 @@ export default {
             router: false
         })
         this.$store.dispatch('addNewNode', node)
-        let newTree = this.$d3.hierarchy(this.testData, function(d) { return d.children; });
+        let newTree = this.$d3.hierarchy(this.treeData, function(d) { return d.children; });
         let treeData = this.tree(newTree)
         this.root.children.push(treeData.children.pop())
         this.update(this.root)
@@ -122,21 +120,19 @@ export default {
         this.tableHover(val)
       }
       else{
-        console.log("Clear Hover")
         this.clearNodesStyles()
       }
 
     },
     target (val) {
       if (val) {
-        // console.log(val)
         this.setTarget(val)
       } else {
         this.clearNodesStyles()
       }
     },
     gatewayMac (val) {
-      this.testData.mac = val
+      this.treeData.mac = val
     }
   },
   methods: {
@@ -145,7 +141,7 @@ export default {
                     .attr("width", this.width)
                     .attr("height", this.height);
       this.g =  this.svg.append("g").attr("transform", `translate(0,${this.height/4})`)
-      this.root = this.$d3.hierarchy(this.testData, function(d) { return d.children; });
+      this.root = this.$d3.hierarchy(this.treeData, function(d) { return d.children; });
       this.root.x0 = this.width/2;
       this.root.y0 = 0;
       this.root.children.forEach(this.collapse);
@@ -160,7 +156,7 @@ export default {
       let nodes = treeData.descendants(),
           links = treeData.descendants().slice(1);
 
-      nodes.forEach(function(d){ d.y = d.depth * 50});
+      nodes.forEach(function(d){ d.y = d.depth * 100});
       let node = this.g.selectAll("g.node")
           .data(nodes, (d) => { return d.id });
 
@@ -177,13 +173,13 @@ export default {
             if (d.data.router) {
               return nodeStyle.path.router
             }
-            return this.testData.children.length < this.largeMax ? nodeStyle.path.devices : nodeStyle.path.circle
+            return this.treeData.children.length < this.largeMax ? nodeStyle.path.devices : nodeStyle.path.circle
           })
           .attr("transform", (d) => {
             if (d.data.router) {
               return nodeStyle.transform.router
             }
-            return this.testData.children.length < this.largeMax ? nodeStyle.transform.large : nodeStyle.transform.small
+            return this.treeData.children.length < this.largeMax ? nodeStyle.transform.large : nodeStyle.transform.small
           })
           .attr("fill", function(d) {
               return d.data.router ? "url(#Router)" : "url(#Device)";
@@ -194,19 +190,19 @@ export default {
             if (d.data.router) {
               return nodeStyle.textTransformRotate.router
             }
-            return this.testData.children.length < this.largeMax ? nodeStyle.textTransformRotate.large : nodeStyle.textTransformRotate.small
+            return this.treeData.children.length < this.largeMax ? nodeStyle.textTransformRotate.large : nodeStyle.textTransformRotate.small
           })
           .attr("dx", (d) => {
             if (d.data.router) {
               return nodeStyle.textTransformXOffset.router
             }
-            return this.testData.children.length < this.largeMax ? nodeStyle.textTransformXOffset.large : nodeStyle.textTransformXOffset.small
+            return this.treeData.children.length < this.largeMax ? nodeStyle.textTransformXOffset.large : nodeStyle.textTransformXOffset.small
           })
           .attr("dy", (d) => {
             if (d.data.router) {
               return nodeStyle.textTransformYOffset.router
             }
-            return this.testData.children.length < this.largeMax ? nodeStyle.textTransformYOffset.large : nodeStyle.textTransformYOffset.small
+            return this.treeData.children.length < this.largeMax ? nodeStyle.textTransformYOffset.large : nodeStyle.textTransformYOffset.small
           })
           .attr("fill", function(d) {
               return d.data.router ? "url(#Router)" : "url(#Device)";
@@ -293,7 +289,6 @@ export default {
     return function (d) {
       if(vue.currentTool === 'Network'){
         vue.clearNodesStyles()
-        // console.log(this.path)
         vue.$d3.select(this).attr('fill','url(#Target)')
         vue.$store.dispatch('setHoverNode', d.data)
       }
@@ -304,11 +299,6 @@ export default {
       return function (d) {
         if (vue.currentTool === 'Network') {
           vue.clearNodesStyles()
-          // let fill =  d.data.router? 'url(#Router)' :'url(#Device)';
-          // if (vue.target) {
-          //   fill = (vue.target.ip === d.data.ip) ? 'url(#Target)' :'url(#Device)' ;
-          // }
-          // vue.$d3.select(this).attr('fill',"#222")
         }
       }
     },
@@ -357,7 +347,15 @@ export default {
     }
   },
   testAddNodes: function () {
-    let newTree = this.$d3.hierarchy(this.testData, function(d) { return d.children; });
+      const idx = this.treeData.children.length + 1 ;
+    this.treeData.children.push({
+        id: idx,
+        ip : idx,
+        mac : '',
+        hostname : '',
+        router: false
+    })
+    let newTree = this.$d3.hierarchy(this.treeData, function(d) { return d.children; });
     let treeData = this.tree(newTree)
     this.root.children.push(treeData.children.pop())
     this.update(this.root)

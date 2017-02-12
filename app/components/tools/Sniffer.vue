@@ -127,7 +127,7 @@ export default {
 
 <style scoped>
 .sniff-table{
-  height: 226px;
+  height: 258px;
   overflow: scroll;
 }
 .sniff-body{
@@ -136,7 +136,7 @@ export default {
 .sniff-payload{
   border-width: 1px;
   border-style: solid;
-  height: 132px;
+  height: 250px;
   overflow: scroll;
 }
 .activepacket{

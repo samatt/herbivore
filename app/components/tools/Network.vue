@@ -99,8 +99,8 @@ export default {
     mouseOver: function (node) {
       this.$store.dispatch('setHoverNode', node)
     },
-    mouseOut: function (node) {
-      this.$store.dispatch('clearHoverNode', node)
+    mouseOut: function () {
+      this.$store.dispatch('clearHoverNode')
     },
     setTarget: function (node) {
       this.$store.dispatch('setTarget', node)

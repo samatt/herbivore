@@ -54,7 +54,7 @@ const actions = {
   setHoverNode ({ commit, state }, node) {
     commit(types.SET_HOVER_NODE, node)
   },
-  clearHoverNode ({ commit, state }, node) {
+  clearHoverNode ({ commit, state }) {
     commit(types.CLEAR_HOVER_NODE)
   },
   updateRouterMac ({ commit, state }, mac) {

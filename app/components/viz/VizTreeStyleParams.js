@@ -35,20 +35,20 @@ const nodeStyle = {
   textTransformRotate: {
     router: 'rotate(0)',
     hover: '',
-    small: 'translate(-10,0)',
-    large: 'translate(-13, -952.36218)'
+    small: 'rotate(270)',
+    large: 'rotate(0)'
   },
   textTransformXOffset: {
     router: '-2.0em',
     hover: '',
-    small: '-2.6em',
-    large: '-9em'
+    small: '-9em',
+    large: '-2.6em'
   },
   textTransformYOffset: {
     router: '-0.2em',
     hover: '',
-    small: '3.36em',
-    large: '-0.4em'
+    small: '-0.4em',
+    large: '3.36em'
   },
   fill: {
     router: 'url(#Rputer)',

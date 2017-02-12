@@ -54,6 +54,7 @@ export default {
     tree: {},
     root: {},
     svg: {},
+    largeMax: 20,
     duration: 750,
     shortDuration: 250,
     testData: {
@@ -64,11 +65,6 @@ export default {
       children: []
     }
   }},
-  watch: {
-    gatewayMac (val) {
-      testData.mac = val
-    }
-  },
   sockets:{
     info: function(info){
       this.testData.ip = this.gateway
@@ -89,7 +85,6 @@ export default {
     },
     addNode: function(node) {
       const idx = this.testData.children.length + 1 ;
-      console.log(idx)
       node.router = node.ip === this.gateway;
       node.id = idx
       if(node.router){
@@ -108,7 +103,6 @@ export default {
         let newTree = this.$d3.hierarchy(this.testData, function(d) { return d.children; });
         let treeData = this.tree(newTree)
         this.root.children.push(treeData.children.pop())
-        console.log(this.root.children)
         this.update(this.root)
       }
     }
@@ -128,6 +122,7 @@ export default {
         this.tableHover(val)
       }
       else{
+        console.log("Clear Hover")
         this.clearNodesStyles()
       }
 
@@ -139,6 +134,9 @@ export default {
       } else {
         this.clearNodesStyles()
       }
+    },
+    gatewayMac (val) {
+      this.testData.mac = val
     }
   },
   methods: {
@@ -176,21 +174,16 @@ export default {
       nodeEnter.append('path')
           .attr("class", "icon")
           .attr("d",  (d) => {
-            let path = nodeStyle.path.devices
-            if (this.testData.children.length > 10 ) {
-              path = nodeStyle.path.circle
+            if (d.data.router) {
+              return nodeStyle.path.router
             }
-            return  d.data.router ? nodeStyle.path.router : path
+            return this.testData.children.length < this.largeMax ? nodeStyle.path.devices : nodeStyle.path.circle
           })
-          .attr("transform", function (d) {
-            let translate = nodeStyle.transform.large
-            if (typeof this.testData === 'undefined'){
-              translate = nodeStyle.transform.large
+          .attr("transform", (d) => {
+            if (d.data.router) {
+              return nodeStyle.transform.router
             }
-            else if (  this.testData.children.length > 10 ) {
-              translate = nodeStyle.transform.small
-            }
-            return d.data.router ? nodeStyle.transform.router : translate
+            return this.testData.children.length < this.largeMax ? nodeStyle.transform.large : nodeStyle.transform.small
           })
           .attr("fill", function(d) {
               return d.data.router ? "url(#Router)" : "url(#Device)";
@@ -199,21 +192,24 @@ export default {
       nodeEnter.append('text')
           .attr("transform", (d) => {
             if (d.data.router) {
-              return "rotate(0)"
+              return nodeStyle.textTransformRotate.router
             }
-            return this.testData.children.length < 15 ? 'rotate(0)' : 'rotate(270)'
+            return this.testData.children.length < this.largeMax ? nodeStyle.textTransformRotate.large : nodeStyle.textTransformRotate.small
           })
           .attr("dx", (d) => {
             if (d.data.router) {
-              return "-2.0em"
+              return nodeStyle.textTransformXOffset.router
             }
-            return this.testData.children.length < 15 ? "-2.6em" : "-9em"
+            return this.testData.children.length < this.largeMax ? nodeStyle.textTransformXOffset.large : nodeStyle.textTransformXOffset.small
           })
           .attr("dy", (d) => {
             if (d.data.router) {
-              return "-0.2em"
+              return nodeStyle.textTransformYOffset.router
             }
-            return this.testData.children.length < 15 ? "3.36em" : "0.4em"
+            return this.testData.children.length < this.largeMax ? nodeStyle.textTransformYOffset.large : nodeStyle.textTransformYOffset.small
+          })
+          .attr("fill", function(d) {
+              return d.data.router ? "url(#Router)" : "url(#Device)";
           })
           .text(function(d) { return d.data.ip; });
 
@@ -246,8 +242,7 @@ export default {
           var o = {x: source.x0, y: source.y0}
           return this.diagonal(o, o)
         })
-        .attr("stroke", function(d) { return "url(#Link)";})
-        ;
+        .attr("stroke", function(d) { return "url(#Link)";});
 
       let linkUpdate = linkEnter.merge(link);
 
@@ -308,11 +303,12 @@ export default {
       const vue = this
       return function (d) {
         if (vue.currentTool === 'Network') {
-          let fill =  d.data.router? 'url(#Router)' :'url(#Device)';
-          if (vue.target) {
-            fill = (vue.target.ip === d.data.ip) ? 'url(#Target)' :'url(#Device)' ;
-          }
-          vue.$d3.select(this).attr('fill',"#222")
+          vue.clearNodesStyles()
+          // let fill =  d.data.router? 'url(#Router)' :'url(#Device)';
+          // if (vue.target) {
+          //   fill = (vue.target.ip === d.data.ip) ? 'url(#Target)' :'url(#Device)' ;
+          // }
+          // vue.$d3.select(this).attr('fill',"#222")
         }
       }
     },
@@ -342,7 +338,7 @@ export default {
   setTarget: function (node) {
     this.clearNodesStyles()
     this.$d3.selectAll("path.icon")
-            .filter(function(d, i) { console.log(d.data.ip === node.ip); return (typeof d.data === 'undefined') ? false : (d.data.ip === node.ip); })
+            .filter(function(d, i) { return (typeof d.data === 'undefined') ? false : (d.data.ip === node.ip); })
             .attr('fill','url(#Target)');
   },
   clearNodesStyles: function () {
@@ -355,7 +351,7 @@ export default {
             .attr('fill','url(#Router)')
     if(this.target){
       let target = this.target
-      this.$d3.selectAll("icon")
+      this.$d3.selectAll("path.icon")
               .filter(function(d, i) { return (typeof d.data === 'undefined') ? false : (d.data.ip === target.ip); })
               .attr('fill','url(#Target)');
     }

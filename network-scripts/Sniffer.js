@@ -234,7 +234,6 @@ class Sniffer {
 
     let httpr = r.split('\r\n')
     try {
-          console.log({ts: ts, eth: eth, ip: ip, tcp: tcp, payload: this.parseHTTP(httpr)})
       return {ts: ts, eth: eth, ip: ip, tcp: tcp, payload: this.parseHTTP(httpr)}
     } catch (err) {
       this.error(err)

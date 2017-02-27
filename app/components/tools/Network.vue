@@ -22,7 +22,7 @@
     <tr @click="setTarget(node)"
         @mouseover="mouseOver(node)"
         @mouseout="mouseOut()"
-        :class="[node.active ? 'active' : '']"
+        :class="[node.active ? 'active' : '', node.homeNode ? 'homeNode' : '']"
         v-for="node in filteredData">
       <td>{{ node.mac | upperMac }} </td>
       <td>{{ node.ip }}</td>
@@ -105,6 +105,9 @@ export default {
     },
     setTarget: function (node) {
       this.$store.dispatch('setTarget', node)
+    },
+    setHomeNode: function () {
+      this.$store.emit('setHomeNode')
     }
   },
   filters: {
@@ -144,8 +147,13 @@ export default {
   margin-top: 8px;
 }
 
-.active{
+.active {
     color: #fff;
     background-color: #116cd6;
+}
+
+.homeNode {
+    color: #fff;
+    background-color: black;
 }
 </style>

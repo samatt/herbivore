@@ -286,6 +286,7 @@ export default {
           .on('mouseout', this.mouseout())
           .on('click', this.clickNode())
 
+      // SVG path styling for Router, Device, Target, HomeNode
       nodeEnter.append('path')
           .attr('class', 'icon')
           .attr('d', (d) => {
@@ -311,9 +312,15 @@ export default {
             return this.treeData.children.length < this.largeMax ? nodeStyle.transform.large : nodeStyle.transform.small
           })
           .attr('fill', function (d) {
+            // need to figure out how to get home mac, so if(d.data.mac === this mac)
+            // need to figure out how to set this color dynamically
+            // if (d.data.mac) {
+            //   return "black"
+            // }
             return d.data.router ? 'url(#Router)' : 'url(#Device)'
           })
 
+      // Text styling for Router, Device, Target, HomeNode
       nodeEnter.append('text')
           .attr('transform', (d) => {
             if (d.data.router) {
@@ -348,6 +355,11 @@ export default {
             return this.treeData.children.length < this.largeMax ? nodeStyle.textTransformYOffset.large : nodeStyle.textTransformYOffset.small
           })
           .attr('fill', function (d) {
+            // need to figure out how to get home mac, so if(d.data.mac === this mac)
+            // need to figure out how to set this color dynamically
+            // if (d.data.mac) {
+            //   return "black"
+            // }
             return d.data.router ? 'url(#Router)' : 'url(#Device)'
           })
           .text((d) => { return this.horizontal ? d.data.name : d.data.ip })

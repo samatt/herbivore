@@ -74,6 +74,9 @@ const actions = {
   },
   clearNetworkInfo ({ commit, state }) {
     commit(types.CLEAR_NETWORK_INFO)
+  },
+  setHomeNode ({ commit, state }) {
+    commit(types.SET_HOME_NODE)
   }
 }
 
@@ -90,7 +93,7 @@ const mutations = {
       state.type = type
       state.vendor = vendor
       const gn = { ip: state.gateway, mac: '', id: 0, router: true, active: false }
-      const n = { ip: state.privateIp, mac: state.mac, id: 1, router: false, active: false, vendor: state.vendor }
+      const n = { ip: state.privateIp, mac: state.mac, id: 1, router: false, active: false, vendor: state.vendor, homeNode: false }
       state.nodes.push(gn)
       state.nodes.push(n)
     }
@@ -167,6 +170,17 @@ const mutations = {
     state.nodes = []
 
     state.clickedLink = null
+  },
+  [types.SET_HOME_NODE] (state) {
+    debugger;
+    state.nodes.forEach(function (n) {
+      if (state.mac === n.mac) {
+        n.homeNode = true
+        state.homeNode = node
+      } else {
+        n.homeNode = false
+      }
+    })
   }
 }
 

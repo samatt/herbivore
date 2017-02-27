@@ -12,8 +12,9 @@
 </template>
 <script>
 
-import {mapGetters} from 'vuex'
-import {toolNameFilter} from '../filters'
+import { mapGetters } from 'vuex'
+import { toolNameFilter } from '../filters'
+
 export default {
   name: 'NavMenu',
   props: [],
@@ -21,17 +22,18 @@ export default {
   },
   data () {
     return {
-     selectedIdx: "",
-     interfaceUpdated: false,
-     icons: {
-      'Network': 'icon-search',
-      'Info':'icon-info',
-      'Sniffer':'icon-signal'
-     }
+      selectedIdx: '',
+      interfaceUpdated: false,
+      icons: {
+        'Network': 'icon-search',
+        'Info': 'icon-info',
+        'Sniffer': 'icon-signal'
+      }
     }
   },
   computed: mapGetters({
     toolNames: 'toolNames',
+    currentTool: 'currentTool',
     privateIp: 'privateIp',
     mac: 'mac',
     gateway: 'gateway',
@@ -40,28 +42,38 @@ export default {
   }),
   components: {
   },
-  filters:{
+  filters: {
     toolNameFilter
+  },
+  watch: {
+    currentTool (val) {
+      if (val === 'Network') {
+        this.updateTools(val, 0)
+      } else if (val === 'Sniffer') {
+        this.updateTools(val, 1)
+      }
+    }
   },
   methods: {
     updateTools (tool, index) {
-      this.selectedIdx = index;
+      this.selectedIdx = index
       this.$store.dispatch('stop')
       this.$store.dispatch('changeTool', tool)
       this.$store.dispatch('clearClickedLink')
       this.$socket.emit('stop')
-      this.$socket.emit('load',tool)
+      this.$socket.emit('load', tool)
 
-      if( tool === 'Sniffer'){
-        if ( this.target ) {
-          this.$socket.emit('cmd', 'updateTarget', {'target_ip':this.target.ip,
-          'target_mac':this.target.mac,
-          'self_mac':this.mac,
-          'gw_ip': this.gateway,
-          'gw_mac': this.gatewayMac})
+      if (tool === 'Sniffer') {
+        if (this.target) {
+          this.$socket.emit('cmd', 'updateTarget', {
+            'target_ip': this.target.ip,
+            'target_mac': this.target.mac,
+            'self_mac': this.mac,
+            'gw_ip': this.gateway,
+            'gw_mac': this.gatewayMac })
         }
         if (!this.interfaceUpdated) {
-          this.interfaceUpdated = true;
+          this.interfaceUpdated = true
           this.updateSniffer()
         }
       }

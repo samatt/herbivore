@@ -79,7 +79,7 @@ const actions = {
 
 const mutations = {
   [types.UPDATE_NETWORK_INFO] (state, info) {
-    let {connected, privateIp, iface, gateway, netmask, mac, type, vendor} = info
+    const { connected, privateIp, iface, gateway, netmask, mac, type, vendor } = info
     state.connected = connected
     if (state.connected) {
       state.mac = mac
@@ -128,10 +128,10 @@ const mutations = {
     })
   },
   [types.UPDATE_CLICKED_LINK] (state, node) {
-    let l = state.nodes.filter(function (n) {
+    const l = state.nodes.filter(function (n) {
       return node.ip === n.ip
     })
-    state.clickedLink = {router: state.nodes[0], target: l[0]}
+    state.clickedLink = { router: state.nodes[0], target: l[0] }
   },
   [types.CLEAR_CLICKED_LINK] (state, node) {
     state.clickedLink = null

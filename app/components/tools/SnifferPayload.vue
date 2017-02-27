@@ -27,8 +27,6 @@
 </template>
 
 <script>
-// import {payloadParser} from '../../filters'
-import {mapGetters, mapActions} from 'vuex'
 
 export default {
   name: 'snifferPayload',

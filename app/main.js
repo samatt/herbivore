@@ -2,7 +2,7 @@ import Vue from 'vue'
 import store from './store'
 import App from './App'
 import VueSocketio from 'vue-socket.io'
-import {mapGetters} from 'vuex'
+import { mapGetters } from 'vuex'
 import VueD3 from 'vue-d3'
 
 Vue.use(VueD3)
@@ -15,7 +15,7 @@ new Vue({
   components: { App },
   data () {
     return {
-      vdata: {nodes: [], links: []},
+      vdata: { nodes: [], links: [] },
       packets: []
     }
   },

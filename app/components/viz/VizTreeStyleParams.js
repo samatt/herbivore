@@ -2,6 +2,15 @@ const linkStyle = {
 
 }
 
+const svgStyle = {
+  getHTransform: function (w, h) {
+    return { x: 100, y: h / 4 }
+  },
+  getVTransform: function (w, h) {
+    return { x: 0, y: h / 4 }
+  }
+}
+
 const nodeStyle = {
   path: {
     devices: `M-1,19.072v-14.4c0-1.139,0.952-2.044,2.151-2.044h22.438c1.201,0,2.152,0.905,2.152,2.044v4.469h-2.95V5.402H1.95v12.912
@@ -58,4 +67,4 @@ const nodeStyle = {
   }
 }
 
-export { linkStyle, nodeStyle }
+export { linkStyle, nodeStyle, svgStyle }

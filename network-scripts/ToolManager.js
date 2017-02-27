@@ -5,7 +5,7 @@ class ToolManager {
 
   constructor (logDebug = false) {
     this.name = 'ToolManager'
-    this._client = {id: 'not connected'}
+    this._client = { id: 'not connected' }
     this._currentTool = null
     this.logDebug
     // this.toolnames = ['Network', 'Info', 'Sniffer']
@@ -13,9 +13,9 @@ class ToolManager {
   }
 
   loadTools () {
-    let tools = []
-    let sniffer = new Sniffer()
-    let network = new Network()
+    const tools = []
+    const sniffer = new Sniffer()
+    const network = new Network()
     tools.push(sniffer)
     tools.push(network)
     return tools
@@ -64,7 +64,7 @@ class ToolManager {
   }
 
   load (toolname) {
-    let t = this.tools.find(function (tool) {
+    const t = this.tools.find(function (tool) {
       return tool.name === toolname
     })
     this._currentTool = t

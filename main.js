@@ -5,14 +5,14 @@ const app = electron.app
 const Menu = electron.Menu
 const BrowserWindow = electron.BrowserWindow
 const io = require('socket.io').listen(7777)
-require('electron-debug')({showDevTools: true})
+require('electron-debug')({ showDevTools: true })
 
 const sudo = require('sudo-prompt')
 const options = {
   name: 'Herbivore'
 }
 
-let toolManager = new ToolManager()
+const toolManager = new ToolManager()
 let mainWindow
 
 const template = [
@@ -81,8 +81,8 @@ const menu = Menu.buildFromTemplate(template)
 
 function createWindow () {
   Menu.setApplicationMenu(menu)
-  mainWindow = new BrowserWindow({width: 1280, height: 840, frame: false})
-  // BrowserWindow.addDevToolsExtension('/Users/surya/Library/Application Support/Google/Chrome/Default/Extensions/nhdogjmejiglipccpnnnanhbledajbpd/3.0.6_0')
+  mainWindow = new BrowserWindow({ width: 1280, height: 840, frame: false })
+  // BrowserWindow.addDevToolsExtension('/Users/surya/Library/Application Support/Google/Chrome/Default/Extensions/nhdogjmejiglipccpnnnanhbledajbpd/3.0.8_0')
   mainWindow.loadURL(path.join('file://', __dirname, '/index.html'))
   mainWindow.on('closed', function () {
     mainWindow = null

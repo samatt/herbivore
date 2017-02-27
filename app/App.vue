@@ -30,9 +30,9 @@ import NavMenu from './components/NavMenu'
 import ToolBar from './components/ToolBar'
 import InfoBar from './components/InfoBar'
 import VizTree from './components/viz/VizTree'
-import Viz from './components/viz/Viz'
+// import Viz from './components/viz/Viz'
 import Console from './components/Console'
-import {mapGetters, mapActions} from 'vuex'
+import { mapGetters } from 'vuex'
 
 export default {
   name: 'app',
@@ -42,18 +42,17 @@ export default {
     Console,
     ToolBar,
     InfoBar,
-    VizTree,
-    Viz
+    VizTree
   },
   created () {
     // Step 1
     this.$store.dispatch('changeTool', 'Network')
-    this.$socket.emit('load','Network')
+    this.$socket.emit('load', 'Network')
     this.run()
   },
   data () {
     return {
-     currentTool:''
+      currentTool: ''
     }
   },
   computed: mapGetters({
@@ -62,7 +61,7 @@ export default {
     currentTool: 'currentTool',
     correctPermission: 'correctPermission'
   }),
-  methods:{
+  methods: {
     run () {
       if (this.currentTool) {
         this.$store.dispatch('stop')

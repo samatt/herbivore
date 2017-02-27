@@ -52,14 +52,14 @@ class Network {
       this._checkHost()
       network.get_active_interface((err, obj) => {
         if (err) {
-          let data = {iface: 'No active interface', connected: false}
+          const data = { iface: 'No active interface', connected: false }
           this._client.emit('info', data)
           this.error('get_active_interface : ' + err.message)
           return
         }
 
         if (!obj) {
-          let data = {iface: 'No active interface', connected: false}
+          const data = { iface: 'No active interface', connected: false }
           this._client.emit('info', data)
           this.error('get_active_interface:  no interface found')
           return
@@ -75,7 +75,7 @@ class Network {
         this.subnet.pop()
         this.type = obj.type
 
-        let data = { connected: true,
+        const data = { connected: true,
           self: true,
           privateIp: this.local,
           iface: this.interface,
@@ -83,7 +83,8 @@ class Network {
           netmask: this.netmask,
           mac: this.mac,
           type: this.type,
-          vendor: this.vendor}
+          vendor: this.vendor
+        }
 
         this._pingSubnet()
 
@@ -126,15 +127,15 @@ class Network {
   _getHostNamePromise (ip) {
     this.info(`Finding host for ip: ${ip}`)
     // TODO: Add linux version
-    spawn('dig', ['-x', ip, '-p', '5353', '@224.0.0.251'], {capture: [ 'stdout', 'stderr' ]})
+    spawn('dig', ['-x', ip, '-p', '5353', '@224.0.0.251'], { capture: ['stdout', 'stderr'] })
     .then((result) => {
-      let text = result.stdout.toString()
-      let lines = text.split('\n')
+      const text = result.stdout.toString()
+      const lines = text.split('\n')
       console.log(lines)
-      let line = lines[11]
-      let hostAdd = line.split('\t').pop()
-      let hostname = hostAdd.split('.')[0]
-      this._client.emit('updateHostname', {ip: ip, hostname: hostname})
+      const line = lines[11]
+      const hostAdd = line.split('\t').pop()
+      const hostname = hostAdd.split('.')[0]
+      this._client.emit('updateHostname', { ip: ip, hostname: hostname })
     })
     .catch(function (err) {
       this.error(err.stderr)
@@ -147,16 +148,16 @@ class Network {
     exec(`dig -x ${ip} -p 5353 @224.0.0.251`, (err, stdout, stderr) => {
       if (err) { this.debug(`err: ${ip} ${err} `); return }
       if (stderr) { this.debug(`err: ${ip} ${stderr} `); return }
-      let text = stdout
-      let lines = text.split('\n')
-      let line = lines[11]
+      const text = stdout
+      const lines = text.split('\n')
+      const line = lines[11]
       if (typeof line === 'undefined') {
         return
       }
-      let hostAdd = line.split('\t').pop()
-      let hostname = hostAdd.split('.')[0]
+      const hostAdd = line.split('\t').pop()
+      const hostname = hostAdd.split('.')[0]
       this.debug(`ip: ${ip} hostname: ${hostname}`)
-      this._client.emit('updateHostname', {ip: ip, hostname: hostname})
+      this._client.emit('updateHostname', { ip: ip, hostname: hostname })
     })
   }
 
@@ -164,7 +165,7 @@ class Network {
     arp.table((err, entry) => {
       if (err) return console.log('arp: ' + err.message)
       if (!entry) return
-      let t = entry.ip.split('.')
+      const t = entry.ip.split('.')
       t.pop()
 
       if (this.interface !== entry.ifname) {
@@ -182,7 +183,7 @@ class Network {
         return
       }
 
-      let exisiting = this.tbl.filter((e) => {
+      const exisiting = this.tbl.filter((e) => {
         return e.mac === entry.mac
       })
 
@@ -195,7 +196,7 @@ class Network {
 
       this.debug(`Found device: ${entry.mac} `)
       if (this._client) {
-        let vendorInfo = oui(entry.mac)
+        const vendorInfo = oui(entry.mac)
         if (vendorInfo != null && vendorInfo.indexOf('\n') > -1) {
           entry.vendor = vendorInfo.split('\n')[0]
         } else {
@@ -215,8 +216,8 @@ class Network {
     const subnet = this.gw.split('.')
     subnet.pop()
     for (var i = 0; i < 255; i++) {
-      let n = this.subnet.concat(i)
-      let toPing = n.join('.')
+      const n = this.subnet.concat(i)
+      const toPing = n.join('.')
       ping.sys.probe(toPing, function (isAlive) {
         var msg = isAlive ? 'host ' + toPing + ' is alive' : 'host ' + toPing + ' is dead'
         if (isAlive) {
@@ -235,13 +236,13 @@ class Network {
       exec(`dig -x ${ip} -p 5353 @224.0.0.251`, (err, stdout, stderr) => {
         if (err) { this.debug(`err: ${ip} ${err} `); return }
         if (stderr) { this.debug(`err: ${ip} ${stderr} `); return }
-        let text = stdout
-        let lines = text.split('\n')
-        let line = lines[11]
-        let hostAdd = line.split('\t').pop()
-        let hostname = hostAdd.split('.')[0]
+        const text = stdout
+        const lines = text.split('\n')
+        const line = lines[11]
+        const hostAdd = line.split('\t').pop()
+        const hostname = hostAdd.split('.')[0]
         this.info(hostname)
-        this._client.emit('updateHostname', {ip: ip, hostname: hostname})
+        this._client.emit('updateHostname', { ip: ip, hostname: hostname })
         index = index + 1
         this._getAllHostnames(index)
       })
@@ -261,7 +262,7 @@ class Network {
   }
 
   _getHostBuffer () {
-    let bufferSize = 10
+    const bufferSize = 10
     if (this.unresolvedIps.length < 1) {
       // this.info(`No unresolved Ips`)
       return
@@ -273,7 +274,7 @@ class Network {
         cur = this.unresolvedIps.splice(0, this.unresolvedIps.length)
       }
       this.info(`Finding hostnames for: ${cur.length} devices and still have ${this.unresolvedIps.length} devices remaining`)
-      for (let c in cur) {
+      for (const c in cur) {
         this._getHostName(cur[c])
       }
     }

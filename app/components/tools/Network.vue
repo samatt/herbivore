@@ -37,24 +37,24 @@
 </template>
 
 <script>
-import {mapGetters} from 'vuex'
-import {upperMac, capitalize} from '../../filters'
+import { mapGetters } from 'vuex'
+import { upperMac, capitalize } from '../../filters'
 
 export default {
   name: 'Network',
   created () {
   },
   data () {
-    let columns = ['mac', 'ip', 'vendor', 'hostname', 'router']
-    let sortOrders = {}
+    const columns = ['mac', 'ip', 'vendor', 'hostname', 'router']
+    const sortOrders = {}
     columns.forEach(function (key) {
       sortOrders[key] = 1
     })
     return {
-     sortKey: '',
-     sortOrders: sortOrders,
-     columns: columns,
-     filterKey: ''
+      sortKey: '',
+      sortOrders: sortOrders,
+      columns: columns,
+      filterKey: ''
     }
   },
   computed: {
@@ -90,8 +90,9 @@ export default {
       type: 'type',
       nodes: 'nodes',
       clickedNode: 'clickedNode'
-    })},
-  methods:{
+    })
+  },
+  methods: {
     sortBy: function (key) {
       this.sortKey = key
       this.sortOrders[key] = this.sortOrders[key] * -1
@@ -106,7 +107,7 @@ export default {
       this.$store.dispatch('setTarget', node)
     }
   },
-  filters:{
+  filters: {
     upperMac,
     capitalize
   }

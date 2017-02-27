@@ -19,8 +19,8 @@
 </template>
 <script>
 
-import {mapGetters} from 'vuex'
-import {statusString} from '../filters'
+import { mapGetters } from 'vuex'
+import { statusString } from '../filters'
 export default {
   name: 'ToolBar',
   props: [],
@@ -28,27 +28,27 @@ export default {
   },
   data () {
     return {
-      isClicked:false
+      isClicked: false
     }
   },
   computed: {
     moreInfoString () {
-      if (typeof this.hoveredNode === 'undefined') return '';
+      if (typeof this.hoveredNode === 'undefined') return ''
       if (this.hoveredNode && !this.hoveredNode.router) {
-        let node = this.nodes.filter( (n) => {return n.ip === this.hoveredNode.ip})
+        const node = this.nodes.filter((n) => { return n.ip === this.hoveredNode.ip })
         return node ? `${node[0].mac}  ${node[0].ip}   ${node[0].hostname}` : 'cant find node :('
       } else {
         return ''
       }
     },
     targetSet () {
-      if(this.target){
+      if (this.target) {
         // Have to do this because of stupid d3/vuex data mismatch
-        let t = this.nodes.filter( (n) => { return n.ip === this.target.ip} )
+        const t = this.nodes.filter((n) => { return n.ip === this.target.ip })
         return `${this.target.mac.toUpperCase()} ${t[0].hostname}`
       }
 
-      if(this.hoveredNode){
+      if (this.hoveredNode) {
         return 'Click selected node to make it your target'
       } else {
         return ''
@@ -60,10 +60,11 @@ export default {
       hoveredNode: 'hoveredNode',
       target: 'target',
       nodes: 'nodes'
-    })},
+    })
+  },
   components: {
   },
-  filters:{
+  filters: {
     statusString
   },
   methods: {
@@ -73,16 +74,14 @@ export default {
     },
     clearTarget () {
       this.$store.dispatch('clearTarget')
-      this.$socket.emit('cmd', 'updateTarget', {'stop':true})
+      this.$socket.emit('cmd', 'updateTarget', { 'stop': true })
     },
     rescan () {
       if (this.currentTool === 'Network') {
         this.$socket.emit('cmd', 'rescan')
-      }
-      else if (this.currentTool === 'Sniffer') {
+      } else if (this.currentTool === 'Sniffer') {
         this.$store.dispatch('clearSnifferInfo')
       }
-
     },
     clicked (name) {
       this.isClicked = !this.isClicked

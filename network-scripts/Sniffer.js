@@ -145,7 +145,7 @@ class Sniffer {
 //     target_ip: '192.168.1.1',
 //     target_mac: '6c:72:20:6b:89:44'}
   arpPack (config) {
-    let pktConfig = {
+    const pktConfig = {
       'op': 'request',
       'src_ip': config.src_ip,
       'src_mac': config.src_mac,
@@ -154,7 +154,7 @@ class Sniffer {
       'dst_mac': config.target_mac
     }
 
-    let pkt = {}
+    const pkt = {}
     pkt.dst = this.macToArr(pktConfig.dst_mac)
     pkt.src = this.macToArr(pktConfig.self_mac)
 
@@ -200,6 +200,7 @@ class Sniffer {
     const tcp = ip.payload
     const src = ip.saddr.addr.join('.')
     const dst = ip.daddr.addr.join('.')
+    // console.log(`${src} - ${dst}`)
     if (this.arpTarget) {
       if (this.arpTarget !== src && this.arpTarget !== dst) {
         return false
@@ -209,13 +210,14 @@ class Sniffer {
         return false
       }
     }
+
     if (tcp.sport === 8443 ||
         tcp.sport === 443 ||
         tcp.dport === 443 ||
         tcp.dport === 8443) {
       if (tcp.data) {
         if (tlsClientHello(tcp.data)) {
-          return {ts: ts, eth: eth, ip: ip, tcp: tcp, payload: {type: 'https', host: sni(tcp.data)}}
+          return { ts: ts, eth: eth, ip: ip, tcp: tcp, payload: { type: 'https', host: sni(tcp.data) }}
         }
       }
       return false
@@ -225,16 +227,16 @@ class Sniffer {
       return false
     }
 
-    let r = tcp.data.toString('utf-8')
+    const r = tcp.data.toString('utf-8')
     if (r.indexOf('Content-Length') === -1 &&
         r.indexOf('Host') === -1 &&
         r.indexOf('Content-Type') === -1) {
       return false
     }
 
-    let httpr = r.split('\r\n')
+    const httpr = r.split('\r\n')
     try {
-      return {ts: ts, eth: eth, ip: ip, tcp: tcp, payload: this.parseHTTP(httpr)}
+      return { ts: ts, eth: eth, ip: ip, tcp: tcp, payload: this.parseHTTP(httpr) }
     } catch (err) {
       this.error(err)
       return false
@@ -260,20 +262,20 @@ class Sniffer {
   }
 
   parseHTTP (headers) {
-    let packet = {}
+    const packet = {}
     packet.http = true
     packet.host = ''
-    let firstline = headers.shift()
+    const firstline = headers.shift()
     if (firstline.indexOf('GET') > -1 ||
         firstline.indexOf('POST') > -1 ||
         firstline.indexOf('PUT') > -1) {
-      let [verb, url, version] = firstline.split(' ')
+      const [verb, url, version] = firstline.split(' ')
       packet.type = 'request'
       packet.method = verb
       packet.url = url
       packet.version = version
     } else {
-      let [version, code, status] = firstline.split(' ')
+      const [version, code, status] = firstline.split(' ')
       packet.type = 'response '
       packet.code = code
       packet.status = status
@@ -287,7 +289,7 @@ class Sniffer {
         break
       }
 
-      let header = headers[i].split(': ')
+      const header = headers[i].split(': ')
       if (header.length < 2) {
         continue
       } else {
@@ -298,7 +300,7 @@ class Sniffer {
       }
     }
 
-    let lastline = headers.pop()
+    const lastline = headers.pop()
     packet.payload = lastline
     return packet
   }

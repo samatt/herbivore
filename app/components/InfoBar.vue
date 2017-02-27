@@ -25,7 +25,7 @@
 
 </template>
 <script>
-import {mapGetters} from 'vuex'
+import { mapGetters } from 'vuex'
 
 export default {
   name: 'InfoBar',
@@ -33,7 +33,7 @@ export default {
   },
   data () {
     return {
-     selectedIdx: "",
+      selectedIdx: ''
     }
   },
   computed: mapGetters({

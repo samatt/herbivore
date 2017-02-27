@@ -13,7 +13,7 @@
 <script>
 import Sniffer from './tools/Sniffer'
 import Network from './tools/Network'
-import {mapGetters, mapActions} from 'vuex'
+import { mapGetters } from 'vuex'
 
 export default {
   name: 'Console',
@@ -25,17 +25,17 @@ export default {
       noToolSelected: true
     }
   },
-  components:{
+  components: {
     Sniffer,
     Network
   },
-  filters:{
+  filters: {
   },
   computed: mapGetters({
     currentTool: 'currentTool',
     toolRunning: 'toolRunning'
   }),
-  methods:{
+  methods: {
   }
 }
 </script>

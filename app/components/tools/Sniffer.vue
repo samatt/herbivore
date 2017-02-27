@@ -37,9 +37,9 @@
 </template>
 
 <script>
-import {stringifyMac, prettifyTs, stringifyIp} from '../../filters'
-import {mapGetters, mapActions} from 'vuex'
-import SnifferPayload  from './SnifferPayload'
+import { stringifyMac, prettifyTs, stringifyIp } from '../../filters'
+import { mapGetters } from 'vuex'
+import SnifferPayload from './SnifferPayload'
 
 export default {
   name: 'sniffer',
@@ -50,76 +50,70 @@ export default {
   },
   data () {
     return {
-     selectedPacket: null,
-     selectedIndex: -1,
-     hoverIndex: -1,
-     activeClass: 'activepacket',
-     hoverClass: 'hovered'
+      selectedPacket: null,
+      selectedIndex: -1,
+      hoverIndex: -1,
+      activeClass: 'activepacket',
+      hoverClass: 'hovered'
     }
-
   },
   computed: mapGetters({
     toolRunning: 'toolRunning',
     packets: 'packets',
     clickedLink: 'clickedLink'
   }),
-  components:{
+  components: {
     SnifferPayload
   },
-  filters:{
+  filters: {
     stringifyMac,
     stringifyIp,
     prettifyTs
   },
   methods: {
     updateCurrent (packet, index) {
-      this.selectedPacket = packet;
-      this.selectedIndex = index;
-      this.hoverIndex = index;
+      this.selectedPacket = packet
+      this.selectedIndex = index
+      this.hoverIndex = index
     },
     keyup (e) {
-
-      //DOWN
-      if((e.keyCode || e.which) === 40 ){
-        if(this.hoverIndex < this.packets.length-1){
-            this.hoverIndex += 1;
+      // DOWN
+      if ((e.keyCode || e.which) === 40) {
+        if (this.hoverIndex < this.packets.length - 1) {
+          this.hoverIndex += 1
         }
-        if(document.getElementsByClassName('hovered')){
-          const cur =   document.getElementsByClassName('hovered')[0];
-          if(cur){
+        if (document.getElementsByClassName('hovered')) {
+          const cur = document.getElementsByClassName('hovered')[0]
+          if (cur) {
             const id = cur.id.split('-')
-            const index =id.pop()
-            this.selectedPacket = this.packets[this.hoverIndex];
-            cur.scrollIntoViewIfNeeded({block: "end", behavior: "smooth"});
+            const index = id.pop()
+            this.selectedPacket = this.packets[this.hoverIndex]
+            cur.scrollIntoViewIfNeeded({ block: 'end', behavior: 'smooth' })
+          }
+        } // UP
+      } else if ((e.keyCode || e.which) === 38) {
+        if (this.hoverIndex > 0) {
+          this.hoverIndex -= 1
+        }
+        if (document.getElementsByClassName('hovered')) {
+          const cur = document.getElementsByClassName('hovered')[0]
+          if (cur) {
+            const id = cur.id.split('-')
+            const index = id.pop()
+            this.selectedPacket = this.packets[this.hoverIndex]
+            cur.scrollIntoViewIfNeeded({ block: 'end', behavior: 'smooth' })
+          }
+        }
+      } else if ((e.keyCode || e.which) === 13) {
+        if (document.getElementsByClassName('hovered')) {
+          const cur = document.getElementsByClassName('hovered')[0]
+          if (cur) {
+            const id = cur.id.split('-')
+            const index = id.pop()
+            this.selectedPacket = this.packets[index]
           }
         }
       }
-      //UP
-      else if((e.keyCode || e.which) === 38 ){
-        if(this.hoverIndex > 0){
-            this.hoverIndex -= 1;
-        }
-        if(document.getElementsByClassName('hovered')){
-          const cur = document.getElementsByClassName('hovered')[0];
-          if(cur){
-            const id = cur.id.split('-')
-            const index =id.pop()
-            this.selectedPacket = this.packets[this.hoverIndex];
-            cur.scrollIntoViewIfNeeded({block: "end", behavior: "smooth"});
-          }
-        }
-      }
-      else if((e.keyCode || e.which) === 13 ){
-        if(document.getElementsByClassName('hovered')){
-          const cur =   document.getElementsByClassName('hovered')[0];
-          if(cur){
-            const id = cur.id.split('-')
-            const index =id.pop()
-            this.selectedPacket = this.packets[index];
-          }
-        }
-      }
-
     }
   }
 }

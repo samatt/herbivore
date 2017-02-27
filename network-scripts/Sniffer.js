@@ -2,9 +2,7 @@ const pcap = require('pcap')
 const pcapFilters = require('./pcap-filters')
 const tlsClientHello = require('is-tls-client-hello')
 const sni = require('sni')
-// sudo sysctl -w net.inet.ip.forwarding=1
-// sudo sysctl -w net.inet.ip.fw.enable=1
-// https://www.npmjs.com/package/electron-sudo
+
 class Sniffer {
 
   constructor (logDebug = false) {

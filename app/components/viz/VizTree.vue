@@ -292,12 +292,22 @@ export default {
             if (d.data.router) {
               return nodeStyle.path.router
             }
+
+            if (this.horizontal) {
+              return nodeStyle.path.devices
+            }
+
             return this.treeData.children.length < this.largeMax ? nodeStyle.path.devices : nodeStyle.path.circle
           })
           .attr('transform', (d) => {
             if (d.data.router) {
               return nodeStyle.transform.router
             }
+
+            if (this.horizontal) {
+              return nodeStyle.transform.large
+            }
+
             return this.treeData.children.length < this.largeMax ? nodeStyle.transform.large : nodeStyle.transform.small
           })
           .attr('fill', function (d) {
@@ -309,18 +319,32 @@ export default {
             if (d.data.router) {
               return nodeStyle.textTransformRotate.router
             }
+
+            if (this.horizontal) {
+              return nodeStyle.textTransformRotate.large
+            }
+
             return this.treeData.children.length < this.largeMax ? nodeStyle.textTransformRotate.large : nodeStyle.textTransformRotate.small
           })
           .attr('dx', (d) => {
             if (d.data.router) {
               return nodeStyle.textTransformXOffset.router
             }
+
+            if (this.horizontal) {
+              return nodeStyle.textTransformXOffset.large
+            }
+
             return this.treeData.children.length < this.largeMax ? nodeStyle.textTransformXOffset.large : nodeStyle.textTransformXOffset.small
           })
           .attr('dy', (d) => {
             if (d.data.router) {
               return nodeStyle.textTransformYOffset.router
             }
+            if (this.horizontal) {
+              return nodeStyle.textTransformYOffset.large
+            }
+
             return this.treeData.children.length < this.largeMax ? nodeStyle.textTransformYOffset.large : nodeStyle.textTransformYOffset.small
           })
           .attr('fill', function (d) {

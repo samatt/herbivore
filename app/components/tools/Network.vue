@@ -89,7 +89,8 @@ export default {
       netmask: 'netmask',
       type: 'type',
       nodes: 'nodes',
-      clickedNode: 'clickedNode'
+      clickedNode: 'clickedNode',
+      homeNode: 'homeNode'
     })
   },
   methods: {
@@ -106,8 +107,8 @@ export default {
     setTarget: function (node) {
       this.$store.dispatch('setTarget', node)
     },
-    setHomeNode: function () {
-      this.$store.emit('setHomeNode')
+    setHomeNode: function (node) {
+      this.$store.dispatch('setHomeNode', node)
     }
   },
   filters: {

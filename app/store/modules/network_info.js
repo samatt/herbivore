@@ -15,7 +15,8 @@ const state = {
   nodes: [],
   clickedLink: null,
   hoveredNode: null,
-  target: null
+  target: null,
+  homeNode: null
 }
 
 const getters = {
@@ -32,7 +33,8 @@ const getters = {
   nodes: state => state.nodes,
   target: state => state.target,
   hoveredNode: state => state.hoveredNode,
-  clickedLink: state => state.clickedLink
+  clickedLink: state => state.clickedLink,
+  homeNode: state => state.homeNode
 }
 
 const actions = {
@@ -75,8 +77,8 @@ const actions = {
   clearNetworkInfo ({ commit, state }) {
     commit(types.CLEAR_NETWORK_INFO)
   },
-  setHomeNode ({ commit, state }) {
-    commit(types.SET_HOME_NODE)
+  setHomeNode ({ commit, state }, node) {
+    commit(types.SET_HOME_NODE, node)
   }
 }
 
@@ -93,7 +95,7 @@ const mutations = {
       state.type = type
       state.vendor = vendor
       const gn = { ip: state.gateway, mac: '', id: 0, router: true, active: false }
-      const n = { ip: state.privateIp, mac: state.mac, id: 1, router: false, active: false, vendor: state.vendor, homeNode: false }
+      const n = { ip: state.privateIp, mac: state.mac, id: 1, router: false, active: false, vendor: state.vendor, homeNode: true }
       state.nodes.push(gn)
       state.nodes.push(n)
     }
@@ -172,11 +174,10 @@ const mutations = {
     state.clickedLink = null
   },
   [types.SET_HOME_NODE] (state) {
-    debugger;
     state.nodes.forEach(function (n) {
       if (state.mac === n.mac) {
         n.homeNode = true
-        state.homeNode = node
+        state.homeNode = n
       } else {
         n.homeNode = false
       }

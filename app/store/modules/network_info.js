@@ -76,9 +76,6 @@ const actions = {
   },
   clearNetworkInfo ({ commit, state }) {
     commit(types.CLEAR_NETWORK_INFO)
-  },
-  setHomeNode ({ commit, state }, node) {
-    commit(types.SET_HOME_NODE, node)
   }
 }
 
@@ -172,16 +169,6 @@ const mutations = {
     state.nodes = []
 
     state.clickedLink = null
-  },
-  [types.SET_HOME_NODE] (state) {
-    state.nodes.forEach(function (n) {
-      if (state.mac === n.mac) {
-        n.homeNode = true
-        state.homeNode = n
-      } else {
-        n.homeNode = false
-      }
-    })
   }
 }
 

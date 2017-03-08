@@ -106,9 +106,6 @@ export default {
     },
     setTarget: function (node) {
       this.$store.dispatch('setTarget', node)
-    },
-    setHomeNode: function (node) {
-      this.$store.dispatch('setHomeNode', node)
     }
   },
   filters: {

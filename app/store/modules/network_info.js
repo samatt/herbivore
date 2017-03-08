@@ -93,6 +93,7 @@ const mutations = {
       state.vendor = vendor
       const gn = { ip: state.gateway, mac: '', id: 0, router: true, active: false }
       const n = { ip: state.privateIp, mac: state.mac, id: 1, router: false, active: false, vendor: state.vendor, homeNode: true }
+      state.homeNode = n
       state.nodes.push(gn)
       state.nodes.push(n)
     }

@@ -22,7 +22,7 @@
     <tr @click="setTarget(node)"
         @mouseover="mouseOver(node)"
         @mouseout="mouseOut()"
-        :class="[node.active ? 'active' : '']"
+        :class="[node.active ? 'active' : '', node.homeNode ? 'homeNode' : '']"
         v-for="node in filteredData">
       <td>{{ node.mac | upperMac }} </td>
       <td>{{ node.ip }}</td>
@@ -89,7 +89,8 @@ export default {
       netmask: 'netmask',
       type: 'type',
       nodes: 'nodes',
-      clickedNode: 'clickedNode'
+      clickedNode: 'clickedNode',
+      homeNode: 'homeNode'
     })
   },
   methods: {
@@ -144,8 +145,13 @@ export default {
   margin-top: 8px;
 }
 
-.active{
+.active {
     color: #fff;
     background-color: #116cd6;
+}
+
+.homeNode {
+    color: #fff;
+    background-color: black;
 }
 </style>

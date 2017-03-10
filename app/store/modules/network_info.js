@@ -15,7 +15,8 @@ const state = {
   nodes: [],
   clickedLink: null,
   hoveredNode: null,
-  target: null
+  target: null,
+  homeNode: null
 }
 
 const getters = {
@@ -32,7 +33,8 @@ const getters = {
   nodes: state => state.nodes,
   target: state => state.target,
   hoveredNode: state => state.hoveredNode,
-  clickedLink: state => state.clickedLink
+  clickedLink: state => state.clickedLink,
+  homeNode: state => state.homeNode
 }
 
 const actions = {
@@ -90,7 +92,8 @@ const mutations = {
       state.type = type
       state.vendor = vendor
       const gn = { ip: state.gateway, mac: '', id: 0, router: true, active: false }
-      const n = { ip: state.privateIp, mac: state.mac, id: 1, router: false, active: false, vendor: state.vendor }
+      const n = { ip: state.privateIp, mac: state.mac, id: 1, router: false, active: false, vendor: state.vendor, homeNode: true }
+      state.homeNode = n
       state.nodes.push(gn)
       state.nodes.push(n)
     }

@@ -2,12 +2,12 @@ import * as types from '../mutation-types'
 
 const state = {
   host: {
+    host: true,
+    interface: null,
     ip: null,
     mac: null,
     vendor: null,
-    interface: null,
     name: null,
-    host: true,
     router: false
   },
   network: {
@@ -64,7 +64,15 @@ const mutations = {
     state.network = info
   },
   [types.SET_HOST_INFO] (state, info) {
-    state.host = info
+    state.host = {
+      host: true,
+      interface: info.interface,
+      ip: info.ip,
+      mac: info.mac,
+      vendor: info.vendor,
+      name: null,
+      router: false
+    }
     state.devices.push(state.host)
   },
   [types.ADD_DEVICE] (state, device) {

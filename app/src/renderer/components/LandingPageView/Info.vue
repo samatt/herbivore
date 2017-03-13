@@ -2,8 +2,8 @@
 <div>
   Router Info
   <pre> {{gateway}}</pre>
-  <!-- Host info -->
-  <!-- <pre> {{host}}</pre> -->
+  Host info
+  <pre> {{host}}</pre>
   Max Possible devices on network (this is based on calculating range of ips using the gateway and subnet mask)
   <pre> {{maxPossibleDevices}}</pre>
   Number of devices seen

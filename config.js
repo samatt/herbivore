@@ -6,7 +6,13 @@ let config = {
   eslint: true,
 
   // webpack-dev-server port
-  port: 9080
+  port: 9080,
+  dev: {
+    cssSourceMap: false
+  },
+  build: {
+    productionSourceMap: true
+  }
 }
 
 module.exports = config

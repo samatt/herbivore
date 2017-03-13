@@ -55,6 +55,7 @@
   "author": "Surya Mattu <surya@suryamattu.com> (http://suryamattu.com)",
   "license": "ISC",
   "devDependencies": {
+    "autoprefix": "^1.0.1",
     "babel-core": "^6.8.0",
     "babel-eslint": "^7.0.0",
     "babel-loader": "^6.2.4",
@@ -112,6 +113,11 @@
     "webpack-merge": "^2.4.0"
   },
   "dependencies": {
-    "sudo-prompt": "^6.2.1"
+    "bulma": "^0.3.2",
+    "sudo-prompt": "^6.2.1",
+    "vue-bulma": "0.0.35",
+    "vue-bulma-expanding": "0.0.1",
+    "vue-bulma-tooltip": "^1.0.3",
+    "wysiwyg.css": "0.0.2"
   }
 }

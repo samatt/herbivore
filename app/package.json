@@ -4,8 +4,10 @@
   "description": "A fun way to learn how computers talk to each other",
   "main": "./dist/main.js",
   "dependencies": {
+    "animate.css": "^3.5.2",
     "arp-a": "^0.5.1",
     "child-process-promise": "^2.2.0",
+    "font-awesome": "^4.7.0",
     "ip-subnet-calculator": "^1.1.7",
     "is-tls-client-hello": "^1.0.0",
     "network": "^0.3.2",

@@ -7,6 +7,7 @@ import App from './App'
 import { sync } from 'vuex-router-sync'
 import routes from './routes'
 import store from './vuex/store'
+// import 'bulma/css/bulma.css'
 
 Vue.use(Electron)
 Vue.use(Resource)

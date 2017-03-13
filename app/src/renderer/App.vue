@@ -1,16 +1,23 @@
 <template>
   <div id="#app">
+  <Navbar :show="true" />
     <router-view></router-view>
   </div>
 </template>
 
 <script>
   // import store from 'renderer/vuex/store'
+import Navbar from './components/layout/Navbar'
+import Sidebar from './components/layout/Sidebar'
 import {mapActions} from 'vuex'
 import {HostInfo, NetworkInfo} from './network-events/'
 export default {
     created () {
       this.startNetworkEvents()
+    },
+    components: {
+      Navbar,
+      Sidebar
     },
     methods: {
       startNetworkEvents: function () {
@@ -75,29 +82,36 @@ export default {
 }
 </script>
 
-<style>
-  @import url(https://fonts.googleapis.com/css?family=Lato:300);
-
-  * {
-    margin: 0;
-    padding: 0;
+<style lang='scss'>
+@import '~animate.css';
+.animated {
+  animation-duration: .377s;
+}
+@import '~bulma';
+/*@import '~wysiwyg.css/wysiwyg.sass';*/
+$fa-font-path: '~font-awesome/fonts/';
+@import '~font-awesome/scss/font-awesome';
+html {
+  background-color: whitesmoke;
+}
+.nprogress-container {
+  position: fixed !important;
+  width: 100%;
+  height: 50px;
+  z-index: 2048;
+  pointer-events: none;
+  #nprogress {
+    $color: #48e79a;
+    .bar {
+      background: $color;
+    }
+    .peg {
+      box-shadow: 0 0 10px $color, 0 0 5px $color;
+    }
+    .spinner-icon {
+      border-top-color: $color;
+      border-left-color: $color;
+    }
   }
-
-  html,
-  body { height: 100%; }
-
-  body {
-    align-items: center;
-    background:
-      radial-gradient(
-        ellipse at center,
-        rgba(255, 255, 255, 1) 0%,
-        rgba(229, 229, 229, .85) 100%
-      );
-    background-position: center;
-    display: flex;
-    font-family: Lato, Helvetica, sans-serif;
-    justify-content: center;
-    text-align: center;
-  }
+}
 </style>

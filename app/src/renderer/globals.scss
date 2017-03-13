@@ -1,0 +1,28 @@
+$lime-green: rgba(169, 194, 66, 1);
+$purplecolor2: rgba(72, 60, 70, 1);
+$sea-green: rgba(60, 110, 113, 1);
+$light-green: rgba(112, 174, 110, 1);
+$bright-orange: rgba(244, 116, 59, 1);
+
+
+
+// To allow to move your frameless app around
+// https://www.christianengvall.se/electron-frameless-window/
+
+body {
+    -ms-overflow-style: scrollbar;
+    -webkit-app-region:drag;
+}
+
+input[type="submit"],
+input[type="reset"],
+input[type="button"],
+input[type="text"],
+button,
+textarea {
+    -webkit-app-region: no-drag;
+}
+
+h1, h2, h3, h4, h5, h6 {
+    -webkit-user-select: none;
+}

@@ -112,7 +112,6 @@
     "webpack-merge": "^2.4.0"
   },
   "dependencies": {
-    "socket.io": "^1.7.3",
     "sudo-prompt": "^6.2.1"
   }
 }

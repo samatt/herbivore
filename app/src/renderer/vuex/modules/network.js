@@ -48,10 +48,10 @@ const actions = {
   },
   updateName ({commit, state}, device) {
     commit(types.UPDATE_NAME, device)
+  },
+  setPublicIp ({commit, state}, ip) {
+    commit(types.SET_PUBLIC_IP, ip)
   }
-  // updateGwInfo ({commit, state}, info) {
-  //   commit(types.UDPATE_GW_INFO, info)
-  // }
 }
 
 const mutations = {
@@ -81,17 +81,10 @@ const mutations = {
         if (d.host) state.host.name = info.name
       }
     })
+  },
+  [types.SET_PUBLIC_IP] (state, ip) {
+    state.network.publicIp = ip
   }
-  // [types.UPDATE_GW_INFO] (state, info) {
-  //   state.network.gateway.mac = info.mac
-  //   state.network.gateway.vendor = info.vendor
-  //   state.devices.forEach(function (d) {
-  //     if (d.mac === info.mac) {
-  //       d.vendor = info.vendor
-  //       d.mac = info.mac
-  //     }
-  //   })
-  // }
 }
 
 export default {

@@ -25,7 +25,6 @@ class HostInfo extends EventEmitter {
 
   constructor () {
     super()
-    // this.name = 'info'
     this.init()
   }
 

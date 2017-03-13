@@ -1,11 +1,11 @@
 import EventEmitter from 'events'
 import ipSubCal from 'ip-subnet-calculator'
-import ping from 'ping'
+// import ping from 'ping'
 import {exec} from 'child_process'
 import arp from 'arp-a'
 import oui from 'oui'
 
-const SMALL_SCAN_LIMIT = 120
+const SMALL_SCAN_LIMIT = 255
 const fullIpRange = (start, end) => Array.from({length: (end - start)}, (v, k) => ipSubCal.toString(k + start))
 
 class NetworkInfo extends EventEmitter {
@@ -41,16 +41,15 @@ class NetworkInfo extends EventEmitter {
     this.ipRange = fullIpRange(ipLow, ipHigh)
     this.maxDevices = this.ipRange.length
     this.unresolvedIps = []
-
-    if (this.maxDevices > SMALL_SCAN_LIMIT) {
-      // TODO: Figure out the right way to handle this
-      // this.largeScan()
-      this.emit('largeNetworkDetected')
-    } else {
-      this.checkHost()
+    console.log(this.maxDevices)
+    if (this.maxDevices < SMALL_SCAN_LIMIT) {
+      // Currently not pinging full network if the range is too big
       this.pingSubnet(this.ipRange)
-      this.scanArpTable()
+    } else {
+      this.emit('largeNetworkDetected')
     }
+    this.checkHost()
+    this.scanArpTable()
   }
 
   getVendorInfo (mac) {
@@ -63,9 +62,10 @@ class NetworkInfo extends EventEmitter {
   }
 
   pingSubnet (range) {
-    range.forEach(function (ip) {
-      ping.sys.probe(ip, () => {})
-    })
+    console.log(range)
+    // range.forEach(function (ip) {
+    //   ping.sys.probe(ip, () => {})
+    // })
   }
 
   scanArpTable () {

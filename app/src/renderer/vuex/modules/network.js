@@ -20,7 +20,8 @@ const state = {
       router: true
     },
     netmask: null,
-    publicIp: null
+    publicIp: null,
+    maxPossibleDevices: null
   },
   devices: [],
   error: null
@@ -32,7 +33,8 @@ const getters = {
   gateway: state => state.network.gateway,
   netmask: state => state.network.netmask,
   publicIp: state => state.network.publicIp,
-  devices: state => state.network.devices,
+  devices: state => state.devices,
+  maxPossibleDevices: state => state.network.maxPossibleDevices,
   error: state => state.error
 }
 
@@ -51,6 +53,9 @@ const actions = {
   },
   setPublicIp ({commit, state}, ip) {
     commit(types.SET_PUBLIC_IP, ip)
+  },
+  maxPossibleDevices ({commit, state}, max) {
+    commit(types.SET_MAX_POSSIBLE_DEVICES, max)
   }
 }
 
@@ -71,6 +76,10 @@ const mutations = {
       host: false,
       router: device.isRouter
     }
+    if (d.router) {
+      state.network.gateway.mac = d.mac
+      state.network.gateway.vendor = d.vendor
+    }
     state.devices.push(d)
   },
   [types.UPDATE_NAME] (state, info) {
@@ -84,6 +93,9 @@ const mutations = {
   },
   [types.SET_PUBLIC_IP] (state, ip) {
     state.network.publicIp = ip
+  },
+  [types.SET_MAX_POSSIBLE_DEVICES] (state, max) {
+    state.network.maxPossibleDevices = max
   }
 }
 

@@ -43,6 +43,10 @@ export default {
         })
       },
       setNetworkListeners: function () {
+        NetworkInfo.on('maxPossibleDevices', (max) => {
+          this.maxPossibleDevices(max)
+        })
+
         NetworkInfo.on('addDevice', (device) => {
           this.addDevice(device)
         })
@@ -64,7 +68,8 @@ export default {
       ...mapActions(['setNetworkInfo',
         'setHostInfo',
         'addDevice',
-        'updateName'
+        'updateName',
+        'maxPossibleDevices'
       ])
     }
 }

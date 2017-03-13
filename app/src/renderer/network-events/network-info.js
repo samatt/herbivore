@@ -1,6 +1,6 @@
 import EventEmitter from 'events'
 import ipSubCal from 'ip-subnet-calculator'
-// import ping from 'ping'
+import ping from 'ping'
 import {exec} from 'child_process'
 import arp from 'arp-a'
 import oui from 'oui'
@@ -41,7 +41,7 @@ class NetworkInfo extends EventEmitter {
     this.ipRange = fullIpRange(ipLow, ipHigh)
     this.maxDevices = this.ipRange.length
     this.unresolvedIps = []
-    console.log(this.maxDevices)
+    this.emit('maxPossibleDevices', this.maxDevices)
     if (this.maxDevices < SMALL_SCAN_LIMIT) {
       // Currently not pinging full network if the range is too big
       this.pingSubnet(this.ipRange)
@@ -62,10 +62,9 @@ class NetworkInfo extends EventEmitter {
   }
 
   pingSubnet (range) {
-    console.log(range)
-    // range.forEach(function (ip) {
-    //   ping.sys.probe(ip, () => {})
-    // })
+    range.forEach(function (ip) {
+      ping.sys.probe(ip, () => {})
+    })
   }
 
   scanArpTable () {
@@ -90,7 +89,6 @@ class NetworkInfo extends EventEmitter {
         return e.mac === entry.mac
       })
       if (exisiting.length > 0) {
-        this.debug(`Ignoring ${entry.mac} as it already exists`)
         return
       }
 

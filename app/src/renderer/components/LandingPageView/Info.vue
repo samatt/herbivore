@@ -1,6 +1,15 @@
 <template>
-  <pre> {{network}} {{Date.now()}}</pre>
+<div>
+  Router Info
+  <pre> {{gateway}}</pre>
+  <!-- Host info -->
+  <!-- <pre> {{host}}</pre> -->
+  Max Possible devices on network (this is based on calculating range of ips using the gateway and subnet mask)
+  <pre> {{maxPossibleDevices}}</pre>
+  Number of devices seen
+  <pre> {{devices.length}}</pre>
 
+</div>
 </template>
 
 <script>
@@ -14,13 +23,11 @@ export default {
         path: '/landing-page'
       }
     }
-    // NetworkInfo.init()
-    // networkEvents.on('info_available', (info) => {
-      // this.info = info
-    // console.log(NetworkEvents)
-    // })
   },
-  computed: mapGetters(['network'])
+  computed: mapGetters(['gateway',
+    'host',
+    'devices',
+    'maxPossibleDevices'])
 }
 </script>
 

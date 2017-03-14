@@ -5,6 +5,7 @@ import App from './App'
 import { sync } from 'vuex-router-sync'
 import router from './router'
 import store from './vuex/store'
+// import filters from './filters'
 
 Vue.use(Electron)
 Vue.use(Resource)

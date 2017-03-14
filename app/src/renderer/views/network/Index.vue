@@ -1,22 +1,17 @@
 <template>
-<div>
-  <h1>Welcome to Herbivore</h1>
-  Router Info
-  <pre> {{gateway}}</pre>
-  Host info
-  <pre> {{host}}</pre>
-  Max Possible devices on network (this is based on calculating range of ips using the gateway and subnet mask)
-  <pre> {{maxPossibleDevices}}</pre>
-  Number of devices seen
-  <pre> {{devices.length}}</pre>
-
-</div>
+  <div>
+    <info/>
+  </div>
 </template>
 
 <script>
 import {mapGetters} from 'vuex'
+import Info from './Info'
 export default {
   created () {
+  },
+  components: {
+    Info
   },
   computed: mapGetters(['gateway',
     'host',

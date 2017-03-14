@@ -40,15 +40,14 @@
 <script>
 import { mapGetters } from 'vuex'
 import { upperMac, capitalize } from '../../filters'
-import PagePreview from './PagePreview'
-console.log(PagePreview)
+// import PagePreview from './PagePreview'
+// console.log(PagePreview)
 
 export default {
   name: 'Info',
   created () {
   },
   components () {
-    PagePreview
   },
   data () {
     const columns = ['mac', 'ip', 'vendor', 'hostname', 'router']

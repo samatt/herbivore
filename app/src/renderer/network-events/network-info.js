@@ -50,8 +50,25 @@ class NetworkInfo extends EventEmitter {
     }
     this.checkHost()
     this.scanArpTable()
+
+    let count = 0
+    while (count < 100) {
+      this.generateDummyDevices()
+      count++
+    }
   }
 
+  generateDummyDevices () {
+    let dummy = {
+      ip: `192.168.1.${Math.round(Math.random() * 255)}`,
+      mac: 'AB:CA:2F:4B:CD:3E',
+      name: 'dum dum',
+      vendor: 'dd inc',
+      host: false,
+      router: false
+    }
+    this.emit('addDevice', dummy)
+  }
   getVendorInfo (mac) {
     const vendorInfo = oui(mac)
     if (vendorInfo != null && vendorInfo.indexOf('\n') > -1) {

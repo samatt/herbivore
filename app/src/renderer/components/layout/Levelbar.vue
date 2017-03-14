@@ -23,13 +23,11 @@
 </template>
 
 <script>
-import Breadcrumb from 'vue-bulma-breadcrumb'
-import Tooltip from 'vue-bulma-tooltip'
+// import Breadcrumb from 'vue-bulma-breadcrumb'
+// import Tooltip from 'vue-bulma-tooltip'
 import {mapGetters} from 'vuex'
 export default {
   components: {
-    Breadcrumb,
-    Tooltip
   },
   data () {
     return {

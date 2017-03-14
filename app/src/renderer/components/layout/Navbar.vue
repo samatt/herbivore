@@ -22,11 +22,9 @@
 
 <script>
 import { mapGetters, mapActions } from 'vuex'
-import Tooltip from 'vue-bulma-tooltip'
 export default {
   name: 'Navbar',
   components: {
-    Tooltip
   },
   props: {
     show: Boolean

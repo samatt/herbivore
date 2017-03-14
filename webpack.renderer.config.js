@@ -5,7 +5,6 @@ process.env.BABEL_ENV = 'renderer'
 const path = require('path')
 const pkg = require('./app/package.json')
 const settings = require('./config.js')
-const utils = require('./utils.js')
 const webpack = require('webpack')
 
 const ExtractTextPlugin = require('extract-text-webpack-plugin')
@@ -35,7 +34,7 @@ let rendererConfig = {
         test: /\.js$/,
         use: 'babel-loader',
         include: [ path.resolve(__dirname, 'app/src/renderer') ],
-        exclude: [new RegExp(`node_modules\\${path.sep}(?!vue-bulma-.*)`)]
+        exclude: /node_modules/
       },
       {
         test: /\.json$/,
@@ -49,7 +48,12 @@ let rendererConfig = {
         test: /\.vue$/,
         use: {
           loader: 'vue-loader',
-          options: require('./vue-loader.conf')
+          options: {
+            loaders: {
+              sass: 'vue-style-loader!css-loader!sass-loader?indentedSyntax=1',
+              scss: 'vue-style-loader!css-loader!sass-loader'
+            }
+          }
         }
       },
       {
@@ -71,8 +75,7 @@ let rendererConfig = {
             name: 'fonts/[name].[ext]'
           }
         }
-      },
-      ...utils.styleLoaders({ sourceMap: settings.dev.cssSourceMap })
+      }
     ]
   },
   plugins: [
@@ -82,7 +85,7 @@ let rendererConfig = {
       template: './app/index.ejs',
       appModules: process.env.NODE_ENV !== 'production'
         ? path.resolve(__dirname, 'app/node_modules')
-        : false
+        : false,
     }),
     new webpack.NoEmitOnErrorsPlugin()
   ],

@@ -8,10 +8,8 @@
           </a>
         </div>
         <div class="nav-center">
-          <a class="title-item nav-item" href="/">
-            <p class="title-2 is-hidden-mobile">
-                  Herbivore
-            </p>
+          <a class="nav-item" href="/">
+          <img src="./assets/herbivore.svg">
           </a>
         </div>
         <div class="nav-right is-flex">
@@ -74,5 +72,8 @@ export default {
 }
 .nav-left{
   padding-top: 14px;
+}
+img {
+  width: 50px;
 }
 </style>

@@ -1,3 +1,4 @@
+// Network States
 export const SET_NETWORK_INFO = 'SET_NETWORK_INFO'
 export const SET_HOST_INFO = 'SET_HOST_INFO'
 export const SET_PUBLIC_IP = 'SET_PUBLIC_IP'
@@ -5,3 +6,8 @@ export const ADD_DEVICE = 'ADD_DEVICE'
 export const UPDATE_NAME = 'UPDATE_NAME'
 export const UPDATE_GW_INFO = 'UPDATE_GW_INFO'
 export const SET_MAX_POSSIBLE_DEVICES = 'SET_MAX_POSSIBLE_DEVICES'
+
+// UI States
+export const TOGGLE_SIDEBAR = 'TOGGLE_SIDEBAR'
+export const EXPAND_MENU = 'EXPAND_MENU'
+export const SWITCH_EFFECT = 'SWITCH_EFFECT'

@@ -1,9 +1,16 @@
-// import * as types from './mutation-types'
+import * as types from './mutation-types'
 
-// export const setHostInfo = ({ commit }) => {
-//   commit(types.DECREMENT_MAIN_COUNTER)
-// }
+export const toggleSidebar = ({ commit }, opened) => commit(types.TOGGLE_SIDEBAR, opened)
 
-// export const setNetworkInfo = ({ commit }) => {
-//   commit(types.INCREMENT_MAIN_COUNTER)
-// }
+export const expandMenu = ({ commit }, menuItem) => {
+  if (menuItem) {
+    menuItem.expanded = menuItem.expanded || false
+    commit(types.EXPAND_MENU, menuItem)
+  }
+}
+
+export const switchEffect = ({ commit }, effectItem) => {
+  if (effectItem) {
+    commit(types.SWITCH_EFFECT, effectItem)
+  }
+}

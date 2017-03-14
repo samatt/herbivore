@@ -3,22 +3,20 @@
     <div class="hero">
       <nav class="nav">
         <div class="nav-left">
-          <a class="nav-item is-hidden-mobile" @click="toggleSidebar(!sidebar.opened)">
+          <a id="icon-padding" class="nav-item is-hidden-mobile" @click="toggleSidebar(!sidebar.opened)">
             <i class="fa fa-bars" aria-hidden="true"></i>
           </a>
         </div>
         <div class="nav-center">
           <a class="title-item nav-item" href="/">
-
-            <tooltip :label="'v 0.0.0'" placement="right" type="primary" size="small" :no-animate="true" :always="true" :rounded="true">
-              <div class="is-hidden-mobile">
-                <strong class="highlight">Herbivore</strong>
-              </div>
-            </tooltip>
+            <p class="title-2 is-hidden-mobile">
+                  Herbivore
+            </p>
           </a>
+        </div>
+        <div class="nav-right is-flex">
 
         </div>
-        <div class="nav-right is-flex"></div>
       </nav>
     </div>
   </section>
@@ -73,5 +71,8 @@ export default {
   .highlight {
     color: $lime-green;
   }
+}
+.nav-left{
+  padding-top: 14px;
 }
 </style>

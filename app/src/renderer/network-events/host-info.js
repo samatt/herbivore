@@ -23,10 +23,10 @@ class HostInfo extends EventEmitter {
     return this.network
   }
 
-  constructor () {
-    super()
-    this.init()
-  }
+  // constructor () {
+  //   super()
+  //   // this.init()
+  // }
 
   init () {
     network.get_active_interface((err, obj) => {

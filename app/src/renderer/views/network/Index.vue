@@ -1,5 +1,6 @@
 <template>
 <div>
+  <h1>Welcome to Herbivore</h1>
   Router Info
   <pre> {{gateway}}</pre>
   Host info
@@ -16,13 +17,6 @@
 import {mapGetters} from 'vuex'
 export default {
   created () {
-    // Set $route values that are not preset during unit testing
-    if (process.env.NODE_ENV === 'testing') {
-      this.$route = {
-        name: 'landing-page',
-        path: '/landing-page'
-      }
-    }
   },
   computed: mapGetters(['gateway',
     'host',

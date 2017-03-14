@@ -1,84 +1,94 @@
 <template>
   <div id="#app">
   <Navbar :show="true" />
-    <router-view></router-view>
+  <sidebar :show="sidebar.opened && !sidebar.hidden"></sidebar>
+  <app-main/>
   </div>
 </template>
 
 <script>
-  // import store from 'renderer/vuex/store'
+
 import Navbar from './components/layout/Navbar'
 import Sidebar from './components/layout/Sidebar'
-import {mapActions} from 'vuex'
+import AppMain from './components/layout/AppMain'
+import {mapActions, mapGetters} from 'vuex'
 import {HostInfo, NetworkInfo} from './network-events/'
 export default {
-    created () {
+  mounted () {
+    setTimeout(() => {
       this.startNetworkEvents()
+    }, 1000)
+  },
+  components: {
+    Navbar,
+    Sidebar,
+    AppMain
+  },
+  computed: mapGetters({
+    sidebar: 'sidebar'
+  }),
+  methods: {
+    startNetworkEvents: function () {
+      // Always set Network Before Host
+      this.setNetworkListeners()
+      this.setHostListeners()
+      HostInfo.init()
     },
-    components: {
-      Navbar,
-      Sidebar
+    setHostListeners: function () {
+      HostInfo.on('host_info_available', (info) => {
+        const { ip_address, vendor, gateway_ip, name, netmask, mac_address } = info
+
+        this.setHostInfo({ip: ip_address,
+          interface: name,
+          mac: mac_address,
+          vendor: vendor
+        })
+
+        this.setNetworkInfo({gateway: {
+          ip: gateway_ip,
+          mac: null,
+          vendor: null,
+          name: null,
+          host: false,
+          router: true},
+          netmask: netmask,
+          publicIp: null
+        })
+        // Once we have information from the host we can query the network
+        NetworkInfo.run(name, ip_address, gateway_ip, netmask)
+      })
     },
-    methods: {
-      startNetworkEvents: function () {
-        // Always set Network Before Host
-        this.setNetworkListeners()
-        this.setHostListeners()
-      },
-      setHostListeners: function () {
-        HostInfo.on('host_info_available', (info) => {
-          const { ip_address, vendor, gateway_ip, name, netmask, mac_address } = info
+    setNetworkListeners: function () {
+      NetworkInfo.on('maxPossibleDevices', (max) => {
+        this.maxPossibleDevices(max)
+      })
 
-          this.setHostInfo({ip: ip_address,
-            interface: name,
-            mac: mac_address,
-            vendor: vendor
-          })
+      NetworkInfo.on('addDevice', (device) => {
+        this.addDevice(device)
+      })
 
-          this.setNetworkInfo({gateway: {
-            ip: gateway_ip,
-            mac: null,
-            vendor: null,
-            name: null,
-            host: false,
-            router: true},
-            netmask: netmask,
-            publicIp: null
-          })
-          // Once we have information from the host we can query the network
-          NetworkInfo.run(name, ip_address, gateway_ip, netmask)
-        })
-      },
-      setNetworkListeners: function () {
-        NetworkInfo.on('maxPossibleDevices', (max) => {
-          this.maxPossibleDevices(max)
-        })
+      NetworkInfo.on('updateName', (info) => {
+        this.updateName(info)
+      })
 
-        NetworkInfo.on('addDevice', (device) => {
-          this.addDevice(device)
-        })
+      NetworkInfo.on('error', (error) => {
+        // this.addDevice(error)
+        console.warn(error)
+      })
 
-        NetworkInfo.on('updateName', (info) => {
-          this.updateName(info)
-        })
-
-        NetworkInfo.on('error', (error) => {
-          // this.addDevice(error)
-          console.warn(error)
-        })
-
-        NetworkInfo.on('warning', (warn) => {
-          console.warn(warn)
-          console.log('^^^^ if its the dig command that is normal')
-        })
-      },
-      ...mapActions(['setNetworkInfo',
-        'setHostInfo',
-        'addDevice',
-        'updateName',
-        'maxPossibleDevices'
-      ])
-    }
+      NetworkInfo.on('warning', (warn) => {
+        console.warn(warn)
+        console.log('^^^^ if its the dig command that is normal')
+      })
+    },
+    ...mapActions(['setNetworkInfo',
+      'setHostInfo',
+      'addDevice',
+      'updateName',
+      'maxPossibleDevices',
+      'toggleSidebar'
+    ])
+  }
 }
 </script>
 
@@ -115,3 +125,4 @@ html {
   }
 }
 </style>
+

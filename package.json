@@ -116,6 +116,7 @@
     "bulma": "^0.3.2",
     "sudo-prompt": "^6.2.1",
     "vue-bulma": "0.0.35",
+    "vue-bulma-breadcrumb": "^1.0.1",
     "vue-bulma-expanding": "0.0.1",
     "vue-bulma-tooltip": "^1.0.3",
     "wysiwyg.css": "0.0.2"

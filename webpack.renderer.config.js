@@ -125,7 +125,6 @@ if (process.env.NODE_ENV !== 'production') {
     )
   }
 }
-  console.log(utils.styleLoaders({ sourceMap: settings.dev.cssSourceMap }))
 
 /**
  * Adjust rendererConfig for production settings

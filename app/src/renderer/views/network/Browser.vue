@@ -9,20 +9,16 @@
         </span>
       </p>
     </div>
-    <nav class="level is-marginless info-bar">
-      <div class="level-left">
-      Showing {{filteredData.length}} of {{devices.length}}
-      </div>
-      <div class="level-right">
-        <a @click="clearTarget()" class="level-item button info-bar is-outlined" > Clear Target</a>
-      </div>
-    </nav>
+    <div class="panel-tabs">
+      <a @click="clearTarget()" class="options" > Clear Target</a>
+      <a class="options"> Showing {{filteredData.length}} of {{devices.length}}</a>
+    </div>
     <table class="table">
       <thead>
       <tr>
       <th v-for="key in columns"
         @click="sortBy(key)"
-        :class="{ active: sortKey == key }">
+        :class="[{ active: sortKey == key }]">
           {{key  | capitalize}}
         <span class="arrow" :class="sortOrders[key] > 0 ? 'asc' : 'dsc'">
         </span>
@@ -175,6 +171,12 @@ export default {
 .info-bar{
   /*background-color: $purplecolor;*/
   /*color: white;*/
+}
+.options{
+  color: $bdazzled-blue;
+}
+th{
+  color: $purplecolor;
 }
 /*nav{
   background-color: $light-green;

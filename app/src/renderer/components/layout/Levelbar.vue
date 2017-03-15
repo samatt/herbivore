@@ -99,7 +99,7 @@ export default {
 .heading {
   color: whitesmoke;
 }
-.stats.title {
+.title {
   color: $purplecolor;
 
 }

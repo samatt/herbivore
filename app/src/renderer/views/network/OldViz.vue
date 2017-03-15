@@ -25,11 +25,21 @@
 
 <script>
 import { mapGetters } from 'vuex'
-import { nodeStyle, svgStyle } from './VizStyleParams'
-
-// nodeStyle
+import { nodeStyle, svgStyle } from './VizTreeStyleParams'
 export default {
-  name: 'Viz',
+  name: 'VizTree',
+  props: [],
+  mounted () {
+    this.width = this.$el.clientWidth
+    this.height = this.$el.clientHeight < 800 ? 250 : this.$el.clientHeight
+    this.vTransform = svgStyle.getVTransform(this.width, this.height)
+    this.hTransform = svgStyle.getHTransform(this.width, this.height)
+  },
+  update () {
+    console.log('VIZ UPDATE')
+  },
+  components: {
+  },
   data () {
     return {
       i: 0,
@@ -39,23 +49,109 @@ export default {
       height: 0,
       tree: {},
       root: {},
-      treeData: {},
+      hRoot: {},
+      svg: {},
+      hTransform: 0,
+      vTransform: 0,
       largeMax: 20,
       duration: 1000,
       shortDuration: 250,
-      horizontal: false
+      horizontal: false,
+      treeData: {
+        id: 0,
+        name: 'Gateway',
+        ip: '',
+        router: true,
+        children: []
+      },
+      hTreeData: {
+        id: 0,
+        name: 'Router',
+        ip: '',
+        router: true,
+        children: []
+      },
+      orientation: {
+        'top-to-bottom': {
+          size: [this.width, this.height],
+          x: function (d) { return d.x },
+          y: function (d) { return d.y }
+        },
+        'right-to-left': {
+          size: [this.height, this.width],
+          x: function (d) { return this.width - d.y },
+          y: function (d) { return d.x }
+        },
+        'bottom-to-top': {
+          size: [this.width, this.height],
+          x: function (d) { return d.x },
+          y: function (d) { return this.height - d.y }
+        },
+        'left-to-right': {
+          size: [this.height, this.width],
+          x: function (d) { return d.y },
+          y: function (d) { return d.x }
+        }
+      }
     }
   },
-  mounted () {
-    this.width = this.$el.clientWidth
-    this.height = 240 // this.$el.clientHeight < 800 ? 250 : this.$el.clientHeight
-    this.vTransform = svgStyle.getVTransform(this.width, this.height)
-    this.hTransform = svgStyle.getHTransform(this.width, this.height)
-    this.populateTree(this.devices)
-    this.init()
+  sockets: {
+    info: function (info) {
+      this.treeData.ip = this.gateway
+      this.hTreeData.ip = this.gateway
+      this.treeData.children.push({
+        id: 1,
+        ip: this.privateIp,
+        mac: this.mac,
+        router: false
+      })
+      this.hTreeData.children.push({
+        id: 1,
+        name: 'You',
+        ip: this.privateIp,
+        mac: this.mac,
+        router: false,
+        children: []
+      })
+      this.init()
+    },
+    clearStyles: function () {
+    },
+    clearViz: function () {
+    },
+    addNode: function (node) {
+      const idx = this.treeData.children.length + 1
+      node.router = (node.ip === this.gateway)
+      node.id = idx
+      if (node.router) {
+        this.$store.dispatch('updateRouterMac', node)
+      } else {
+        this.treeData.children.push({
+          id: idx,
+          ip: node.ip,
+          mac: node.mac,
+          hostname: node.hostname,
+          router: false
+        })
+        this.$store.dispatch('addNewNode', node)
+        if (!this.horizontal) {
+          this.updateVTree()
+        }
+      }
+    }
   },
+  computed: mapGetters({
+    gateway: 'gateway',
+    privateIp: 'privateIp',
+    mac: 'mac',
+    gatewayMac: 'gatewayMac',
+    currentTool: 'currentTool',
+    hoveredNode: 'hoveredNode',
+    target: 'target',
+    homeNode: 'homeNode'
+  }),
   watch: {
-    hover (val) {
+    hoveredNode (val) {
       if (val) {
         this.tableHover(val)
       } else {
@@ -63,61 +159,35 @@ export default {
       }
     },
     target (val) {
-      if (!val) {
+      if (val) {
+        this.$store.dispatch('stop')
+        this.$store.dispatch('changeTool', 'Sniffer')
+        this.setTarget(val)
+        this.horizontal = true
+        this.updateHTree(val)
+      } else {
+        this.$store.dispatch('stop')
+        this.$store.dispatch('changeTool', 'Network')
+        this.horizontal = false
         this.clearNodesStyles()
+        this.updateVTree(val)
       }
     },
-    devices (deviceArray) {
-      if (this.treeData.length < 1) {
-        this.populateTree(deviceArray)
-        this.init()
-      } else {
-        let latest = deviceArray[deviceArray.length - 1]
-        let t = {
-          id: deviceArray.length - 1,
-          ip: latest.ip,
-          mac: latest.mac,
-          router: latest.router,
-          name: latest.name,
-          host: latest.host
-        }
-        this.treeData.children.push(t)
-        this.updateVTree()
-      }
+    gatewayMac (val) {
+      this.treeData.mac = val
+    },
+    homeNode (val) {
+      this.treeData.homeNode = val
     }
   },
-  computed: mapGetters({
-    host: 'host',
-    gateway: 'gateway',
-    devices: 'devices',
-    hover: 'hover',
-    target: 'target'
-  }),
   methods: {
-    populateTree: function (deviceArray) {
-      let d = deviceArray.map(function (device, index) {
-        return {
-          id: index + 1,
-          ip: device.ip,
-          mac: device.mac,
-          name: device.name,
-          router: device.router,
-          host: device.host
-        }
-      })
-      const routerIndex = d.findIndex(function (device) {
-        return device.router === true
-      })
-      this.treeData = d.splice(routerIndex, 1)[0]
-      this.treeData.children = d
-    },
     init: function () {
       this.svg = this.$d3.select('svg')
                     .attr('width', this.width)
                     .attr('height', this.height)
       this.g = this.svg.append('g', 'test')
                         .attr('transform', this.horizontal ? `translate(${this.hTransform.x},${this.hTransform.y})` : `translate(${this.vTransform.x},${this.vTransform.y})`)
-      // this.initHTree()
+      this.initHTree()
       this.initVTree()
       this.update()
     },
@@ -126,6 +196,12 @@ export default {
       this.root.x0 = this.width / 2
       this.root.y0 = 0
       this.root.children.forEach(this.collapse)
+      this.tree = this.$d3.tree().size(this.osize())
+    },
+    initHTree () {
+      this.hRoot = this.$d3.hierarchy(this.hTreeData, function (d) { return d.children })
+      this.hRoot.x0 = 0
+      this.hRoot.y0 = this.height / 2
       this.tree = this.$d3.tree().size(this.osize())
     },
     updateVTree: function (target) {
@@ -149,11 +225,31 @@ export default {
       })
       this.update()
     },
+    updateHTree: function (target = false) {
+      if (this.hTreeData.children[0].children.length >= 1) {
+        this.hTreeData.children[0].children.pop()
+      }
+      if (target) {
+        if (target.ip !== this.hTreeData.children[0]) {
+          this.hTreeData.children[0].children.push({
+            id: 1,
+            name: 'Target',
+            ip: target.ip,
+            mac: target.mac,
+            router: false,
+            children: []
+          })
+        }
+        this.initHTree()
+        this.update()
+      }
+    },
     update: function () {
       this.tree = this.$d3.tree().size(this.osize())
       let source, treeData
       if (this.horizontal) {
         source = this.hRoot
+        console.log(source)
         treeData = this.tree(this.hRoot)
       } else {
         source = this.root
@@ -201,8 +297,8 @@ export default {
           .attr('fill', function (d) {
             // need to figure out how to get home mac, so black if(d.data.mac === this mac)
             // need to figure out how to set this color dynamically, so not just on init
-            if (d.data.host) {
-              return 'url(#Link)'
+            if (d.data.homeNode) {
+              return "black"
             }
             return d.data.router ? 'url(#Router)' : 'url(#Device)'
           })
@@ -238,8 +334,8 @@ export default {
           .attr('fill', function (d) {
             // need to figure out how to get home mac, so black if(d.data.mac === this mac)
             // need to figure out how to set this color dynamically, so not just on init
-            if (d.data.host) {
-              return 'url(#Link)'
+            if (d.data.homeNode) {
+              return "black"
             }
             return d.data.router ? 'url(#Router)' : 'url(#Device)'
           })
@@ -281,7 +377,7 @@ export default {
           )
         })
         // .attr('d', (d) => { return this.diagonal(d, d.parent) })
-      link.exit().transition()
+      const linkExit = link.exit().transition()
         .duration(this.shortDuration)
         .attr('d', (d) => {
           let o = { x: this.ox(source), y: this.oy(source) }
@@ -294,40 +390,22 @@ export default {
         d.y0 = d.y
       })
     },
-    mouseover: function () {
-      const vue = this
-      return function (d) {
-        if (vue.currentTool === 'Network') {
-          vue.clearNodesStyles()
-          vue.$d3.select(this).attr('fill', 'url(#Target)')
-          // vue.$store.dispatch('setHoverNode', d.data)
-        }
-      }
-    },
-    mouseout: function (d) {
-      const vue = this
-      return function (d) {
-        if (vue.currentTool === 'Network') {
-          vue.clearNodesStyles()
-        }
-      }
-    },
-    clickNode: function (d) {
-      const vue = this
-      return function (d) {
-        if (vue.currentTool === 'Network' && !d.data.router) {
-          vue.clearNodesStyles()
-          vue.$d3.select(this).attr('fill', 'url(#Target)')
-          // vue.$store.dispatch('setTarget', d.data)
-        }
-      }
-    },
     collapse: function (d) {
       if (d.children) {
         d._children = d.children
         d._children.forEach(this.collapse)
         d.children = null
       }
+    },
+    click: function (d) {
+      if (d.children) {
+        d._children = d.children
+        d.children = null
+      } else {
+        d.children = d._children
+        d._children = null
+      }
+      this.update(d)
     },
     diagonal: function (s, d) {
       return this.horizontal ? this.hDiagonal(s, d) : this.vDiagonal(s, d)
@@ -358,6 +436,34 @@ export default {
         return [this.width, this.height]
       }
     },
+    mouseover: function () {
+      const vue = this
+      return function (d) {
+        if (vue.currentTool === 'Network') {
+          vue.clearNodesStyles()
+          vue.$d3.select(this).attr('fill', 'url(#Target)')
+          vue.$store.dispatch('setHoverNode', d.data)
+        }
+      }
+    },
+    mouseout: function (d) {
+      const vue = this
+      return function (d) {
+        if (vue.currentTool === 'Network') {
+          vue.clearNodesStyles()
+        }
+      }
+    },
+    clickNode: function (d) {
+      const vue = this
+      return function (d) {
+        if (vue.currentTool === 'Network' && !d.data.router) {
+          vue.clearNodesStyles()
+          vue.$d3.select(this).attr('fill', 'url(#Target)')
+          vue.$store.dispatch('setTarget', d.data)
+        }
+      }
+    },
     tableHover: function (node) {
       this.clearNodesStyles()
       this.$d3.selectAll('path.icon')
@@ -383,27 +489,34 @@ export default {
       this.$d3.selectAll('path.icon')
               .filter(function (d, i) { return (typeof d.data === 'undefined') ? false : d.data.router })
               .attr('fill', 'url(#Router)')
-
-      this.$d3.selectAll('path.icon')
-              .filter(function (d, i) { return (typeof d.data === 'undefined') ? false : d.data.host })
-              .attr('fill', 'url(#Link)')
       if (this.target) {
         const target = this.target
         this.$d3.selectAll('path.icon')
                 .filter(function (d, i) { return (typeof d.data === 'undefined') ? false : (d.data.ip === target.ip) })
                 .attr('fill', 'url(#Target)')
       }
+    },
+    testAddNodes: function () {
+      const idx = this.treeData.children.length + 1
+      this.treeData.children.push({
+        id: idx,
+        ip: idx,
+        mac: '',
+        hostname: '',
+        router: false
+      })
+      const newTree = this.$d3.hierarchy(this.treeData, function (d) { return d.children })
+      const treeData = this.tree(newTree)
+      this.root.children.push(treeData.children.pop())
+      this.update(this.root)
     }
   }
 }
-
 </script>
+
 <style>
   .icon {
     /*color: white;*/
-  }
-  #viz-main{
-    background: white;
   }
   .node circle {
     fill: #fff;

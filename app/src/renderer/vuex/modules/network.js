@@ -23,6 +23,8 @@ const state = {
     publicIp: null,
     maxPossibleDevices: null
   },
+  target: null,
+  hover: null,
   devices: [],
   error: null
 }
@@ -34,6 +36,8 @@ const getters = {
   netmask: state => state.network.netmask,
   publicIp: state => state.network.publicIp,
   devices: state => state.devices,
+  hover: state => state.hover,
+  target: state => state.target,
   maxPossibleDevices: state => state.network.maxPossibleDevices,
   error: state => state.error
 }
@@ -53,6 +57,18 @@ const actions = {
   },
   setPublicIp ({commit, state}, ip) {
     commit(types.SET_PUBLIC_IP, ip)
+  },
+  setHover ({commit, state}, hover) {
+    commit(types.SET_HOVER, hover)
+  },
+  clearHover ({commit, state}) {
+    commit(types.CLEAR_HOVER)
+  },
+  setTarget ({commit, state}, target) {
+    commit(types.SET_TARGET, target)
+  },
+  clearTarget ({commit, state}) {
+    commit(types.CLEAR_TARGET)
   },
   maxPossibleDevices ({commit, state}, max) {
     commit(types.SET_MAX_POSSIBLE_DEVICES, max)
@@ -104,6 +120,18 @@ const mutations = {
   },
   [types.SET_MAX_POSSIBLE_DEVICES] (state, max) {
     state.network.maxPossibleDevices = max
+  },
+  [types.SET_TARGET] (state, target) {
+    state.target = target
+  },
+  [types.SET_HOVER] (state, hover) {
+    state.hover = hover
+  },
+  [types.CLEAR_HOVER] (state) {
+    state.hover = null
+  },
+  [types.CLEAR_TARGET] (state) {
+    state.target = null
   }
 }
 

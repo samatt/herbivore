@@ -93,14 +93,14 @@ export default {
 </script>
 <style lang='scss'>
 @import '../../globals.scss';
-.level {
+.stats.level {
   background-color: $bright-orange;
 }
 .heading {
   color: whitesmoke;
 }
-.title {
-  color: $purplecolor2;
+.stats.title {
+  color: $purplecolor;
 
 }
 </style>

@@ -48,9 +48,9 @@ class HostInfo extends EventEmitter {
 
   getPublicIP () {
     network.get_public_ip((err, ip) => {
-      if (err) return this.emit('error', 'public_ip', err.message)
-      if (!ip) return this.emit('error', 'public_ip', err.message)
-      console.log('ERE')
+      if (err) this.emit('error', err.message)
+      if (!ip) this.emit('error')
+      // console.log('ERE')
       this.emit('setPublicIp', ip)
     })
   }

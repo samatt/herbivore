@@ -7,7 +7,6 @@
             <i class="fa fa-bars" aria-hidden="true"></i>
           </a>
         </div>
-
         <transition
           mode="in-out"
           enter-active-class="slideInLeft"

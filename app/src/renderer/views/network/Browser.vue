@@ -9,15 +9,14 @@
         </span>
       </p>
     </div>
-    <p class="panel-block is-text-centered">
-<!--       <nav class="pagination is-right">
-        <a class="pagination-previous">Previous</a>
-        <a class="pagination-next">Next</a>
-      </nav> -->
-      <!-- <div> -->
-        Showing {{filteredData.length}} of {{devices.length}}
-      <!-- </div> -->
-    </p>
+    <nav class="level is-marginless info-bar">
+      <div class="level-left">
+      Showing {{filteredData.length}} of {{devices.length}}
+      </div>
+      <div class="level-right">
+        <a @click="clearTarget()" class="level-item button info-bar is-outlined" > Clear Target</a>
+      </div>
+    </nav>
     <table class="table">
       <thead>
       <tr>
@@ -31,9 +30,8 @@
       </tr>
     </thead>
     <tbody>
-      <tr @click="setTarget(node)"
+      <tr @click="setTargetClick(node)"
           @mouseover="mouseOver(node)"
-          @mouseout="mouseOut()"
           :class="[node.active ? 'active' : '', node.homeNode ? 'homeNode' : '']"
           v-for="node in filteredData">
         <td>{{ node.mac | upperMac }} </td>
@@ -51,7 +49,7 @@
 </template>
 
 <script>
-import { mapGetters } from 'vuex'
+import { mapGetters, mapActions } from 'vuex'
 import { upperMac, capitalize } from '../../filters'
 // import PagePreview from './PagePreview'
 // console.log(PagePreview)
@@ -109,14 +107,25 @@ export default {
       this.sortOrders[key] = this.sortOrders[key] * -1
     },
     mouseOver: function (node) {
-      // this.$store.dispatch('setHoverNode', node)
+      this.setHover(node)
     },
-    mouseOut: function () {
-      // this.$store.dispatch('clearHoverNode')
+    setTargetClick: function (node) {
+      this.setTarget(node)
+      this.goToSniffer()
     },
-    setTarget: function (node) {
-      // this.$store.dispatch('setTarget', node)
-    }
+    clearTarget: function (node) {
+      this.clearTarget()
+    },
+    goToSniffer: function () {
+      this.$router.push({
+        path: '/sniffer'
+      })
+    },
+    ...mapActions([
+      'setHover',
+      'clearHover',
+      'clearTarget',
+      'setTarget'])
   },
   filters: {
     upperMac,
@@ -125,8 +134,8 @@ export default {
 }
 </script>
 
-<style scoped>
-@import "../../globals.scss"
+<style lang='scss'>
+@import "../../globals.scss";
 .stick{
   position: fixed;
   width: 100%;
@@ -163,7 +172,11 @@ export default {
 .container {
   max-height: 300px;
 }
-nav{
-  background-color: $light-green;
+.info-bar{
+  /*background-color: $purplecolor;*/
+  /*color: white;*/
 }
+/*nav{
+  background-color: $light-green;
+}*/
 </style>

@@ -1,6 +1,10 @@
 <template>
 <div>
   <h1>This is where the Sniffer goes</h1>
+  You should probably go back to
+  <router-link to="/network" :exact="true">
+      where you came from
+  </router-link>
 </div>
 </template>
 

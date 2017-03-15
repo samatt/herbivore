@@ -55,6 +55,18 @@ export default {
     this.init()
   },
   watch: {
+    hover (val) {
+      if (val) {
+        this.tableHover(val)
+      } else {
+        this.clearNodesStyles()
+      }
+    },
+    target (val) {
+      if (!val) {
+        this.clearNodesStyles()
+      }
+    },
     devices (deviceArray) {
       if (this.treeData.length < 1) {
         this.populateTree(deviceArray)
@@ -77,10 +89,9 @@ export default {
   computed: mapGetters({
     host: 'host',
     gateway: 'gateway',
-    devices: 'devices'
-    // hoveredNode: 'hoveredNode',
-    // target: 'target',
-    // homeNode: 'homeNode'
+    devices: 'devices',
+    hover: 'hover',
+    target: 'target'
   }),
   methods: {
     populateTree: function (deviceArray) {
@@ -289,7 +300,7 @@ export default {
         if (vue.currentTool === 'Network') {
           vue.clearNodesStyles()
           vue.$d3.select(this).attr('fill', 'url(#Target)')
-          vue.$store.dispatch('setHoverNode', d.data)
+          // vue.$store.dispatch('setHoverNode', d.data)
         }
       }
     },
@@ -307,7 +318,7 @@ export default {
         if (vue.currentTool === 'Network' && !d.data.router) {
           vue.clearNodesStyles()
           vue.$d3.select(this).attr('fill', 'url(#Target)')
-          vue.$store.dispatch('setTarget', d.data)
+          // vue.$store.dispatch('setTarget', d.data)
         }
       }
     },
@@ -345,6 +356,42 @@ export default {
         return [this.height, this.width]
       } else {
         return [this.width, this.height]
+      }
+    },
+    tableHover: function (node) {
+      this.clearNodesStyles()
+      this.$d3.selectAll('path.icon')
+              .filter(function (d, i) { return (typeof d.data === 'undefined') ? false : (d.data.ip === node.ip) })
+              .attr('fill', 'url(#Target)')
+      if (this.target) {
+        const target = this.target
+        this.$d3.selectAll('path.icon')
+                .filter(function (d, i) { return (typeof d.data === 'undefined') ? false : (d.data.ip === target.ip) })
+                .attr('fill', 'url(#Target)')
+      }
+    },
+    setTarget: function (node) {
+      this.clearNodesStyles()
+      this.$d3.selectAll('path.icon')
+            .filter(function (d, i) { return (typeof d.data === 'undefined') ? false : (d.data.ip === node.ip) })
+            .attr('fill', 'url(#Target)')
+    },
+    clearNodesStyles: function () {
+      this.$d3.selectAll('path.icon')
+              .filter(function (d, i) { return typeof d.data !== 'undefined' })
+              .attr('fill', 'url(#Device)')
+      this.$d3.selectAll('path.icon')
+              .filter(function (d, i) { return (typeof d.data === 'undefined') ? false : d.data.router })
+              .attr('fill', 'url(#Router)')
+
+      this.$d3.selectAll('path.icon')
+              .filter(function (d, i) { return (typeof d.data === 'undefined') ? false : d.data.host })
+              .attr('fill', 'url(#Link)')
+      if (this.target) {
+        const target = this.target
+        this.$d3.selectAll('path.icon')
+                .filter(function (d, i) { return (typeof d.data === 'undefined') ? false : (d.data.ip === target.ip) })
+                .attr('fill', 'url(#Target)')
       }
     }
   }

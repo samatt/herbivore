@@ -1,6 +1,7 @@
 <template>
 <section>
 <div class="splash content">
+  <img class="test" src="./assets/herbivore-large.svg">
   <h1 class="title">Welcome to Herbivore</h1>
 
   <div class="subtitle is-3"></div>
@@ -26,8 +27,11 @@
     margin: 0 3px;
     vertical-align: bottom;
   }
-
+  .test{
+    width:256px;
+    height: auto;
+  }
   .splash {
-    padding-top: 25%;
+    padding-top: 10%;
   }
 </style>

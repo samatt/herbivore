@@ -7,14 +7,16 @@
             <i class="fa fa-bars" aria-hidden="true"></i>
           </a>
         </div>
-        <a class="nav-center has-icon" href="/">
-          <!-- <a class="nav-item" > -->
-          <img src="./assets/herbivore.svg"> </svg>
-          <!-- </a> -->
-        </a>
-        <div class="nav-right is-flex">
 
-        </div>
+        <transition
+          mode="in-out"
+          enter-active-class="slideInLeft"
+          leave-active-class="slideOutRight"
+          appear>
+          <a v-if="$route.name != 'Home'" class="nav-right has-icon" href="/">
+            <img src="./assets/herbivore.svg"> </svg>
+          </a>
+        </transition>
       </nav>
     </div>
   </section>
@@ -30,7 +32,8 @@ export default {
     show: Boolean
   },
   computed: mapGetters({
-    sidebar: 'sidebar'
+    sidebar: 'sidebar',
+    route: 'route'
   }),
   methods: mapActions([
     'toggleSidebar'

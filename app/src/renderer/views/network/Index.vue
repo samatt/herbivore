@@ -1,5 +1,6 @@
 <template>
   <section>
+  <viz/>
     <browser/>
   </section>
 </template>
@@ -7,11 +8,13 @@
 <script>
 import {mapGetters} from 'vuex'
 import Browser from './Browser'
+import Viz from './Viz'
 export default {
   created () {
   },
   components: {
-    Browser
+    Browser,
+    Viz
   },
   computed: mapGetters(['gateway',
     'host',

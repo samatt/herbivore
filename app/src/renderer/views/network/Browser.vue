@@ -1,9 +1,6 @@
 <template>
 <section>
   <nav class="panel">
-    <p class="panel-heading">
-      Network Browser
-    </p>
     <div class="panel-block">
       <p class='control has-icon'>
         <input class="input" type="text" placeholder="Search Devices" v-model="filterKey">
@@ -12,14 +9,14 @@
         </span>
       </p>
     </div>
-    <p class="panel-block">
+    <p class="panel-block is-text-centered">
 <!--       <nav class="pagination is-right">
         <a class="pagination-previous">Previous</a>
         <a class="pagination-next">Next</a>
       </nav> -->
-      <span>
+      <!-- <div> -->
         Showing {{filteredData.length}} of {{devices.length}}
-      </span>
+      <!-- </div> -->
     </p>
     <table class="table">
       <thead>

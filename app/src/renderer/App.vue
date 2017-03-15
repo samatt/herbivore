@@ -7,7 +7,6 @@
 </template>
 
 <script>
-
 import Navbar from './components/layout/Navbar'
 import Sidebar from './components/layout/Sidebar'
 import AppMain from './components/layout/AppMain'
@@ -35,6 +34,10 @@ export default {
       HostInfo.init()
     },
     setHostListeners: function () {
+      HostInfo.on('setPublicIp', (info) => {
+        this.setPublicIp(info)
+      })
+
       HostInfo.on('host_info_available', (info) => {
         const { ip_address, vendor, gateway_ip, name, netmask, mac_address } = info
 
@@ -85,6 +88,7 @@ export default {
       'setHostInfo',
       'addDevice',
       'updateName',
+      'setPublicIp',
       'maxPossibleDevices',
       'toggleSidebar'
     ])

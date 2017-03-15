@@ -1,40 +1,56 @@
 <template>
-<div class="">
-<div class="container block">
-  <div class="control">
-  <label class="label">Search</label>
-    <input class="input" type="text" placeholder="Filter Devices" v-model="filterKey">
-  </div>
-</div>
-  <div class="container is-fullwidth">
-  <table class="table">
-    <thead>
-    <tr>
-    <th v-for="key in columns"
-      @click="sortBy(key)"
-      :class="{ active: sortKey == key }">
-        {{key  | capitalize}}
-      <span class="arrow" :class="sortOrders[key] > 0 ? 'asc' : 'dsc'">
+<section>
+  <nav class="panel">
+    <p class="panel-heading">
+      Network Browser
+    </p>
+    <div class="panel-block">
+      <p class='control has-icon'>
+        <input class="input" type="text" placeholder="Search Devices" v-model="filterKey">
+        <span class="icon">
+          <i class="fa fa-search"> </i>
+        </span>
+      </p>
+    </div>
+    <p class="panel-block">
+<!--       <nav class="pagination is-right">
+        <a class="pagination-previous">Previous</a>
+        <a class="pagination-next">Next</a>
+      </nav> -->
+      <span>
+        Showing {{filteredData.length}} of {{devices.length}}
       </span>
-    </th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr @click="setTarget(node)"
-        @mouseover="mouseOver(node)"
-        @mouseout="mouseOut()"
-        :class="[node.active ? 'active' : '', node.homeNode ? 'homeNode' : '']"
-        v-for="node in filteredData">
-      <td>{{ node.mac | upperMac }} </td>
-      <td>{{ node.ip }}</td>
-      <td>{{ node.vendor }}</td>
-      <td>{{ node.name }}</td>
-      <td>{{ node.router }}</td>
-    </tr>
-  </tbody>
+    </p>
+    <table class="table">
+      <thead>
+      <tr>
+      <th v-for="key in columns"
+        @click="sortBy(key)"
+        :class="{ active: sortKey == key }">
+          {{key  | capitalize}}
+        <span class="arrow" :class="sortOrders[key] > 0 ? 'asc' : 'dsc'">
+        </span>
+      </th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr @click="setTarget(node)"
+          @mouseover="mouseOver(node)"
+          @mouseout="mouseOut()"
+          :class="[node.active ? 'active' : '', node.homeNode ? 'homeNode' : '']"
+          v-for="node in filteredData">
+        <td>{{ node.mac | upperMac }} </td>
+        <td>{{ node.ip }}</td>
+        <td>{{ node.vendor }}</td>
+        <td>{{ node.name }}</td>
+        <td>{{ node.router }}</td>
+      </tr>
+    </tbody>
   </table>
+  </nav>
+  <div class="container">
   </div>
-</div>
+</section>
 </template>
 
 <script>
@@ -44,7 +60,7 @@ import { upperMac, capitalize } from '../../filters'
 // console.log(PagePreview)
 
 export default {
-  name: 'Info',
+  name: 'Browser',
   created () {
   },
   components () {
@@ -113,6 +129,7 @@ export default {
 </script>
 
 <style scoped>
+@import "../../globals.scss"
 .stick{
   position: fixed;
   width: 100%;
@@ -148,5 +165,8 @@ export default {
 }
 .container {
   max-height: 300px;
+}
+nav{
+  background-color: $light-green;
 }
 </style>

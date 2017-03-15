@@ -42,10 +42,16 @@ class HostInfo extends EventEmitter {
       // {ip_address, gateway_ip, name, netmask, mac_address } = obj
       obj.vendor = this.getVendorInfo(obj.mac_address)
       this.emit('host_info_available', obj)
-      network.get_public_ip((err, ip) => {
-        if (err) return this.emit('error', 'public_ip', err.message)
-        if (!ip) return this.error('error', 'public_ip')
-      })
+      this.getPublicIP()
+    })
+  }
+
+  getPublicIP () {
+    network.get_public_ip((err, ip) => {
+      if (err) return this.emit('error', 'public_ip', err.message)
+      if (!ip) return this.emit('error', 'public_ip', err.message)
+      console.log('ERE')
+      this.emit('setPublicIp', ip)
     })
   }
 }

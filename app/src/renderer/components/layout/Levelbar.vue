@@ -1,6 +1,6 @@
 
 <template>
-  <nav v-if="this.$route.name==='Network'" class="level stats">
+  <nav v-if="this.$route.name==='Network'" class="level stats is-marginless">
     <div v-for="stat in snifferStats" class="level-item has-text-centered">
       <div>
         <p class="heading">{{stat.heading}}</p>

@@ -52,10 +52,13 @@ class NetworkInfo extends EventEmitter {
     this.scanArpTable()
 
     let count = 0
-    while (count < 100) {
+    while (count < 10) {
       this.generateDummyDevices()
       count++
     }
+    // setInterval(() => {
+    //   this.generateDummyDevices()
+    // }, 1000)
   }
 
   generateDummyDevices () {

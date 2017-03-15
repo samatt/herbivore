@@ -7,11 +7,11 @@
             <i class="fa fa-bars" aria-hidden="true"></i>
           </a>
         </div>
-        <div class="nav-center">
-          <a class="nav-item" href="/">
-          <img src="./assets/herbivore.svg">
-          </a>
-        </div>
+        <a class="nav-center has-icon" href="/">
+          <!-- <a class="nav-item" > -->
+          <img src="./assets/herbivore.svg"> </svg>
+          <!-- </a> -->
+        </a>
         <div class="nav-right is-flex">
 
         </div>

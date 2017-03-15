@@ -1,6 +1,7 @@
 import Vue from 'vue'
 import Electron from 'vue-electron'
 import Resource from 'vue-resource'
+import VueD3 from 'vue-d3'
 import App from './App'
 import { sync } from 'vuex-router-sync'
 import router from './router'
@@ -9,6 +10,7 @@ import store from './vuex/store'
 
 Vue.use(Electron)
 Vue.use(Resource)
+Vue.use(VueD3)
 
 Vue.config.debug = true
 

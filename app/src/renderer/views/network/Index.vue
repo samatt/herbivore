@@ -1,17 +1,17 @@
 <template>
-  <div>
-    <info/>
-  </div>
+  <section>
+    <browser/>
+  </section>
 </template>
 
 <script>
 import {mapGetters} from 'vuex'
-import Info from './Info'
+import Browser from './Browser'
 export default {
   created () {
   },
   components: {
-    Info
+    Browser
   },
   computed: mapGetters(['gateway',
     'host',

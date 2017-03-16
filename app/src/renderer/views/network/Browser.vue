@@ -30,7 +30,7 @@
           @mouseover="mouseOver(node)"
           :class="[node.active ? 'active' : '', node.homeNode ? 'homeNode' : '']"
           v-for="node in filteredData">
-        <td>{{ node.mac | upperMac }} </td>
+        <td>{{ nodeMac(node) | upperMac }} </td>
         <td>{{ node.ip }}</td>
         <td>{{ node.vendor }}</td>
         <td>{{ node.name }}</td>
@@ -98,12 +98,21 @@ export default {
     })
   },
   methods: {
+    nodeMac (node) {
+      if (node.host) {
+        return `${node.mac} ⬅️ YOU`
+      } else {
+        return node.mac
+      }
+    },
     sortBy: function (key) {
       this.sortKey = key
       this.sortOrders[key] = this.sortOrders[key] * -1
     },
     mouseOver: function (node) {
-      this.setHover(node)
+      if (!node.router) {
+        this.setHover(node)
+      }
     },
     setTargetClick: function (node) {
       this.setTarget(node)

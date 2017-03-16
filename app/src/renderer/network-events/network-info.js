@@ -51,11 +51,11 @@ class NetworkInfo extends EventEmitter {
     this.checkHost()
     this.scanArpTable()
 
-    let count = 0
-    while (count < 10) {
-      this.generateDummyDevices()
-      count++
-    }
+    // let count = 0
+    // while (count < 10) {
+    //   this.generateDummyDevices()
+    //   count++
+    // }
     // setInterval(() => {
     //   this.generateDummyDevices()
     // }, 1000)

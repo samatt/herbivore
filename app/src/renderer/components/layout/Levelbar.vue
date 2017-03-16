@@ -1,25 +1,22 @@
-
 <template>
-  <nav v-if="this.$route.name==='Network'" class="level stats is-marginless">
+<section>
+  <nav v-if="this.$route.name==='Network'" class="level stats-network is-marginless">
+    <div v-for="stat in networkStats" class="level-item has-text-centered">
+      <div>
+        <p class="heading">{{stat.heading}}</p>
+        <p class="title">{{stat.title}}</p>
+      </div>
+    </div>
+  </nav>
+  <nav v-if="this.$route.name==='Sniffer'" class="level stats-sniffer is-marginless">
     <div v-for="stat in snifferStats" class="level-item has-text-centered">
       <div>
         <p class="heading">{{stat.heading}}</p>
         <p class="title">{{stat.title}}</p>
       </div>
     </div>
-<!--     <div class="level-left">
-      <div class="level-item">
-        <h3 class="subtitle is-5">
-          <strong>{{ name }}</strong>
-        </h3>
-      </div>
-      </div>
-    </div> -->
-
-<!--     <div class="level-right is-hidden-mobile">
-      <breadcrumb :list="list"></breadcrumb>
-    </div> -->
   </nav>
+</section>
 </template>
 
 <script>
@@ -48,7 +45,7 @@ export default {
     name () {
       return this.$route.name
     },
-    snifferStats () {
+    networkStats () {
       let text = []
       text.push({
         heading: 'Devices On Network',
@@ -63,13 +60,33 @@ export default {
         title: this.host.ip
       })
       text.push({
-        heading: 'Public IP',
+        heading: 'Public IP🌍',
         title: this.publicIp ? this.publicIp : 'Not available'
+      })
+      return text
+    },
+    snifferStats () {
+      let text = []
+      let deviceText = ''
+      if (this.target.host) {
+        deviceText = '💻 This Computer 💻'
+      } else {
+        deviceText = this.target.name ? this.target.name : this.target.mac
+      }
+
+      text.push({
+        heading: 'Current Target',
+        title: deviceText
+      })
+      text.push({
+        heading: 'Host Name',
+        title: this.host.name
       })
       return text
     },
     ...mapGetters([
       'host',
+      'target',
       'publicIp',
       'devices',
       'maxPossibleDevices'])
@@ -93,8 +110,11 @@ export default {
 </script>
 <style lang='scss'>
 @import '../../globals.scss';
-.stats.level {
+.stats-network.level {
   background-color: $bright-orange;
+}
+.stats-sniffer.level {
+  background-color: $infra-red;
 }
 .heading {
   color: whitesmoke;

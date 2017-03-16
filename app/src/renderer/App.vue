@@ -11,7 +11,7 @@ import Navbar from './components/layout/Navbar'
 import Sidebar from './components/layout/Sidebar'
 import AppMain from './components/layout/AppMain'
 import {mapActions, mapGetters} from 'vuex'
-import {HostInfo, NetworkInfo} from './network-events/'
+import {HostInfo, NetworkInfo, Sniffer} from './network-events/'
 export default {
   mounted () {
     setTimeout(() => {
@@ -23,9 +23,36 @@ export default {
     Sidebar,
     AppMain
   },
-  computed: mapGetters({
-    sidebar: 'sidebar'
-  }),
+  watch: {
+    target (val) {
+      const t = {
+        'target_ip': val.ip,
+        'target_mac': val.mac,
+        'self_mac': this.host.mac,
+        'gw_ip': this.gateway,
+        'gw_mac': this.gateway.mac
+      }
+      if (val.host) {
+        Sniffer.updateTarget(t, {stop: true})
+      } else if (val.router) {
+        console.log('cant target router')
+      } else {
+        Sniffer.updateTarget(t)
+      }
+    },
+    $router (val) {
+      if (val.from.name === 'Sniffer') {
+        Sniffer.stop()
+      } else if (val.name === 'Sniffer') {
+        Sniffer.start()
+      }
+    }
+  },
+  computed: mapGetters([
+    'gateway',
+    'host',
+    'target',
+    'sidebar']),
   methods: {
     startNetworkEvents: function () {
       // Always set Network Before Host
@@ -40,11 +67,16 @@ export default {
 
       HostInfo.on('host_info_available', (info) => {
         const { ip_address, vendor, gateway_ip, name, netmask, mac_address } = info
-
-        this.setHostInfo({ip: ip_address,
+        const host = {ip: ip_address,
           interface: name,
           mac: mac_address,
           vendor: vendor
+        }
+        this.setHostInfo(host)
+        Sniffer.init(host)
+
+        Sniffer.on('newPacket', (packet) => {
+          this.newPacket(packet)
         })
 
         this.setNetworkInfo({gateway: {
@@ -80,8 +112,8 @@ export default {
       })
 
       NetworkInfo.on('warning', (warn) => {
-        console.warn(warn)
-        console.log('^^^^ if its the dig command that is normal')
+        // console.warn(warn)
+        // console.log('^^^^ if its the dig command that is normal')
       })
     },
     ...mapActions(['setNetworkInfo',
@@ -89,6 +121,7 @@ export default {
       'addDevice',
       'updateName',
       'setPublicIp',
+      'newPacket',
       'maxPossibleDevices',
       'toggleSidebar'
     ])

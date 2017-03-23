@@ -183,7 +183,7 @@ class Sniffer extends EventEmitter {
     try {
       const packet = pcap.decode.packet(raw)
       const parsed = this._parse(packet, raw)
-      if (parsed) {
+      if (parsed && this.sniff) {
         this.emit('newPacket', parsed)
       }
     } catch (err) {

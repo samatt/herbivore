@@ -1,0 +1,56 @@
+<template>
+<nav class="level is-marginless">
+  <div class="level-left">
+    <div class="level-item">
+      <p class="subtitle is-5">
+        <strong>{{ packets.length }}</strong> packets
+      </p>
+    </div>
+    <div class="level-item">
+    <p class="control">
+    <button class="button" @click="clearPackets" >
+      Clear Packets
+    </button>
+    </p>
+    </div>
+  </div>
+
+  <div class="level-right">
+    <div class="level-item">
+      <p class="control">
+      <button
+        @click="startSniffer"
+        class="button">
+          Start Sniffer
+      </button>
+      <button
+      @click="stopSniffer"
+      class="button">
+        Stop Sniffer
+      </button>
+      </p>
+    </div>
+  </div>
+</nav>
+</template>
+
+<script >
+import { mapActions, mapGetters } from 'vuex'
+export default {
+  name: 'SnifferMenu',
+  computed: mapGetters({
+    packets: 'packets',
+    target: 'target'
+  }),
+  methods: {
+    ...mapActions([
+      'clearPackets',
+      'startSniffer',
+      'stopSniffer'
+    ])
+  }
+}
+</script>
+<style >
+
+</style>

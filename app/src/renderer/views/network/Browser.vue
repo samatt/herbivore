@@ -63,6 +63,7 @@ export default {
       sortOrders[key] = 1
     })
     return {
+      viewIndex: 0,
       sortKey: '',
       sortOrders: sortOrders,
       columns: columns,

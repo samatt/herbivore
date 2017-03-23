@@ -68,6 +68,13 @@ export default {
     snifferStats () {
       let text = []
       let deviceText = ''
+      if (!this.target) {
+        text.push({
+          heading: 'Current Target',
+          title: 'No Target Selected'
+        })
+        return text
+      }
       if (this.target.host) {
         deviceText = '💻 This Computer 💻'
       } else {

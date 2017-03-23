@@ -1,18 +1,18 @@
 <template>
   <section class="app-main">
-    <div class="container is-fluid is-marginless app-content ">
+    <div class="container is-fluid is-marginless app-content">
       <transition
         mode="out-in"
-        enter-active-class="slideInLeft"
-        leave-active-class="slideOutRight"
+        enter-active-class="fadeInDown"
+        leave-active-class="fadeOutUp"
         appear>
-      <levelbar class="animated"></levelbar>
+        <levelbar class="animated"></levelbar>
       </transition>
 
       <transition
         mode="out-in"
-        enter-active-class="slideInLeft"
-        leave-active-class="slideOutRight"
+        :enter-active-class="reversed ? 'slideInRight' : 'slideInLeft' "
+        :leave-active-class="reversed ? 'slideOutLeft' : 'slideOutRight' "
         appear>
         <router-view class="animated has-text-centered"></router-view>
       </transition>
@@ -22,10 +22,14 @@
 
 <script>
 import Levelbar from './Levelbar'
+import { mapGetters } from 'vuex'
 export default {
   components: {
     Levelbar
-  }
+  },
+  computed: mapGetters([
+    'reversed'
+  ])
 }
 </script>
 

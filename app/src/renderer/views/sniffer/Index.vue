@@ -1,6 +1,11 @@
 <template>
 <div>
-<div class="sniff-table">
+<!-- <packet-viewer v-if="target" packet-viewer/>
+<div v-else>
+ A target hasn't been selected please go to the network view and select one.
+</div> -->
+<sniffer-menu/>
+<div v-if="target" class="sniff-table">
   <table class="table stick">
   </table>
   <table class="table padded sniff-body">
@@ -29,6 +34,9 @@
   </tbody>
   </table>
   </div>
+  <div v-else>
+    A target hasn't been selected please go to the network view and select one.
+  </div>
   <!-- <SnifferPayload class="sniff-payload " v-bind:packet="selectedPacket"> </SnifferPayload> -->
   </div>
 </template>
@@ -36,12 +44,12 @@
 <script>
 import { stringifyMac, prettifyTs, stringifyIp } from '../../filters'
 import { mapGetters } from 'vuex'
-// import SnifferPayload from './SnifferPayload'
+import SnifferMenu from './SnifferMenu'
+
 export default {
   name: 'sniffer',
-  props: [],
   created () {
-    window.addEventListener('keyup', this.keyup)
+    // window.addEventListener('keyup', this.keyup)
     // this.$socket.emit('init')
   },
   data () {
@@ -54,9 +62,11 @@ export default {
     }
   },
   computed: mapGetters({
-    packets: 'packets'
+    packets: 'packets',
+    target: 'target'
   }),
   components: {
+    SnifferMenu
   },
   filters: {
     stringifyMac,

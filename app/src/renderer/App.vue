@@ -1,6 +1,7 @@
-<template>
+  <template>
   <div id="#app">
   <Navbar :show="true" />
+  <Alerts/>
   <sidebar :show="sidebar.opened && !sidebar.hidden"></sidebar>
   <app-main/>
   </div>
@@ -10,9 +11,20 @@
 import Navbar from './components/layout/Navbar'
 import Sidebar from './components/layout/Sidebar'
 import AppMain from './components/layout/AppMain'
+import Alerts from './components/layout/Alerts'
 import {mapActions, mapGetters} from 'vuex'
 import {HostInfo, NetworkInfo, Sniffer} from './network-events/'
 export default {
+  created () {
+    window.addEventListener('keyup', this.keyup)
+    this.clearPackets()
+  },
+  data () {
+    return {
+      views: ['home', 'sniffer', 'network'],
+      viewIndex: 0
+    }
+  },
   mounted () {
     setTimeout(() => {
       this.startNetworkEvents()
@@ -21,7 +33,8 @@ export default {
   components: {
     Navbar,
     Sidebar,
-    AppMain
+    AppMain,
+    Alerts
   },
   watch: {
     target (val) {
@@ -29,7 +42,7 @@ export default {
         'target_ip': val.ip,
         'target_mac': val.mac,
         'self_mac': this.host.mac,
-        'gw_ip': this.gateway,
+        'gw_ip': this.gateway.ip,
         'gw_mac': this.gateway.mac
       }
       if (val.host) {
@@ -39,12 +52,13 @@ export default {
       } else {
         Sniffer.updateTarget(t)
       }
+      this.startSniffer()
     },
-    $router (val) {
-      if (val.from.name === 'Sniffer') {
-        Sniffer.stop()
-      } else if (val.name === 'Sniffer') {
+    running (val) {
+      if (val) {
         Sniffer.start()
+      } else {
+        Sniffer.stop()
       }
     }
   },
@@ -52,6 +66,7 @@ export default {
     'gateway',
     'host',
     'target',
+    'running',
     'sidebar']),
   methods: {
     startNetworkEvents: function () {
@@ -116,14 +131,44 @@ export default {
         // console.log('^^^^ if its the dig command that is normal')
       })
     },
+    keyup (e) {
+      // left
+      // console.log(e.keyCode)
+
+      if ((e.keyCode || e.which) === 37) {
+        if (this.viewIndex <= 0) {
+          this.viewIndex = this.views.length - 1
+        } else {
+          this.viewIndex -= 1
+          this.setAnimationDirection(true)
+        }
+        this.$router.push({
+          path: `/${this.views[this.viewIndex]}`
+        })
+      // right
+      } else if ((e.keyCode || e.which) === 39) {
+        if (this.viewIndex >= this.views.length - 1) {
+          this.viewIndex = 0
+        } else {
+          this.viewIndex += 1
+        }
+        this.setAnimationDirection(false)
+        this.$router.push({
+          path: `/${this.views[this.viewIndex]}`
+        })
+      }
+    },
     ...mapActions(['setNetworkInfo',
       'setHostInfo',
       'addDevice',
       'updateName',
       'setPublicIp',
+      'clearPackets',
       'newPacket',
       'maxPossibleDevices',
-      'toggleSidebar'
+      'setAnimationDirection',
+      'toggleSidebar',
+      'startSniffer'
     ])
   }
 }

@@ -14,9 +14,22 @@
       current network
     </router-link>
   </p>
+  <div @click="newNotification({level:'danger', body:'Lots and lots of text about all the things...'})" class='button'> Notification </div>
+  <div @click="newMessage({level:'danger', body:'test'})" class='button'> Message </div>
+
 </div>
 </section>
 </template>
+<script type="text/javascript">
+import { mapActions } from 'vuex'
+export default {
+  methods: mapActions([
+    'newMessage',
+    'newNotification'
+  ])
+}
+
+</script>
 <style scoped>
   code {
     background-color: rgba(40, 56, 76, .5);

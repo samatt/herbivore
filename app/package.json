@@ -15,6 +15,7 @@
     "pcap": "git+https://github.com/mranney/node_pcap.git",
     "ping": "^0.2.2",
     "sni": "^1.0.0",
+    "sudo-prompt": "^7.0.0",
     "vue": "^2.1.10",
     "vue-d3": "^0.1.0",
     "vue-electron": "^1.0.6",

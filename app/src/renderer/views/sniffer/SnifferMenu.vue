@@ -2,14 +2,12 @@
 <nav class="level is-marginless">
   <div class="level-left">
     <div class="level-item">
-      <p class="subtitle is-5">
-        <strong>{{ packets.length }}</strong> packets
-      </p>
-    </div>
-    <div class="level-item">
     <p class="control">
     <button class="button" @click="clearPackets" >
       Clear Packets
+    </button>
+    <button v-if="inspectorPacket" class="button" @click="clearPacket" >
+      Close Inspector
     </button>
     </p>
     </div>
@@ -40,11 +38,14 @@ export default {
   name: 'SnifferMenu',
   computed: mapGetters({
     packets: 'packets',
-    target: 'target'
+    target: 'target',
+    inspectorPacket: 'inspectorPacket'
+
   }),
   methods: {
     ...mapActions([
       'clearPackets',
+      'clearPacket',
       'startSniffer',
       'stopSniffer'
     ])

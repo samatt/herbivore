@@ -86,8 +86,8 @@ export default {
         title: deviceText
       })
       text.push({
-        heading: 'Host Name',
-        title: this.host.name
+        heading: 'Number of Packets',
+        title: this.packets.length
       })
       return text
     },
@@ -95,6 +95,7 @@ export default {
       'host',
       'target',
       'publicIp',
+      'packets',
       'devices',
       'maxPossibleDevices'])
   },

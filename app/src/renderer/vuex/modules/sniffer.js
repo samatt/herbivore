@@ -2,12 +2,14 @@ import * as types from '../mutation-types'
 
 const state = {
   packets: [],
-  running: false
+  running: false,
+  inspectorPacket: null
 }
 
 const getters = {
   packets: state => state.packets,
-  running: state => state.running
+  running: state => state.running,
+  inspectorPacket: state => state.inspectorPacket
 }
 
 const actions = {
@@ -23,6 +25,12 @@ const actions = {
   },
   stopSniffer ({ commit, state }) {
     commit(types.STOP_SNIFFER)
+  },
+  setPacket ({ commit, state }, packet) {
+    commit(types.SET_INSPECTOR_PACKET, packet)
+  },
+  clearPacket ({ commit, state }) {
+    commit(types.CLEAR_INSPECTOR_PACKET)
   }
 }
 
@@ -38,6 +46,12 @@ const mutations = {
   },
   [types.STOP_SNIFFER] (state) {
     state.running = false
+  },
+  [types.SET_INSPECTOR_PACKET] (state, packet) {
+    state.inspectorPacket = packet
+  },
+  [types.CLEAR_INSPECTOR_PACKET] (state) {
+    state.inspectorPacket = null
   }
 }
 

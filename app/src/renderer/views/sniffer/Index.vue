@@ -5,6 +5,7 @@
  A target hasn't been selected please go to the network view and select one.
 </div> -->
 <sniffer-menu/>
+<packet-inspector />
 <div v-if="target" class="sniff-table">
   <table class="table stick">
   </table>
@@ -22,7 +23,7 @@
   <tbody>
     <tr :id="'p-idx-'+index"
         :class="[index == hoverIndex ? hoverClass : '']"
-        v-for="(packet, index) in packets"
+        v-for="(packet, index) in displayPackets"
         @click="updateCurrent(packet, index)">
       <td class="selectable-text oh">  {{ packet.ts | prettifyTs}}</td>
       <td class="selectable-text hh">{{packet.payload.host }}</td>
@@ -43,8 +44,9 @@
 
 <script>
 import { stringifyMac, prettifyTs, stringifyIp } from '../../filters'
-import { mapGetters } from 'vuex'
+import { mapGetters, mapActions } from 'vuex'
 import SnifferMenu from './SnifferMenu'
+import PacketInspector from './PacketInspector'
 
 export default {
   name: 'sniffer',
@@ -61,12 +63,24 @@ export default {
       hoverClass: 'hovered'
     }
   },
-  computed: mapGetters({
-    packets: 'packets',
-    target: 'target'
-  }),
+  computed: {
+    displayPackets () {
+      if (this.packets.length < 20) {
+        return this.packets
+      } else {
+        const start = this.packets.length - 20
+        const end = this.packets.length - 1
+        return this.packets.slice(start, end)
+      }
+    },
+    ...mapGetters({
+      packets: 'packets',
+      target: 'target'
+    })
+  },
   components: {
-    SnifferMenu
+    SnifferMenu,
+    PacketInspector
   },
   filters: {
     stringifyMac,
@@ -76,6 +90,7 @@ export default {
   methods: {
     updateCurrent (packet, index) {
       this.selectedPacket = packet
+      this.setPacket(packet)
       this.selectedIndex = index
       this.hoverIndex = index
     },
@@ -117,7 +132,11 @@ export default {
           }
         }
       }
-    }
+    },
+    ...mapActions([
+      'setPacket',
+      'clearPacket'
+    ])
   }
 }
 </script>
@@ -129,6 +148,7 @@ export default {
 }
 .sniff-body{
   margin-top: 12px;
+  max-height: 500px;
 }
 .sniff-payload{
   border-width: 1px;

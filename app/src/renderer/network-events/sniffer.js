@@ -298,8 +298,8 @@ class Sniffer extends EventEmitter {
       }
     }
 
-    const lastline = headers.pop()
-    packet.payload = lastline
+    // const lastline = headers.pop()
+    packet.payload = headers
     return packet
   }
 }

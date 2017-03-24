@@ -1,6 +1,6 @@
 <template>
 <div>
-  <template v-if="packet.payload.type !== 'https'">
+  <template  class="inspector"v-if="packet.payload.type !== 'https'">
   <div v-if="tab === 'Summary' ">
        <template v-if="packet.payload.type === 'request'">
          <div class="selectable-text" ><strong>Type</strong> : Request</div>
@@ -14,18 +14,23 @@
        </template>
   </div>
   <div v-else-if="tab === 'Headers' ">
-    <div class="selectable-text" v-for="p in packet.payload.headers">
+    <div class="selectable-text has-text-left" v-for="p in packet.payload.headers">
       <strong>{{p[0]}}:</strong> {{p[1]}}
     </div>
   </div>
   <div v-else-if="tab === 'Payload' ">
      <template v-if="packet.payload.type !== 'https'">
-     <pre class="has-text-left">
+     <pre class=" payload has-text-left">
      {{packet.payload.payload}}
      </pre>
-
      </template>
-
+  </div>
+  <div v-else-if="tab === 'Raw' ">
+     <template v-if="packet.payload.type !== 'https'">
+     <pre class=" payload has-text-left">
+     {{packet.payload.raw}}
+     </pre>
+     </template>
   </div>
   </template>
   <div v-else>
@@ -53,6 +58,12 @@ export default {
 }
 </script>
 <style lang='scss'>
+.inspector{
+  max-height: 300px;
 
+}
+.payload{
+  overflow-x: scroll;
+}
 
 </style>

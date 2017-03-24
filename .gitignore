@@ -59,3 +59,5 @@ jspm_packages
 
 # Output of 'npm pack'
 *.tgz
+/app/src/renderer/components/layout/webpack.renderer.config.alt.for.bulma.js
+/webpack.renderer.config.alt.for.bulma.js

@@ -25,13 +25,14 @@
               @click="setTab('Payload')" >
             Payload
           </a>
+          <a class="card-footer-item"
+              @click="setTab('Raw')" >
+            Raw
+          </a>
         </header>
         <div class="card-content">
           <div class="content">
           <packet-inspector-payload :tab="tab" />
-<!--           <pre>
-            {{packet}}
-          </pre> -->
           </div>
         </div>
         <footer class="card-footer">
@@ -147,7 +148,6 @@ export default {
     top: 135px;
     left: 0;
     width: 100%;
-    /*height: 300px;*/
     z-index: 1024 + 234;
     /*transform: translate3d(0, 0, 0);*/
     /*backface-visibility: hidden;*/

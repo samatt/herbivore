@@ -261,6 +261,7 @@ class Sniffer extends EventEmitter {
 
   parseHTTP (headers) {
     const packet = {}
+    packet.raw = headers
     packet.http = true
     packet.host = ''
     const firstline = headers.shift()
@@ -281,12 +282,11 @@ class Sniffer extends EventEmitter {
     }
 
     packet.headers = []
-
+    packet.contentType = 'none'
     for (var i = 0; i < headers.length; i++) {
       if (headers[i] === '') {
         break
       }
-
       const header = headers[i].split(': ')
       if (header.length < 2) {
         continue
@@ -294,12 +294,20 @@ class Sniffer extends EventEmitter {
         if (header[0].indexOf('Host') > -1) {
           packet.host = header[1]
         }
+        console.log(header[0])
+        console.log(header[0].indexOf('Content-Type'))
+        if (header[0].indexOf('Content-Type') > -1) {
+          packet.contentType = header[1]
+        }
         packet.headers.push([header[0], header[1]])
       }
     }
-
-    // const lastline = headers.pop()
-    packet.payload = headers
+    // if (!hasContentHeader) {
+    //   packet.contentType = ''
+    // }
+    // headers.pop()
+    const lastline = headers.splice(headers.length - 2, headers.length - 1)
+    packet.payload = lastline
     return packet
   }
 }

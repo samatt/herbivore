@@ -1,19 +1,14 @@
 <template>
 <div>
-<!-- <packet-viewer v-if="target" packet-viewer/>
-<div v-else>
- A target hasn't been selected please go to the network view and select one.
-</div> -->
-<sniffer-menu/>
-<packet-inspector />
+  <sniffer-menu/>
+  <packet-inspector/>
 <div v-if="target" class="sniff-table">
-  <table class="table stick">
-  </table>
-  <table class="table padded sniff-body">
+  <table class="table sniff-body">
      <thead>
     <tr>
-      <th class="oh">Timestamp</th>
-      <th class="hh">Host</th>
+      <th >Timestamp</th>
+      <th >Host</th>
+      <th>Content Type</th>
       <th>Source IP</th>
       <th>Destination IP</th>
       <th>Source Port</th>
@@ -22,11 +17,11 @@
   </thead>
   <tbody>
     <tr :id="'p-idx-'+index"
-        :class="[index == hoverIndex ? hoverClass : '']"
-        v-for="(packet, index) in displayPackets"
+        v-for="(packet, index) in packets"
         @click="updateCurrent(packet, index)">
-      <td class="selectable-text oh">  {{ packet.ts | prettifyTs}}</td>
-      <td class="selectable-text hh">{{packet.payload.host }}</td>
+      <td class="selectable-text">  {{ packet.ts | prettifyTs}}</td>
+      <td class="selectable-text">{{packet.payload.host }}</td>
+      <td class="selectable-text">{{packet.payload.type !== 'https' ? packet.payload.contentType : '' }}</td>
       <td class="selectable-text">{{packet.ip.saddr | stringifyIp}}</td>
       <td class="selectable-text">{{packet.ip.daddr | stringifyIp}}</td>
       <td class="selectable-text">{{packet.tcp.sport }}</td>
@@ -38,7 +33,6 @@
   <div v-else>
     A target hasn't been selected please go to the network view and select one.
   </div>
-  <!-- <SnifferPayload class="sniff-payload " v-bind:packet="selectedPacket"> </SnifferPayload> -->
   </div>
 </template>
 
@@ -88,6 +82,16 @@ export default {
     prettifyTs
   },
   methods: {
+    getContentHeader (packet) {
+      if (packet.payload.headers) {
+        const header = packet.payload.headers.filter(function (header) {
+          return header[0] === 'Content-Type'
+        })
+        return header ? header[1] : ''
+      } else {
+        return ''
+      }
+    },
     updateCurrent (packet, index) {
       this.selectedPacket = packet
       this.setPacket(packet)
@@ -141,14 +145,15 @@ export default {
 }
 </script>
 
-<style scoped>
+<style lang='scss'>
 .sniff-table{
-  height: 258px;
-  overflow: scroll;
+  height: 700px;
+  /*position: relative;*/
+  overflow-y: scroll;
 }
 .sniff-body{
-  margin-top: 12px;
-  max-height: 500px;
+  /*margin-top: 12px;*/
+  /*max-height: 500px;*/
 }
 .sniff-payload{
   border-width: 1px;
@@ -174,3 +179,4 @@ export default {
   overflow: hidden;
   max-width: 100px;
 }
+</style>

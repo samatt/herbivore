@@ -17,8 +17,8 @@
     "postinstall": "npm run lint:fix && cd app && npm install"
   },
   "build": {
-    "productName": "ElectronVue",
-    "appId": "org.simulatedgreg.electron-vue",
+    "productName": "Herbivore",
+    "appId": "org.invisible-transmissions.herbivore",
     "category": "public.app-category.tools",
     "dmg": {
       "contents": [
@@ -41,10 +41,10 @@
       "package.json"
     ],
     "mac": {
-      "icon": "app/icons/icon.icns"
+      "icon": "app/icons/herbivore.icns"
     },
     "win": {
-      "icon": "app/icons/icon.ico"
+      "icon": "app/icons/herbivore.ico"
     },
     "linux": {
       "target": [

@@ -234,7 +234,7 @@ class Sniffer extends EventEmitter {
 
     const httpr = r.split('\r\n')
     try {
-      return { ts: ts, eth: eth, ip: ip, tcp: tcp, payload: this.parseHTTP(httpr) }
+      return { ts: ts, eth: eth, ip: ip, tcp: tcp, payload: this.parseHTTP(httpr), raw: r }
     } catch (err) {
       this.error(err)
       return false
@@ -261,7 +261,6 @@ class Sniffer extends EventEmitter {
 
   parseHTTP (headers) {
     const packet = {}
-    packet.raw = headers
     packet.http = true
     packet.host = ''
     const firstline = headers.shift()
@@ -294,8 +293,6 @@ class Sniffer extends EventEmitter {
         if (header[0].indexOf('Host') > -1) {
           packet.host = header[1]
         }
-        console.log(header[0])
-        console.log(header[0].indexOf('Content-Type'))
         if (header[0].indexOf('Content-Type') > -1) {
           packet.contentType = header[1]
         }

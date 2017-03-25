@@ -4,33 +4,49 @@
   <img class="test" src="./assets/herbivore-large.svg">
   <h1 class="title">Welcome to Herbivore</h1>
 
-  <div class="subtitle is-3"></div>
+  <div class="subtitle is-5 sub">
     A tool that lets you take a deeper look at the packets traveling through your networks.
     </br>
-  </div>
-  <p>
-    First go checkout whats happening on your
+    Go checkout whats happening on your
     <router-link to="/network" :exact="true">
       current network
     </router-link>
-  </p>
-  <div @click="newNotification({level:'danger', body:'Lots and lots of text about all the things...'})" class='button'> Notification </div>
-  <div @click="newMessage({level:'danger', body:'test'})" class='button'> Message </div>
+  </div>
+  <p class="subtitle is-5">
 
+  </p>
+  <div @click="newMessage({level:'primary', title:'', duration: 5000, body:'If this is your first time using herbivore you\'ll need to set some permissions. Click on the permissions tab in the menu bar to do so.'})" class='button'> Click here if its your first time </div>
 </div>
 </section>
 </template>
 <script type="text/javascript">
 import { mapActions } from 'vuex'
 export default {
-  methods: mapActions([
-    'newMessage',
-    'newNotification'
-  ])
+  data () {
+    return {
+      test: '1111',
+      show: false
+    }
+  },
+  methods: {
+    toggle () {
+      if (this.test === '1111') {
+        this.test = '2222'
+      } else {
+        this.test = '1111'
+      }
+    },
+    ...mapActions([
+      'newMessage',
+      'newNotification'
+    ])}
 }
 
 </script>
 <style scoped>
+.sub {
+  margin: auto 0;
+}
   code {
     background-color: rgba(40, 56, 76, .5);
     border-radius: 3px;

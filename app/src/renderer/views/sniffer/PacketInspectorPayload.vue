@@ -3,14 +3,14 @@
   <template  class="inspector"v-if="packet.payload.type !== 'https'">
   <div v-if="tab === 'Summary' ">
        <template v-if="packet.payload.type === 'request'">
-         <div class="selectable-text" ><strong>Type</strong> : Request</div>
-         <div class="selectable-text" ><strong>Method</strong> : {{packet.payload.method}}</div>
-         <div class="selectable-text" ><strong>Url</strong>: {{packet.payload.host}}{{packet.payload.url}}</div>
+         <div class="selectable-text has-text-left" ><strong>Type</strong> : Request</div>
+         <div class="selectable-text has-text-left" ><strong>Method</strong> : {{packet.payload.method}}</div>
+         <div class="selectable-text has-text-left" ><strong>Url</strong>: {{packet.payload.host}}{{packet.payload.url}}</div>
        </template>
 
        <template v-else>
-         <div class="selectable-text"><strong>Type</strong> : Response</div>
-         <div class="selectable-text" ><strong>Response Code</strong> : {{packet.payload.code}} {{packet.payload.status}}</div>
+         <div class="selectable-text has-text-left"><strong>Type</strong> : Response</div>
+         <div class="selectable-text has-text-left" ><strong>Response Code</strong> : {{packet.payload.code}} {{packet.payload.status}}</div>
        </template>
   </div>
   <div v-else-if="tab === 'Headers' ">
@@ -28,7 +28,7 @@
   <div v-else-if="tab === 'Raw' ">
      <template v-if="packet.payload.type !== 'https'">
      <pre class=" payload has-text-left">
-     {{packet.payload.raw}}
+     {{packet.raw}}
      </pre>
      </template>
   </div>
@@ -58,6 +58,7 @@ export default {
 }
 </script>
 <style lang='scss'>
+@import '../../globals.scss';
 .inspector{
   max-height: 300px;
 

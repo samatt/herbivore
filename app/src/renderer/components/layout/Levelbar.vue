@@ -1,5 +1,5 @@
 <template>
-<section>
+<section class="animated" :class="{ slideInDown: show, slideOutUp: !show }">
   <nav v-if="this.$route.name==='Network'" class="level stats-network is-marginless">
     <div v-for="stat in networkStats" class="level-item has-text-centered">
       <div>
@@ -28,7 +28,8 @@ export default {
   },
   data () {
     return {
-      list: null
+      list: null,
+      show: false
     }
   },
   created () {
@@ -110,8 +111,13 @@ export default {
     }
   },
   watch: {
-    $route () {
+    $route (val) {
       this.getList()
+      if (val.name !== 'Home') {
+        this.show = true
+      } else {
+        this.show = false
+      }
     }
   }
 }

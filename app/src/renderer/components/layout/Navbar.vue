@@ -1,5 +1,5 @@
 <template>
-  <section class="hero app-navbar animated" :class="{ slideInDown: show, slideOutDown: !show }">
+  <section class="hero app-navbar animated" :class="{ slideInDown: show, slideOutUp: !show }">
     <div class="hero">
       <nav class="nav">
         <div class="nav-left">
@@ -7,15 +7,17 @@
             <i class="fa fa-bars" aria-hidden="true"></i>
           </a>
         </div>
-        <transition
-          mode="in-out"
-          enter-active-class="slideInLeft"
-          leave-active-class="slideOutRight"
-          appear>
-          <a v-if="$route.name != 'Home'" class="nav-right has-icon" href="/">
-            <img src="./assets/herbivore.svg"> </svg>
-          </a>
-        </transition>
+
+          <div class="nav-center">
+          <transition name="fade">
+            <a id="view-title" v-if="show"  class=" nav-item title is-4" href="/">
+              {{$route.name}}
+            </a>
+          </transition>
+          </div>
+        <a v-if="$route.name != 'Home'" class="nav-right has-icon" href="/">
+          <img src="./assets/herbivore.svg"> </svg>
+        </a>
       </nav>
     </div>
   </section>
@@ -25,10 +27,19 @@
 import { mapGetters, mapActions } from 'vuex'
 export default {
   name: 'Navbar',
-  components: {
+  data () {
+    return {
+      show: true
+    }
   },
-  props: {
-    show: Boolean
+  watch: {
+    $route (val) {
+      if (val.name !== 'Home') {
+        this.show = true
+      } else {
+        this.show = false
+      }
+    }
   },
   computed: mapGetters({
     sidebar: 'sidebar',
@@ -60,6 +71,9 @@ export default {
     overflow-x: auto;
     white-space: nowrap;
   }
+}
+#view-title{
+  padding-top: 2px;
 }
 .hero-brand {
   .vue {

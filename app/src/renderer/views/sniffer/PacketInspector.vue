@@ -121,7 +121,6 @@ export default {
       this.show = false
     },
     setTab (view) {
-      console.log('here')
       this.tab = view
     },
     afterLeave () {
@@ -132,6 +131,10 @@ export default {
 }
 </script>
 <style lang='scss'>
+.card-content {
+  max-height: 300px;
+  overflow: scroll;
+}
 .messages {
 /*  position: ;
   top: 135px;

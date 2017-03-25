@@ -3,10 +3,10 @@
     <div class="container is-fluid is-marginless app-content">
       <transition
         mode="out-in"
-        enter-active-class="fadeInDown"
-        leave-active-class="fadeOutUp"
+        :enter-active-class="reversed ? 'slideInRight' : 'slideInLeft'"
+        :leave-active-class="reversed ? 'slideOutLeft' : 'slideOutRight' "
         appear>
-        <levelbar class="animated"></levelbar>
+        <levelbar class="animated" ></levelbar>
       </transition>
 
       <transition

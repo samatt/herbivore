@@ -50,23 +50,42 @@ export default {
     'notification']),
   watch: {
     message (val) {
-      console.log(val)
-      openMessage({
-        title: 'This is a title',
-        message: val.body,
-        type: val.level,
-        direction: 'Up',
-        duration: 2500
-      })
+      if (val.duration) {
+        openMessage({
+          title: val.title,
+          message: val.body,
+          type: val.level,
+          direction: 'Down',
+          duration: val.duration,
+          showCloseButton: true
+        })
+      } else {
+        openMessage({
+          title: val.title,
+          message: val.body,
+          type: val.level,
+          direction: 'Down',
+          showCloseButton: true
+        })
+      }
     },
     notification (val) {
-      openNotification({
-        title: 'This is a title',
-        message: val.body,
-        type: val.level,
-        duration: 2000,
-        showCloseButton: true
-      })
+      if (val.duration) {
+        openNotification({
+          title: val.title,
+          message: val.body,
+          type: val.level,
+          duration: val.duration,
+          showCloseButton: true
+        })
+      } else {
+        openNotification({
+          title: val.title,
+          message: val.body,
+          type: val.level,
+          showCloseButton: true
+        })
+      }
     }
   },
   methods: {

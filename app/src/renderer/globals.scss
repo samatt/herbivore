@@ -15,7 +15,7 @@ $orange-yellow: rgba(255, 209, 102, 1);
 // https://www.christianengvall.se/electron-frameless-window/
 
 body {
-    -ms-overflow-style: scrollbar;
+    // -ms-overflow-style: scrollbar;
     -webkit-app-region:drag;
 }
 
@@ -30,4 +30,10 @@ textarea {
 
 h1, h2, h3, h4, h5, h6 {
     -webkit-user-select: none;
+}
+.selectable-text {
+-webkit-user-select: text;
+-moz-user-select: text;
+-ms-user-select: text;
+user-select: text;
 }

@@ -1,6 +1,6 @@
   <template>
   <div id="#app">
-  <Navbar :show="true" />
+  <Navbar/>
   <Alerts/>
   <sidebar :show="sidebar.opened && !sidebar.hidden"></sidebar>
   <app-main/>

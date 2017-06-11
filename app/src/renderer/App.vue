@@ -21,7 +21,7 @@ export default {
   },
   data () {
     return {
-      views: ['home', 'sniffer', 'network'],
+      views: ['home', 'network', 'sniffer'],
       viewIndex: 0
     }
   },
@@ -133,29 +133,26 @@ export default {
     },
     keyup (e) {
       // left
-      // console.log(e.keyCode)
-
+      console.log(this.$route.name)
       if ((e.keyCode || e.which) === 37) {
-        if (this.viewIndex <= 0) {
-          this.viewIndex = this.views.length - 1
-        } else {
+        if (this.viewIndex > 0) {
           this.viewIndex -= 1
-          this.setAnimationDirection(true)
+          this.$router.push({
+            path: `/${this.views[this.viewIndex]}`
+          })
+        } else if (this.viewIndex === 0) {
+          this.reverseAnimation(false)
         }
-        this.$router.push({
-          path: `/${this.views[this.viewIndex]}`
-        })
       // right
       } else if ((e.keyCode || e.which) === 39) {
-        if (this.viewIndex >= this.views.length - 1) {
-          this.viewIndex = 0
-        } else {
+        if (this.viewIndex < this.views.length - 1) {
           this.viewIndex += 1
+          this.$router.push({
+            path: `/${this.views[this.viewIndex]}`
+          })
+        } else if (this.viewIndex === this.views.length - 1) {
+          this.reverseAnimation(true)
         }
-        this.setAnimationDirection(false)
-        this.$router.push({
-          path: `/${this.views[this.viewIndex]}`
-        })
       }
     },
     ...mapActions(['setNetworkInfo',
@@ -166,7 +163,7 @@ export default {
       'clearPackets',
       'newPacket',
       'maxPossibleDevices',
-      'setAnimationDirection',
+      'reverseAnimation',
       'toggleSidebar',
       'startSniffer'
     ])

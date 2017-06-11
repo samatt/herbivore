@@ -41,7 +41,7 @@ const mutations = {
       state.effect[name] = effectItem[name]
     }
   },
-  [types.SET_ANIMATION_DIRECTION] (state, isReversed) {
+  [types.REVERSE_ANIMATION] (state, isReversed) {
     state.effect.reversed = isReversed
   }
 }
@@ -49,8 +49,8 @@ const actions = {
   newMessage ({commit, state}, msg) {
     commit(types.NEW_MESSAGE, msg)
   },
-  setAnimationDirection ({commit, state}, msg) {
-    commit(types.SET_ANIMATION_DIRECTION, msg)
+  reverseAnimation ({commit, state}, msg) {
+    commit(types.REVERSE_ANIMATION, msg)
   },
   newNotification ({commit, state}, notification) {
     commit(types.NEW_NOTIFICATION, notification)

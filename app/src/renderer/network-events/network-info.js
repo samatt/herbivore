@@ -5,7 +5,7 @@ import {exec} from 'child_process'
 import arp from 'arp-a'
 import oui from 'oui'
 
-const SMALL_SCAN_LIMIT = 255
+const SMALL_SCAN_LIMIT = 500
 const fullIpRange = (start, end) => Array.from({length: (end - start)}, (v, k) => ipSubCal.toString(k + start))
 
 class NetworkInfo extends EventEmitter {
@@ -43,6 +43,7 @@ class NetworkInfo extends EventEmitter {
     this.unresolvedIps = []
     this.emit('maxPossibleDevices', this.maxDevices)
     if (this.maxDevices < SMALL_SCAN_LIMIT) {
+      console.log('HERE')
       // Currently not pinging full network if the range is too big
       this.pingSubnet(this.ipRange)
     } else {

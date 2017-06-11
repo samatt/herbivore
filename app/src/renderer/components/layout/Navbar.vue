@@ -3,14 +3,14 @@
     <div class="hero">
       <nav class="nav">
         <div class="nav-left">
-          <a id="icon-padding" class="nav-item is-hidden-mobile" @click="toggleSidebar(!sidebar.opened)">
+          <a id="icon-padding" class="nav-item" @click="toggleSidebar(!sidebar.opened)">
             <i class="fa fa-bars" aria-hidden="true"></i>
           </a>
         </div>
 
           <div class="nav-center">
           <transition name="fade">
-            <a id="view-title" v-if="show"  class=" nav-item title is-4" href="/">
+            <a id="view-title" v-if="show"  class=" nav-item title is-4" >
               {{$route.name}}
             </a>
           </transition>

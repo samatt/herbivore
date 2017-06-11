@@ -16,13 +16,14 @@
       </div>
     </div>
   </nav>
+  <!-- <div @click="newMessage({level:'danger', title:'', duration: 5000, body:'If this is your first time using herbivore you\'ll need to set some permissions. Click on the permissions tab in the menu bar to do so. You will have to enter your password 3 times. (Sorry)'})" class='button'> Click here if its your first time </div> -->
 </section>
 </template>
 
 <script>
 // import Breadcrumb from 'vue-bulma-breadcrumb'
 // import Tooltip from 'vue-bulma-tooltip'
-import {mapGetters} from 'vuex'
+import {mapGetters, mapActions} from 'vuex'
 export default {
   components: {
   },
@@ -87,6 +88,10 @@ export default {
         title: deviceText
       })
       text.push({
+        heading: 'Are we sniffing?',
+        title: this.running ? '👍' : '👎'
+      })
+      text.push({
         heading: 'Number of Packets',
         title: this.packets.length
       })
@@ -98,6 +103,7 @@ export default {
       'publicIp',
       'packets',
       'devices',
+      'running',
       'maxPossibleDevices'])
   },
   methods: {
@@ -108,7 +114,11 @@ export default {
         matched = [{ name: 'Home', path: '/' }].concat(matched)
       }
       this.list = matched
-    }
+    },
+    ...mapActions([
+      'newMessage',
+      'newNotification'
+    ])
   },
   watch: {
     $route (val) {
@@ -120,6 +130,7 @@ export default {
       }
     }
   }
+
 }
 </script>
 <style lang='scss'>

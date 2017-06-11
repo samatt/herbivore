@@ -1,4 +1,4 @@
-<template>
+  <template>
 <div>
   <sniffer-menu/>
   <packet-inspector/>
@@ -21,7 +21,7 @@
         @click="updateCurrent(packet, index)">
       <td class="selectable-text">  {{ packet.ts | prettifyTs}}</td>
       <td class="selectable-text">{{packet.payload.host }}</td>
-      <td class="selectable-text">{{packet.payload.type !== 'https' ? packet.payload.contentType : '' }}</td>
+      <td class="selectable-text">{{packet.payload.type !== 'https' ? packet.payload.contentType : '🔒' }}</td>
       <td class="selectable-text">{{packet.ip.saddr | stringifyIp}}</td>
       <td class="selectable-text">{{packet.ip.daddr | stringifyIp}}</td>
       <td class="selectable-text">{{packet.tcp.sport }}</td>

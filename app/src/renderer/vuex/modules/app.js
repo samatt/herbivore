@@ -12,11 +12,16 @@ const state = {
   effect: {
     translate3d: true,
     reversed: false
+  },
+  view: {
+    names: ['home', 'network', 'sniffer'],
+    index: 0
   }
 }
 
 const getters = {
   effect: state => state.effect,
+  view: state => state.view,
   reversed: state => state.effect.reversed,
   sidebar: state => state.sidebar,
   message: state => state.message,
@@ -24,7 +29,22 @@ const getters = {
 }
 
 const mutations = {
-
+  [types.INCREMENT_VIEW_INDEX] (state) {
+    if (state.view.index === state.view.names.length - 1) {
+      state.effect.reversed = true
+      state.view.index = state.view.names.length - 1
+    } else {
+      state.view.index += 1
+    }
+  },
+  [types.DECREMENT_VIEW_INDEX] (state) {
+    if (state.view.index <= 0) {
+      state.view.index = 0
+      state.effect.reversed = false
+    } else {
+      state.view.index -= 1
+    }
+  },
   [types.TOGGLE_SIDEBAR] (state, opened) {
     state.sidebar.opened = opened
   },
@@ -46,6 +66,12 @@ const mutations = {
   }
 }
 const actions = {
+  incViewIndex ({commit, state}, msg) {
+    commit(types.INCREMENT_VIEW_INDEX, msg)
+  },
+  decViewIndex ({commit, state}, msg) {
+    commit(types.DECREMENT_VIEW_INDEX, msg)
+  },
   newMessage ({commit, state}, msg) {
     commit(types.NEW_MESSAGE, msg)
   },

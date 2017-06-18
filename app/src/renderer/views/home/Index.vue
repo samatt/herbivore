@@ -7,20 +7,22 @@
   <div class="subtitle is-5 sub">
     A tool that lets you take a deeper look at the packets traveling through your networks.
     </br>
-    Go checkout whats happening on your
-    <router-link to="/network" :exact="true">
-      current network
-    </router-link>
+    Go checkout whats happening on your current network.
   </div>
-  <p class="subtitle is-5">
-
-  </p>
+    <a @click="goRight" class="nav-item">
+      <span class="icon">
+        <i class="fa fa-arrow-right highlight" aria-hidden="true"></i>
+      </span>
+    </a>
   <div @click="newMessage({level:'primary', title:'', duration: 5000, body:'If this is your first time using herbivore you\'ll need to set some permissions. Click on the permissions tab in the menu bar to do so. You will have to enter your password 3 times. (Sorry)'})" class='button'> Click here if its your first time </div>
+  <p class="subtitle is-7">
+  Hint: you can also use the ← and → arrow keys to navigate.
+  </p>
 </div>
 </section>
 </template>
 <script type="text/javascript">
-import { mapActions } from 'vuex'
+import { mapGetters, mapActions } from 'vuex'
 export default {
   data () {
     return {
@@ -28,6 +30,9 @@ export default {
       show: false
     }
   },
+  computed: mapGetters({
+    view: 'view'
+  }),
   methods: {
     toggle () {
       if (this.test === '1111') {
@@ -36,7 +41,15 @@ export default {
         this.test = '1111'
       }
     },
+    goRight: function () {
+      console.log('there')
+      this.incViewIndex()
+      this.$router.push({
+        path: `/${this.view.names[this.view.index]}`
+      })
+    },
     ...mapActions([
+      'incViewIndex',
       'newMessage',
       'newNotification'
     ])}
@@ -46,6 +59,9 @@ export default {
 <style scoped>
 .sub {
   margin: auto 0;
+}
+.highlight{
+  color: #00d1b2;
 }
   code {
     background-color: rgba(40, 56, 76, .5);

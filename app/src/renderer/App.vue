@@ -64,6 +64,7 @@ export default {
   },
   computed: mapGetters([
     'gateway',
+    'view',
     'host',
     'target',
     'running',
@@ -133,29 +134,22 @@ export default {
     },
     keyup (e) {
       // left
-      console.log(this.$route.name)
       if ((e.keyCode || e.which) === 37) {
-        if (this.viewIndex > 0) {
-          this.viewIndex -= 1
-          this.$router.push({
-            path: `/${this.views[this.viewIndex]}`
-          })
-        } else if (this.viewIndex === 0) {
-          this.reverseAnimation(false)
-        }
+        this.decViewIndex()
+        this.$router.push({
+          path: `/${this.view.names[this.view.index]}`
+        })
       // right
       } else if ((e.keyCode || e.which) === 39) {
-        if (this.viewIndex < this.views.length - 1) {
-          this.viewIndex += 1
-          this.$router.push({
-            path: `/${this.views[this.viewIndex]}`
-          })
-        } else if (this.viewIndex === this.views.length - 1) {
-          this.reverseAnimation(true)
-        }
+        this.incViewIndex()
+        this.$router.push({
+          path: `/${this.view.names[this.view.index]}`
+        })
       }
     },
     ...mapActions(['setNetworkInfo',
+      'incViewIndex',
+      'decViewIndex',
       'setHostInfo',
       'addDevice',
       'updateName',

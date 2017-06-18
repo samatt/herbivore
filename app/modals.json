@@ -1,0 +1,67 @@
+{ 
+  "modals": [
+    {
+    "id": "1",
+    "description": "set permissions",
+    "script": "First, go to the Permissions menu and select 'Set'"
+    },
+    {
+    "id": "2",
+    "description": "describe Network view",
+    "script": "You're in 'Network' view. The router at the top shows all the 
+    devices connected to it."
+    },
+    {
+    "id": "3",
+    "description": "select target",
+    "script": "Double-click a device to target it and see data packets traveling
+     between it at the router. You can also target yourself."
+    },
+    {
+    "id": "4",
+    "description": "describe Sniffer view",
+    "script": "Targeting a device brings you to 'Sniffer' view. You can go back
+    'Network' view by clicking 'Network' on the upper left-hand side."
+    },
+    {
+    "id": "5",
+    "description": "describe packet table",
+    "script": "Click on some packets. If a packet is sent over an HTTP
+    connection, you'll be able to see its contents when you click on it."
+    },
+    {
+    "id": "6",
+    "description": "HTTP form",
+    "script": "Open a browser and navigate to 'http://itp.eveweinberg.com/flat'. 
+    Fill out the form you find there. Then, come back to look for the 
+    highlighted packet."
+    },
+    {
+    "id": "7",
+    "description": "find the HTTP packet",
+    "script": "Did you find it? Look through the packet data. Can you find the 
+    Response Code? [link to Wikipedia about Response Codes] Can you find the data 
+    you submitted in the form?"
+    },
+    {
+    "id": "8",
+    "description": "HTTPS form",
+    "script": "Now, in the browser, navigate to 'https://kaganjd.github.io/https-form'. 
+    Do the same thing as before: Fill it out and come back to find the 
+    highlighted packet."
+    },
+    {
+    "id": "9",
+    "description": "find the HTTPS packet",
+    "script": "Did you find it? You probably notice that you can't see as much information 
+    as before. That's because packets sent with HTTPS only reveal packet metadata [ 
+    link to Wikipedia about metadata ], like host name; all of the actual packet 
+    data is encrypted, so we can't see it."
+    },
+    {
+    "id": "10",
+    "description": "walk-through complete",
+    "script": "Congrats! You completed the packet exercise."
+    }
+  ]
+}

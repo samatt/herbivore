@@ -72,7 +72,7 @@ export default {
     },
     getClasses (packet, index) {
       if (index === this.hoverIndex) {
-        return ['selectable-text','highlighted', 'small-title', 'has-text-left']
+        return ['selectable-text', 'highlighted', 'small-title', 'has-text-left']
       } else {
         return ['selectable-text', 'small-title', 'has-text-left']
       }

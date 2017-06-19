@@ -1,6 +1,6 @@
 {
   "name": "herbivore",
-  "version": "0.1.0",
+  "version": "0.1.2",
   "description": "A fun way to learn how computers talk to each other",
   "main": "./dist/main.js",
   "dependencies": {

@@ -3,7 +3,9 @@
   <nav v-if="this.$route.name==='Network'" class="level stats-network is-marginless">
     <div v-for="stat in networkStats" class="level-item has-text-centered">
       <div>
-        <p class="heading">{{stat.heading}}</p>
+        <tooltip :label="stat.tooltip" placement="bottom">
+          <p class="heading">{{stat.heading}}</p>
+        </tooltip>
         <p class="title">{{stat.title}}</p>
       </div>
     </div>
@@ -11,7 +13,9 @@
   <nav v-if="this.$route.name==='Sniffer'" class="level stats-sniffer is-marginless">
     <div v-for="stat in snifferStats" class="level-item has-text-centered">
       <div>
-        <p class="heading">{{stat.heading}}</p>
+        <tooltip :label="stat.tooltip" placement="bottom">
+          <p class="heading"> {{stat.heading}}</p>
+        </tooltip>
         <p class="title">{{stat.title}}</p>
       </div>
     </div>
@@ -22,10 +26,11 @@
 
 <script>
 // import Breadcrumb from 'vue-bulma-breadcrumb'
-// import Tooltip from 'vue-bulma-tooltip'
+import Tooltip from 'vue-bulma-tooltip'
 import {mapGetters, mapActions} from 'vuex'
 export default {
   components: {
+    Tooltip
   },
   data () {
     return {
@@ -51,18 +56,22 @@ export default {
       let text = []
       text.push({
         heading: 'Devices On Network',
+        tooltip: 'The number of devices detected on the network you are currently connected to.',
         title: this.devices.length
       })
       text.push({
         heading: 'Host Name',
+        tooltip: 'The host name of this computer. This is the name other devices on your network see this computer as.',
         title: this.host.name
       })
       text.push({
         heading: 'Private IP',
+        tooltip: 'This is the IP address of your device on the local network you are connected to',
         title: this.host.ip
       })
       text.push({
         heading: 'Public IP🌍',
+        tooltip: 'This is the IP address for the local network on the public internet. If you go to google.com, Google will see the request as coming from this IP address',
         title: this.publicIp ? this.publicIp : 'Not available'
       })
       return text
@@ -73,6 +82,7 @@ export default {
       if (!this.target) {
         text.push({
           heading: 'Current Target',
+          tooltip: 'The device whose packets you are currently listening to',
           title: 'No Target Selected'
         })
         return text
@@ -85,14 +95,17 @@ export default {
 
       text.push({
         heading: 'Current Target',
+        tooltip: 'The device whose packets you are currently listening to',
         title: deviceText
       })
       text.push({
         heading: 'Are we sniffing?',
+        tooltip: 'Is the sniffer running',
         title: this.running ? '👍' : '👎'
       })
       text.push({
         heading: 'Number of Packets',
+        tooltip: 'HTTP and HTTPS packets collected in this session',
         title: this.packets.length
       })
       return text

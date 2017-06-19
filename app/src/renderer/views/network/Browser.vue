@@ -15,11 +15,16 @@
     </div>
     <table class="table">
       <thead>
+
       <tr>
       <th v-for="key in columns"
         @click="sortBy(key)"
         :class="[{ active: sortKey == key }]">
-          {{key  | capitalize}}
+        <tooltip :label="tt[key]" placement="top">
+        <button class="button is-white has-text-centered">
+          <span> {{key  | capitalize}}</span>
+          </button>
+        </tooltip>
         <span class="arrow" :class="sortOrders[key] > 0 ? 'asc' : 'dsc'">
         </span>
       </th>
@@ -47,14 +52,14 @@
 <script>
 import { mapGetters, mapActions } from 'vuex'
 import { upperMac, capitalize } from '../../filters'
-// import PagePreview from './PagePreview'
-// console.log(PagePreview)
+import Tooltip from 'vue-bulma-tooltip'
 
 export default {
   name: 'Browser',
   created () {
   },
-  components () {
+  components: {
+    Tooltip
   },
   data () {
     const columns = ['mac', 'ip', 'vendor', 'hostname', 'router']
@@ -64,6 +69,13 @@ export default {
     })
     return {
       viewIndex: 0,
+      tt: {
+        'mac': 'The Mac address is the unique address of your networked device that never changes.',
+        'ip': 'The IP address is the address given to you by the router of your current network. This changes everytime you join a network',
+        'vendor': 'The manufacturer name of your network card',
+        'hostname': 'The name you can use to connect to this device on the local network. Usually by hostname.local',
+        'router': 'A flag that tells you if the current row belongs to the router'
+      },
       sortKey: '',
       sortOrders: sortOrders,
       columns: columns,

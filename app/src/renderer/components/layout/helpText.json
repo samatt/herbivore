@@ -1,0 +1,14 @@
+{
+    "home": {
+        "title":"This is title for home",
+        "body": "This is the help text for home"
+    },
+    "sniffer": {
+        "title":"This is title for sniffer",
+        "body": "This is the help text for sniffer"
+    },
+    "network": {
+        "title":"This is title for network",
+        "body": "This is the help text for network"
+    }
+}

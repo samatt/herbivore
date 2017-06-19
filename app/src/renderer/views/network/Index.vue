@@ -6,7 +6,7 @@
 </template>
 
 <script>
-import {mapGetters} from 'vuex'
+import {mapGetters, mapActions} from 'vuex'
 import Browser from './Browser'
 import Viz from './Viz'
 export default {
@@ -19,7 +19,13 @@ export default {
   computed: mapGetters(['gateway',
     'host',
     'devices',
-    'maxPossibleDevices'])
+    'maxPossibleDevices']),
+  methods: {
+    ...mapActions([
+      'newMessage',
+      'newNotification'
+    ])
+  }
 }
 </script>
 

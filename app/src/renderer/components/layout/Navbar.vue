@@ -7,11 +7,13 @@
             <i class="fa fa-bars" aria-hidden="true"></i>
           </a>
         </div> -->
-          <a v-if="$route.name != 'Home'" class="nav-left has-icon" href="/">
+          <div class="nav-left has-icon" >
             <img src="./assets/herbivore.svg"/>
-          </a>
+          </div>
           <div class="nav-center">
-
+            <span @click="popMessage" class="icon help">
+              <i class="fa fa-question-circle" aria-hidden="true"></i>
+            </span>
           <transition name="fade">
             <a id="view-title" v-if="show"  class=" nav-item title is-4" >
               {{$route.name}}
@@ -20,12 +22,12 @@
           </div>
         <div  class="nav-right">
             <a  @click="goLeft" class="nav-item">
-              <span class="icon">
+              <span :class="view.index > 0 ? ['icon', 'highlight'] : ['icon']">
                 <i class="fa fa-arrow-left" aria-hidden="true"></i>
               </span>
             </a>
             <a @click="goRight" class="nav-item">
-              <span class="icon">
+              <span :class="view.index < view.names.length -1 ?  ['icon', 'highlight']:['icon']">
                 <i class="fa fa-arrow-right" aria-hidden="true"></i>
               </span>
             </a>
@@ -37,12 +39,15 @@
 
 <script>
 import { mapGetters, mapActions } from 'vuex'
+import helpText from './helpText'
+
 export default {
   name: 'Navbar',
   props: ['views', 'viewIndex'],
   data () {
     return {
-      show: false
+      show: false,
+      helpText: helpText
     }
   },
   watch: {
@@ -61,7 +66,6 @@ export default {
   }),
   methods: {
     goRight: function () {
-      console.log('there')
       this.incViewIndex()
       this.$router.push({
         path: `/${this.view.names[this.view.index]}`
@@ -73,11 +77,24 @@ export default {
         path: `/${this.view.names[this.view.index]}`
       })
     },
+    popMessage () {
+      let view = this.$route.name.toLowerCase()
+      console.log('post message')
+      console.log(this.helpText[view])
+      this.newNotification(
+        { level: 'primary',
+          title: this.helpText[view].title,
+          duration: 15000,
+          body: this.helpText[view].body
+        })
+    },
     ...mapActions([
       'incViewIndex',
       'decViewIndex',
       'toggleSidebar',
-      'reverseAnimation'
+      'reverseAnimation',
+      'newMessage',
+      'newNotification'
     ])
   }
 }
@@ -116,6 +133,13 @@ export default {
     color: $lime-green;
   }
 }
+.help {
+  margin-top: 12px;
+}
+.highlight{
+  color: #00d1b2;
+}
+
 .nav-left{
   padding-top: 14px;
 }

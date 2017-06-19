@@ -13,19 +13,19 @@
 <!--           <p class="card-header-title">
             Packet Inspector
           </p> -->
-          <a class="card-footer-item"
+          <a :class="isActive(tab, 'Summary')"
               @click="setTab('Summary')" >
             Summary
           </a>
-          <a class="card-footer-item"
+          <a :class="isActive(tab, 'Headers')"
               @click="setTab('Headers')" >
             Headers
           </a>
-          <a class="card-footer-item"
+          <a :class="isActive(tab, 'Payload')"
               @click="setTab('Payload')" >
             Payload
           </a>
-          <a class="card-footer-item"
+          <a :class="isActive(tab, 'Raw')"
               @click="setTab('Raw')" >
             Raw
           </a>
@@ -116,6 +116,9 @@ export default {
     })
   },
   methods: {
+    isActive (cur, selected) {
+      return cur === selected ? ['active', 'card-footer-item'] : ['card-footer-item']
+    },
     close () {
       clearTimeout(this.timer)
       this.show = false

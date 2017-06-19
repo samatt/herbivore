@@ -43,7 +43,6 @@ class NetworkInfo extends EventEmitter {
     this.unresolvedIps = []
     this.emit('maxPossibleDevices', this.maxDevices)
     if (this.maxDevices < SMALL_SCAN_LIMIT) {
-      console.log('HERE')
       // Currently not pinging full network if the range is too big
       this.pingSubnet(this.ipRange)
     } else {

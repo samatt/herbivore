@@ -3,19 +3,19 @@
   <template  class="inspector"v-if="packet.payload.type !== 'https'">
   <div v-if="tab === 'Summary' ">
        <template v-if="packet.payload.type === 'request'">
-         <div class="selectable-text has-text-left" ><strong>Type</strong> : Request</div>
-         <div class="selectable-text has-text-left" ><strong>Method</strong> : {{packet.payload.method}}</div>
-         <div class="selectable-text has-text-left" ><strong>Url</strong>: {{packet.payload.host}}{{packet.payload.url}}</div>
+         <div class="has-text-left" ><strong>Type</strong> : Request</div>
+         <div class="has-text-left" ><strong>Method</strong> : <span class="selectable-text "> {{packet.payload.method}} </span> </div>
+         <div class="has-text-left" ><strong>Url</strong>: <span class="selectable-text "> {{packet.payload.host}}{{packet.payload.url}} </span></div>
        </template>
 
        <template v-else>
-         <div class="selectable-text has-text-left"><strong>Type</strong> : Response</div>
-         <div class="selectable-text has-text-left" ><strong>Response Code</strong> : {{packet.payload.code}} {{packet.payload.status}}</div>
+         <div class="has-text-left"><strong>Type</strong> : Response</div>
+         <div class="has-text-left" ><strong>Response Code</strong> : <span class="selectable-text ">{{packet.payload.code}} {{packet.payload.status}} </span></div>
        </template>
   </div>
   <div v-else-if="tab === 'Headers' ">
-    <div class="selectable-text has-text-left" v-for="p in packet.payload.headers">
-      <strong>{{p[0]}}:</strong> {{p[1]}}
+    <div class="has-text-left" v-for="p in packet.payload.headers">
+      <strong>{{p[0]}}:</strong> <span class="selectable-text "> {{p[1]}} </span>
     </div>
   </div>
   <div v-else-if="tab === 'Payload' ">
@@ -64,7 +64,10 @@ export default {
 
 }
 .payload{
-  overflow-x: scroll;
+  overflow-wrap: break-all;
+  word-wrap: break-word;
+  white-space: pre-wrap
+  // overflow-x: scroll;
 }
 
 </style>

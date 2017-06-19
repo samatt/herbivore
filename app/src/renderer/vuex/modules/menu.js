@@ -12,7 +12,7 @@ const state = {
       path: '/network',
       meta: {
         icon: 'fa-info',
-        link: 'network/index.vue'
+        link: 'network/Index.vue'
       },
       component: require('../../views/network')
     },

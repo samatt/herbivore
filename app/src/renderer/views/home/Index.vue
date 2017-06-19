@@ -8,14 +8,14 @@
     A tool that lets you take a deeper look at the packets traveling through your networks.
     </br>
     Go checkout whats happening on your current network.
-      <span @click="goRight" class="icon">
+    <a>  <span @click="goRight" class="icon">
         <i class="fa fa-arrow-right highlight" aria-hidden="true"></i>
       </span>
-  </div>
-    <a  class="nav-item">
-
     </a>
+  </div>
+
   <div @click="newMessage({level:'primary', title:'', duration: 5000, body:'If this is your first time using herbivore you\'ll need to set some permissions. Click on the permissions tab in the menu bar to do so. You will have to enter your password 3 times. (Sorry)'})" class='button'> Click here if its your first time </div>
+  <div @click="goAbout" class='button'> About Herbivore </div>
   <p class="subtitle is-5 hint">
   Hint: you can also use the ← and → arrow keys to navigate.
   </p>
@@ -35,18 +35,15 @@ export default {
     view: 'view'
   }),
   methods: {
-    toggle () {
-      if (this.test === '1111') {
-        this.test = '2222'
-      } else {
-        this.test = '1111'
-      }
-    },
     goRight: function () {
-      console.log('there')
       this.incViewIndex()
       this.$router.push({
         path: `/${this.view.names[this.view.index]}`
+      })
+    },
+    goAbout: function () {
+      this.$router.push({
+        path: `/about`
       })
     },
     ...mapActions([

@@ -17,7 +17,6 @@ const actions = {
     commit(types.NEW_PACKET, packet)
   },
   clearPackets ({ commit, state }) {
-    console.log('here')
     commit(types.CLEAR_PACKETS)
   },
   startSniffer ({ commit, state }) {

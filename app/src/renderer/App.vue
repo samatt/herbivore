@@ -134,13 +134,13 @@ export default {
     },
     keyup (e) {
       // left
-      if ((e.keyCode || e.which) === 37) {
+      if ((e.keyCode || e.which) === 37 && this.$route.name !== 'About') {
         this.decViewIndex()
         this.$router.push({
           path: `/${this.view.names[this.view.index]}`
         })
       // right
-      } else if ((e.keyCode || e.which) === 39) {
+      } else if ((e.keyCode || e.which) === 39 && this.$route.name !== 'About') {
         this.incViewIndex()
         this.$router.push({
           path: `/${this.view.names[this.view.index]}`

@@ -3,12 +3,12 @@
         "title":"This is title for home",
         "body": "This is the help text for home"
     },
-    "sniffer": {
-        "title":"This is title for sniffer",
-        "body": "This is the help text for sniffer"
-    },
     "network": {
-        "title":"This is title for network",
-        "body": "This is the help text for network"
+        "title":"Network",
+        "body": "In this view you can choose on your current network to inspect. The figure shows the topology of the current network you're connected too and the table provides more information about individual devices."
+    },
+    "sniffer": {
+        "title":"Sniffer",
+        "body": "In this view you can inspect the packets of the device you selected in the network view. You should be able to see all HTTP and HTTPS traffic. If the information is encrypted you will see the 🔒 icon in the row, otherwise you should be able to read it's contents"
     }
 }

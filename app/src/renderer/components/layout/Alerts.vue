@@ -32,7 +32,7 @@ const openMessage = (propsData = {
   message: '',
   type: '',
   direction: '',
-  duration: 1500,
+  duration: 4500,
   container: '.messages'
 }) => {
   return new MessageComponent({

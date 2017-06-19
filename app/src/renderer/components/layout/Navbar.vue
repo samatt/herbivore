@@ -1,7 +1,7 @@
 <template>
   <section class="hero app-navbar animated" :class="{ slideInDown: show, slideOutUp: !show }">
     <div class="hero">
-      <nav class="nav">
+      <nav v-if="$route.name !== 'About'" class="nav">
        <!--  <div class="nav-left">
           <a id="icon-padding" class="nav-item" @click="toggleSidebar(!sidebar.opened)">
             <i class="fa fa-bars" aria-hidden="true"></i>
@@ -79,10 +79,8 @@ export default {
     },
     popMessage () {
       let view = this.$route.name.toLowerCase()
-      console.log('post message')
-      console.log(this.helpText[view])
       this.newNotification(
-        { level: 'primary',
+        { level: 'info',
           title: this.helpText[view].title,
           duration: 15000,
           body: this.helpText[view].body

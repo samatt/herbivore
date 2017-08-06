@@ -11,12 +11,12 @@ export default new Router({
     {
       name: 'Home',
       path: '/',
-      component: require('../views/home')
+      component: require('../views/home/Index.vue')
     },
     {
       name: 'About',
       path: '/about',
-      component: require('../views/about')
+      component: require('../views/about/Index.vue')
     },
     ...generateRoutesFromMenu(menuModule.state.items),
     {

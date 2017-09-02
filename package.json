@@ -5,6 +5,7 @@
   "scripts": {
     "build": "npm run pack && build",
     "build:dir": "npm run pack && build --dir",
+    "rebuild": "cd app && ./node_modules/.bin/electron-rebuild",
     "dev": "node tasks/runner.js",
     "e2e": "npm run pack && mocha test/e2e",
     "lint": "eslint --ext .js,.vue -f ./node_modules/eslint-friendly-formatter app test",

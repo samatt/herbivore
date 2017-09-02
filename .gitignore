@@ -11,6 +11,7 @@ npm-debug.log
 npm-debug.log.*
 thumbs.db
 !.gitkeep
+.python-version
 
 # Created by https://www.gitignore.io/api/node
 

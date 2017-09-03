@@ -8,6 +8,9 @@
 # install dependencies
 npm install
 
+# rebuild native node modules against electron version of node. more: https://github.com/electron/electron-rebuild
+npm run rebuild
+
 # serve with hot reload at localhost:9080
 npm run dev
 

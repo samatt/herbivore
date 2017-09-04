@@ -14,7 +14,7 @@ const state = {
         icon: 'fa-info',
         link: 'network/Index.vue'
       },
-      component: require('../../views/network')
+      component: require('../../views/network/Index.vue')
     },
     {
       name: 'Sniffer',
@@ -23,7 +23,7 @@ const state = {
         icon: 'fa-eye',
         link: 'sniffer/index.vue'
       },
-      component: require('../../views/sniffer')
+      component: require('../../views/sniffer/Index.vue')
     }
   ]
 }

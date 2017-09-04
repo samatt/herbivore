@@ -5,7 +5,7 @@
   "main": "./dist/main.js",
   "dependencies": {
     "animate.css": "^3.5.2",
-    "arp-a": "^0.5.1",
+    "arp-a": "git+https://github.com/samatt/node-arp-a.git",
     "child-process-promise": "^2.2.0",
     "font-awesome": "^4.7.0",
     "ip-subnet-calculator": "^1.1.7",

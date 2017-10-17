@@ -24,7 +24,7 @@ npm run lint
 # run webpack in production
 npm run pack
 ```
-More information can be found [here](https://simulatedgreg.gitbooks.io/electron-vue/content/docs/npm_scripts.html).
----
+
+Built using [electron-vue](https://simulatedgreg.gitbooks.io/electron-vue/en/)
 
 

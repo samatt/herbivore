@@ -1,6 +1,10 @@
 # herbivore
 
-> A fun way to learn how computers talk to each other
+> Packet sniffing made simple
+
+Go to the [releases](https://github.com/samatt/herbivore/releases) tab for the latest release.
+
+If you want to build the app yourself follow the instructions below.
 
 ## Build Setup
 
@@ -21,10 +25,6 @@ npm run lint
 npm run pack
 ```
 More information can be found [here](https://simulatedgreg.gitbooks.io/electron-vue/content/docs/npm_scripts.html).
-
-Note to self: when adding new bulma components they need to be installed in the root directory not app directory because of webpack
 ---
-
-This project was generated from [electron-vue](https://github.com/SimulatedGREG/electron-vue) using [vue-cli](https://github.com/vuejs/vue-cli). Documentation about this project can be found [here](https://simulatedgreg.gitbooks.io/electron-vue/content/index.html).
 
 

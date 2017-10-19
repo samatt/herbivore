@@ -146,13 +146,13 @@ if (process.env.NODE_ENV === 'production') {
     }),
     new webpack.LoaderOptionsPlugin({
       minimize: true
-    }),
-    new webpack.optimize.UglifyJsPlugin({
-      compress: {
-        warnings: false
-      }
     })
   )
 }
-
+// TODO: Put uglify back in when it stops being an asshole.
+// new webpack.optimize.UglifyJsPlugin({
+//   compress: {
+//     warnings: false
+//   }
+// })
 module.exports = rendererConfig

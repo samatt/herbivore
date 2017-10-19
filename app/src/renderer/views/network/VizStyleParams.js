@@ -60,7 +60,7 @@ const nodeStyle = {
     large: '3.36em'
   },
   fill: {
-    router: 'url(#Rputer)',
+    router: 'url(#Router)',
     hover: 'url(#Target)',
     small: 'url(#Device)',
     large: 'url(#Device)'

@@ -1,10 +1,8 @@
 #  Herbivore ![Herbivore Logo](./app/src/renderer/components/layout/assets/herbivore.svg)
 
-> Packet sniffing made simple
-
 **[Download release](https://github.com/samatt/herbivore/releases)**
 
-**[Clone and build](#Build) **
+**[Clone and build](#Build)**
 
 <u>Important: If you are running Herbivore for the first time be sure to set the necessary permissions.</u>
 
@@ -22,12 +20,11 @@ Herbivore is a free, open source tool that shows users the data packets that tra
 
 Herbivore currently offers users two ways for understanding the network they’re connected to: 
 
-* ####Network View
+* #### Network View
   *  The Network View is made up of a device diagram on the top half of the screen, which describes the user’s network visually, and a Device Table on the lower half, which describes the user’s network as a list of devices
 
   ![Network View](./doc-assets/network-view.png)
 
-  ​
 
 * #### Sniffer View
 

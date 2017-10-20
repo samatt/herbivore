@@ -63,6 +63,10 @@ Herbivore is made and maintained by Surya Mattu and Jen Kagan. Ingrid Burrington
 ## Build
 
 ``` bash
+# clone + cd into the repo
+https://github.com/samatt/herbivore.git
+cd herbivore
+
 # install dependencies
 npm install
 

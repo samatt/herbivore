@@ -2,7 +2,7 @@
 
 **[Download release](https://github.com/samatt/herbivore/releases)**
 
-**[Clone and build](#Build)**
+**[Clone and build](https://github.com/samatt/herbivore#build)**
 
 <u>Important: If you are running Herbivore for the first time be sure to set the necessary permissions.</u>
 

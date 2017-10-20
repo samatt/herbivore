@@ -54,7 +54,7 @@ While Herbivore can technically listent to all of the information mentioned abov
 
 ## Who Made It?
 
-Herbivore is made and maintained by Surya Mattu and Jen Kagan. Ingrid Burrington, Eve Weinber and Pedro Galvao Cesar De Oliveira have also contributed to the project.
+Herbivore is made and maintained by Surya Mattu and Jen Kagan. Ingrid Burrington, Eve Weinber and Pedro Galvao Cesar De Oliveira have also contributed to the project. Herbivore was made with the support of NYU's Interactive Telecommunications Program and their [Something-In-Residence](https://tisch.nyu.edu/itp/itp-people/faculty/somethings-in-residence-sirs) fellowship.
 
 
 

@@ -175,7 +175,7 @@ class Sniffer extends EventEmitter {
       pktArr = pktArr.concat(pkt[x])
     }
 
-    var arpRequest = new Buffer(pktArr)
+    var arpRequest = Buffer.from(pktArr)
     this.session.inject(arpRequest)
   }
 
@@ -225,7 +225,9 @@ class Sniffer extends EventEmitter {
       return false
     }
 
+    const rBuffer = tcp.data
     const r = tcp.data.toString('utf-8')
+
     if (r.indexOf('Content-Length') === -1 &&
         r.indexOf('Host') === -1 &&
         r.indexOf('Content-Type') === -1) {
@@ -234,7 +236,7 @@ class Sniffer extends EventEmitter {
 
     const httpr = r.split('\r\n')
     try {
-      return { ts: ts, eth: eth, ip: ip, tcp: tcp, payload: this.parseHTTP(httpr), raw: r }
+      return { ts: ts, eth: eth, ip: ip, tcp: tcp, payload: this.parseHTTP(httpr, rBuffer), raw: r }
     } catch (err) {
       this.error(err)
       return false
@@ -259,7 +261,26 @@ class Sniffer extends EventEmitter {
     return ipArr
   }
 
-  parseHTTP (headers) {
+  findFileSignature (arr, val, val2, val3) {
+    let indexes = []
+    for (let i = 0; i < arr.length; i++) {
+      if (arr[i] === val) {
+        indexes.push(i)
+      }
+    }
+    // Look for the first three decimal values of the image file signature
+    // If found, convert to base64
+    for (let j = 0; j < indexes.length; j++) {
+      if (arr[indexes[j] + 1] === val2) {
+        if (arr[indexes[j] + 2] === val3) {
+          const sliced = arr.slice(indexes[j]).toString('base64')
+          return sliced
+        }
+      }
+    }
+  }
+
+  parseHTTP (headers, buffer) {
     const packet = {}
     packet.http = true
     packet.host = ''
@@ -303,10 +324,26 @@ class Sniffer extends EventEmitter {
     //   packet.contentType = ''
     // }
     // headers.pop()
-    const lastline = headers.splice(headers.length - 2, headers.length - 1)
-    packet.payload = lastline
+    if (buffer.indexOf('Content-Type: image') !== -1) {
+      if (buffer.indexOf('png') !== -1) {
+        const fileSignature = [137, 80, 78]
+        packet.payload = this.findFileSignature(buffer, fileSignature[0], fileSignature[1], fileSignature[2])
+      }
+      if (buffer.indexOf('jpeg') !== -1) {
+        const fileSignature = [255, 216, 255]
+        packet.payload = this.findFileSignature(buffer, fileSignature[0], fileSignature[1], fileSignature[2])
+      }
+      if (buffer.indexOf('gif') !== -1) {
+        const fileSignature = [71, 73, 70]
+        packet.payload = this.findFileSignature(buffer, fileSignature[0], fileSignature[1], fileSignature[2])
+      }
+    } else {
+      const lastline = headers.splice(headers.length - 1)
+      packet.payload = lastline
+    }
     return packet
   }
+
 }
 
 export default new Sniffer()

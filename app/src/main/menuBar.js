@@ -1,9 +1,10 @@
 import { Menu } from 'electron'
 import sudo from 'sudo-prompt'
-
-const options = {
-  name: 'Herbivore'
-}
+import { exec } from 'child_process'
+import { sudoOptions, 
+  messageBoxOptions, 
+  lsPermissions, 
+  setPermissions } from './permissionsConsts'
 
 const template = [
   {
@@ -21,48 +22,55 @@ const template = [
     ]
   },
   {
-    label: 'About',
+    label: 'Herbivore',
     submenu: [
       {
         label: 'About',
         role: 'about'
-      }
-    ]
-  },
-  {
-    label: 'Permissions',
-
-    submenu: [
-      {
-        label: 'Set',
-        click () {
-          sudo.exec('chmod o+r /dev/bpf*', options, function (error, stdout, stderr) {
-            if (error) console.log(error)
-            sudo.exec('sysctl -w net.inet.ip.forwarding=1', options, function (error, stdout, stderr) {
-              if (error) console.log(error)
-              sudo.exec('sysctl -w net.inet.ip.fw.enable=1', options, function (error, stdout, stderr) {
-                if (error) console.log(error)
-              })
-            })
-          })
-
-          console.log('Set Permissions')
-        }
       },
       {
-        label: 'Clear',
-        click () {
-          sudo.exec('chmod o-r /dev/bpf*', options, function (error, stdout, stderr) {
-            if (error) console.log(error)
-            sudo.exec('sysctl -w net.inet.ip.fw.enable=0', options, function (error, stdout, stderr) {
-              if (error) console.log(error)
-              sudo.exec('chmod o-r /dev/bpf*', options, function (error, stdout, stderr) {
-                if (error) console.log(error)
+        label: 'Permissions',
+        submenu: [
+          {
+            label: 'Set',
+            click () {
+              exec(lsPermissions,
+               (error, stdout, stderr) => {
+                 if (error) console.log(`Exec error: ${error}`)
+                 if (stdout.includes('crw-rw-r--') === false) {
+                   sudo.exec(
+                     setPermissions,
+                     sudoOptions,
+                     (error) => { 
+                       if (error) {
+                         console.log(`Sudo error: ${error}`)
+                       } else {
+                         console.log('Set Permissions')
+                       }
+                     })
+                 } else {
+                   console.log('Permissions already set')
+                 }
               })
-            })
-          })
-          console.log('Clear Permissions')
-        }
+            }
+          },
+          {
+            label: 'Clear',
+            click () {
+              const clearPermissions = 'chmod o-r /dev/bpf*; sysctl -w net.inet.ip.forwarding=0; pfctl -d'
+              sudo.exec(
+                clearPermissions,
+                sudoOptions,
+                (error, stdout, stderr) => {
+                  if (error) {
+                    console.log(`Sudo error: ${error}`)
+                  } else {
+                    console.log('Clear Permissions')
+                  }
+                })
+            }
+          }
+        ]
       }
     ]
   },

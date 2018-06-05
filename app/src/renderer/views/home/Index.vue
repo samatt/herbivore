@@ -13,8 +13,6 @@
       </span>
     </a>
   </div>
-
-  <div @click="newMessage({level:'primary', title:'', duration: 5000, body:'If this is your first time using herbivore you\'ll need to set some permissions. Click on the permissions tab in the menu bar to do so. You will have to enter your password 3 times. (Sorry)'})" class='button'> Click here if its your first time </div>
   <div @click="goAbout" class='button'> About Herbivore </div>
   <p class="subtitle is-5 hint">
   Hint: you can also use the ← and → arrow keys to navigate.
